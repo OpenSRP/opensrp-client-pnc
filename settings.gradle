@@ -1,0 +1,3 @@
+rootProject.name='PNC'
+include ':sample-app'
+include ':opensrp-pnc'
