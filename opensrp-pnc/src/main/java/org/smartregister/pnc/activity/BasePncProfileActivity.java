@@ -243,7 +243,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
-                String jsonString = data.getStringExtra(PncConstants.JSON_FORM_EXTRA.JSON);
+                String jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
                 Timber.d("JSON-Result : %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);

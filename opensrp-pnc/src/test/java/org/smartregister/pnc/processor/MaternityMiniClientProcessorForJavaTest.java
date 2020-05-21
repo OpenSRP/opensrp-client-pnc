@@ -40,7 +40,7 @@ public class MaternityMiniClientProcessorForJavaTest extends BaseTest {
         MockitoAnnotations.initMocks(this);
         maternityMiniClientProcessorForJava = Mockito.spy(new PncMiniClientProcessorForJava(Mockito.mock(Context.class)));
         Event event = new Event();
-        event.addDetails(PncConstants.JSON_FORM_KEY.VISIT_ID, "visitId");
+        event.addDetails(PncConstants.JsonFormKey.VISIT_ID, "visitId");
     }
 
     @After

@@ -98,8 +98,8 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 entityId = entityId.replace("-", "");
             }
 
-            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JSON_FORM_KEY.HOME_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
-            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JSON_FORM_KEY.VILLAGE_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
+            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKey.HOME_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
+            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKey.VILLAGE_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
 
             // Inject OPenSrp id into the form
             JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
@@ -321,7 +321,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
             }
 
-            genderObject.put(PncConstants.KEY.VALUE, genderValue);
+            genderObject.put(PncConstants.Key.VALUE, genderValue);
         } catch (JSONException e) {
             Timber.e(e);
         }
@@ -352,8 +352,8 @@ public class PncJsonFormUtils extends JsonFormUtils {
     protected static void lastInteractedWith(@NonNull JSONArray fields) {
         try {
             JSONObject lastInteractedWith = new JSONObject();
-            lastInteractedWith.put(PncConstants.KEY.KEY, PncConstants.JSON_FORM_KEY.LAST_INTERACTED_WITH);
-            lastInteractedWith.put(PncConstants.KEY.VALUE, Calendar.getInstance().getTimeInMillis());
+            lastInteractedWith.put(PncConstants.Key.KEY, PncConstants.JsonFormKey.LAST_INTERACTED_WITH);
+            lastInteractedWith.put(PncConstants.Key.VALUE, Calendar.getInstance().getTimeInMillis());
             fields.put(lastInteractedWith);
         } catch (JSONException e) {
             Timber.e(e);
@@ -362,25 +362,25 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
     protected static void dobUnknownUpdateFromAge(@NonNull JSONArray fields) {
         try {
-            JSONObject dobUnknownObject = getFieldJSONObject(fields, PncConstants.JSON_FORM_KEY.DOB_UNKNOWN);
-            JSONArray options = getJSONArray(dobUnknownObject, PncConstants.JSON_FORM_KEY.OPTIONS);
+            JSONObject dobUnknownObject = getFieldJSONObject(fields, PncConstants.JsonFormKey.DOB_UNKNOWN);
+            JSONArray options = getJSONArray(dobUnknownObject, PncConstants.JsonFormKey.OPTIONS);
             JSONObject option = getJSONObject(options, 0);
             String dobUnKnownString = option != null ? option.getString(VALUE) : null;
             if (StringUtils.isNotBlank(dobUnKnownString) && Boolean.valueOf(dobUnKnownString)) {
 
-                String ageString = getFieldValue(fields, PncConstants.JSON_FORM_KEY.AGE_ENTERED);
+                String ageString = getFieldValue(fields, PncConstants.JsonFormKey.AGE_ENTERED);
                 if (StringUtils.isNotBlank(ageString) && NumberUtils.isNumber(ageString)) {
                     int age = Integer.valueOf(ageString);
-                    JSONObject dobJSONObject = getFieldJSONObject(fields, PncConstants.JSON_FORM_KEY.DOB_ENTERED);
+                    JSONObject dobJSONObject = getFieldJSONObject(fields, PncConstants.JsonFormKey.DOB_ENTERED);
                     dobJSONObject.put(VALUE, PncUtils.getDob(age));
 
                     //Mark the birth date as an approximation
                     JSONObject isBirthdateApproximate = new JSONObject();
-                    isBirthdateApproximate.put(PncConstants.KEY.KEY, FormEntityConstants.Person.birthdate_estimated);
-                    isBirthdateApproximate.put(PncConstants.KEY.VALUE, PncConstants.BOOLEAN_INT.TRUE);
+                    isBirthdateApproximate.put(PncConstants.Key.KEY, FormEntityConstants.Person.birthdate_estimated);
+                    isBirthdateApproximate.put(PncConstants.Key.VALUE, PncConstants.booleanInt.TRUE);
                     isBirthdateApproximate
-                            .put(PncConstants.OPENMRS.ENTITY, PncConstants.ENTITY.PERSON);//Required for value to be processed
-                    isBirthdateApproximate.put(PncConstants.OPENMRS.ENTITY_ID, FormEntityConstants.Person.birthdate_estimated);
+                            .put(PncConstants.OpenMrs.ENTITY, PncConstants.Entity.PERSON);//Required for value to be processed
+                    isBirthdateApproximate.put(PncConstants.OpenMrs.ENTITY_ID, FormEntityConstants.Person.birthdate_estimated);
                     fields.put(isBirthdateApproximate);
 
                 }
@@ -552,13 +552,13 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
     private static void processReminder(@NonNull JSONArray fields) {
         try {
-            JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JSON_FORM_KEY.REMINDERS);
+            JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JsonFormKey.REMINDERS);
             if (reminderObject != null) {
-                JSONArray options = getJSONArray(reminderObject, PncConstants.JSON_FORM_KEY.OPTIONS);
+                JSONArray options = getJSONArray(reminderObject, PncConstants.JsonFormKey.OPTIONS);
                 JSONObject option = getJSONObject(options, 0);
                 String value = option.optString(JsonFormConstants.VALUE);
                 int result = value.equals(Boolean.toString(false)) ? 0 : 1;
-                reminderObject.put(PncConstants.KEY.VALUE, result);
+                reminderObject.put(PncConstants.Key.VALUE, result);
             }
         } catch (JSONException e) {
             Timber.e(e);

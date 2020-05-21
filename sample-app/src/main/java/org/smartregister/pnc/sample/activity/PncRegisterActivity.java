@@ -56,7 +56,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
         // After filling in the form, we need to process it, create event(s) and process the event(s) (probably)
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
-                String jsonString = data.getStringExtra(PncConstants.JSON_FORM_EXTRA.JSON);
+                String jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
                 Timber.d("JSONResult : %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
@@ -93,10 +93,10 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
         Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata().getPncFormActivity());
         if (jsonForm.has(SampleConstants.KEY.ENCOUNTER_TYPE) && jsonForm.optString(SampleConstants.KEY.ENCOUNTER_TYPE).equals(
                 SampleConstants.KEY.PNC_REGISTRATION)) {
-//            MaternityJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KEY.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
+//            MaternityJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.Key.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
         }
 
-        intent.putExtra(PncConstants.JSON_FORM_EXTRA.JSON, jsonForm.toString());
+        intent.putExtra(PncConstants.JsonFormExtra.JSON, jsonForm.toString());
 
         Form form = new Form();
         form.setWizard(true);

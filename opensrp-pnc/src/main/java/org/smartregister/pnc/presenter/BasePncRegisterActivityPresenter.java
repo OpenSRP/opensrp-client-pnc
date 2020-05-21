@@ -99,7 +99,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
         String jsonString = null;
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JSON_FORM_EXTRA.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
         }
 
         if (jsonString == null) {

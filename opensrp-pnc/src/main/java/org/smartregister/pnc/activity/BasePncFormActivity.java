@@ -47,14 +47,14 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        enableOnCloseDialog = getIntent().getBooleanExtra(PncConstants.FormActivity.EnableOnCloseDialog, true);
+        enableOnCloseDialog = getIntent().getBooleanExtra(PncConstants.FormActivity.ENABLE_ON_CLOSE_DIALOG, true);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             Set<String> keySet = extras.keySet();
 
             for (String key : keySet) {
-                if (!key.equals(PncConstants.JSON_FORM_EXTRA.JSON)) {
+                if (!key.equals(PncConstants.JsonFormExtra.JSON)) {
                     Object objectValue = extras.get(key);
 
                     if (objectValue instanceof String) {

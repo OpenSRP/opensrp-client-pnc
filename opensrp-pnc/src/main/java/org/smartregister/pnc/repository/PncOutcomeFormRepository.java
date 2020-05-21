@@ -18,7 +18,7 @@ import java.util.List;
 public class PncOutcomeFormRepository extends BaseRepository implements PncOutcomeFormDao {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.MATERNITY_OUTCOME_FORM + "("
-            + PncDbConstants.Column.PncOutcomeForm.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+            + PncDbConstants.Column.PncOutcomeForm.ID + " INTEGER NOT NULL PRIMARY Key AUTOINCREMENT,"
             + PncDbConstants.Column.PncOutcomeForm.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncOutcomeForm.FORM + " TEXT NOT NULL, "
             + PncDbConstants.Column.PncOutcomeForm.CREATED_AT + " INTEGER NOT NULL ," +

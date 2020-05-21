@@ -196,7 +196,7 @@ public class MaternityProfileActivityPresenterTest extends BaseTest {
         }).when(maternityLibrary).processPncOutcomeForm(Mockito.anyString(), Mockito.eq(jsonString), Mockito.nullable(Intent.class));
 
         Intent intent = new Intent();
-        intent.putExtra(PncConstants.JSON_FORM_EXTRA.JSON, jsonString);
+        intent.putExtra(PncConstants.JsonFormExtra.JSON, jsonString);
 
         presenter.saveOutcomeForm(PncConstants.EventType.MATERNITY_OUTCOME, intent);
 

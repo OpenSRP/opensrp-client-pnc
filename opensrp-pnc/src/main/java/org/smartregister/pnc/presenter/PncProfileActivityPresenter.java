@@ -138,7 +138,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         if (profileView != null) {
             profileView.setProfileName(client.get(PncDbConstants.KEY.FIRST_NAME) + " " + client.get(PncDbConstants.KEY.LAST_NAME));
                 String translatedYearInitial = profileView.getString(R.string.abbrv_years);
-            String dobString = client.get(PncConstants.KEY.DOB);
+            String dobString = client.get(PncConstants.Key.DOB);
 
             if (dobString != null) {
                 String clientAge = PncUtils.getClientAge(Utils.getDuration(dobString), translatedYearInitial);
@@ -190,7 +190,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         String jsonString = null;
         PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JSON_FORM_EXTRA.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
         }
 
         if (jsonString == null) {
@@ -212,7 +212,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         String jsonString = null;
         PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JSON_FORM_EXTRA.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
         }
 
         if (jsonString == null) {

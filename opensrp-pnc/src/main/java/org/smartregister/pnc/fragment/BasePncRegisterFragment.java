@@ -47,7 +47,6 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
 
     private static final String DUE_FILTER_TAG = "PRESSED";
     private View dueOnlyLayout;
-    private TextView dueOnlyTextView;
     private boolean dueFilterActive = false;
     private PncRegisterQueryProviderContract maternityRegisterQueryProvider;
 
@@ -117,7 +116,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         dueOnlyLayout.setVisibility(View.VISIBLE);
         dueOnlyLayout.setOnClickListener(registerActionHandler);
 
-        dueOnlyTextView = view.findViewById(R.id.due_only_text_view);
+        TextView dueOnlyTextView = view.findViewById(R.id.due_only_text_view);
 
         topRightLayout.setOnClickListener(v -> startRegistration());
     }

@@ -46,7 +46,7 @@ public class PncConstants extends AllConstants {
         String MULTI_SELECT_DRUG_PICKER = "multi_select_drug_picker";
     }
 
-    public static class JSON_FORM_KEY {
+    public static class JsonFormKey {
         public static final String OPTIONS = "options";
         public static final String LAST_INTERACTED_WITH = "last_interacted_with";
         public static final String DOB = "dob";
@@ -75,18 +75,18 @@ public class PncConstants extends AllConstants {
         public static final String OPENSRP_ID = "opensrp_id";
     }
 
-    public static class JSON_FORM_EXTRA {
+    public static class JsonFormExtra {
         public static final String NEXT = "next";
         public static final String JSON = "json";
         public static final String ID = "id";
     }
 
-    public static class OPENMRS {
+    public static class OpenMrs {
         public static final String ENTITY = "openmrs_entity";
         public static final String ENTITY_ID = "openmrs_entity_id";
     }
 
-    public static final class KEY {
+    public static final class Key {
         public static final String KEY = "key";
         public static final String VALUE = "value";
         public static final String PHOTO = "photo";
@@ -100,16 +100,16 @@ public class PncConstants extends AllConstants {
         public static final String GENDER = "gender";
     }
 
-    public static class ENTITY {
+    public static class Entity {
         public static final String PERSON = "person";
     }
 
-    public static class BOOLEAN_INT {
+    public static class booleanInt {
         public static final int TRUE = 1;
     }
 
-    public static class FormActivity {
-        public static final String EnableOnCloseDialog = "EnableOnCloseDialog";
+    public static final class FormActivity {
+        public static final String ENABLE_ON_CLOSE_DIALOG = "EnableOnCloseDialog";
     }
 
     public static final class EventType {

@@ -26,7 +26,7 @@ public class ShadowDate {
     }
 
     @Implementation
-    public void __constructor__() {
+    public void ShadowDate() {
         if (isTimeSetExplicitly) {
             realDate.setTime(currentTime);
         } else {
