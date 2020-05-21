@@ -41,10 +41,10 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     public HashSet<String> getEventTypes() {
         if (eventTypes == null) {
             eventTypes = new HashSet<>();
-            eventTypes.add(PncConstants.EventType.MATERNITY_REGISTRATION);
-            eventTypes.add(PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION);
-            eventTypes.add(PncConstants.EventType.MATERNITY_OUTCOME);
-            eventTypes.add(PncConstants.EventType.MATERNITY_CLOSE);
+            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_REGISTRATION);
+            eventTypes.add(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION);
+            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_OUTCOME);
+            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_CLOSE);
         }
 
         return eventTypes;
@@ -61,8 +61,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
         String eventType = event.getEventType();
 
-        if (eventType.equals(PncConstants.EventType.MATERNITY_REGISTRATION)
-                || eventType.equals(PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_REGISTRATION)
+                || eventType.equals(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION)) {
             ArrayList<EventClient> eventClients = new ArrayList<>();
             eventClients.add(eventClient);
             processClient(eventClients);
@@ -76,13 +76,13 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             maternityDetails.setCreatedAt(new Date());
 
             PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(maternityDetails);
-        } else if (eventType.equals(PncConstants.EventType.MATERNITY_CLOSE)) {
+        } else if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
             if (eventClient.getClient() == null) {
-                throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventType.MATERNITY_CLOSE));
+                throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.MATERNITY_CLOSE));
             }
 
             unsyncEvents.add(event);
-        } else if (eventType.equals(PncConstants.EventType.MATERNITY_OUTCOME)) {
+        } else if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
             HashMap<String, String> keyValues = new HashMap<>();
             generateKeyValuesFromEvent(event, keyValues);
 
@@ -140,7 +140,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         // Do nothing for now
         /*if (events != null) {
             for (Event event : events) {
-                if (MaternityConstants.EventType.MATERNITY_CLOSE.equals(event.getEventType())) {
+                if (MaternityConstants.EventTypeConstants.MATERNITY_CLOSE.equals(event.getEventType())) {
                     // Delete the maternity details
                     // MaternityLibrary.getInstance().getMaternityOutcomeDetailsRepository().delete(event.getBaseEntityId());
 

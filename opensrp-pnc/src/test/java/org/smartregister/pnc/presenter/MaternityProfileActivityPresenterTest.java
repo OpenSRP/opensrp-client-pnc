@@ -196,12 +196,12 @@ public class MaternityProfileActivityPresenterTest extends BaseTest {
         }).when(maternityLibrary).processPncOutcomeForm(Mockito.anyString(), Mockito.eq(jsonString), Mockito.nullable(Intent.class));
 
         Intent intent = new Intent();
-        intent.putExtra(PncConstants.JsonFormExtra.JSON, jsonString);
+        intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonString);
 
-        presenter.saveOutcomeForm(PncConstants.EventType.MATERNITY_OUTCOME, intent);
+        presenter.saveOutcomeForm(PncConstants.EventTypeConstants.MATERNITY_OUTCOME, intent);
 
         Mockito.verify(maternityLibrary, Mockito.times(1)).processPncOutcomeForm(Mockito.eq(
-                PncConstants.EventType.MATERNITY_OUTCOME)
+                PncConstants.EventTypeConstants.MATERNITY_OUTCOME)
                 , Mockito.eq(jsonString)
                 , Mockito.any(Intent.class));
         ReflectionHelpers.setStaticField(PncLibrary.class, "instance", null);

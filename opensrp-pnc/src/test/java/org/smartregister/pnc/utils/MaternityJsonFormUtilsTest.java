@@ -47,8 +47,8 @@ public class MaternityJsonFormUtilsTest {
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndEntityIdBlank() throws Exception {
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -69,8 +69,8 @@ public class MaternityJsonFormUtilsTest {
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndEntityIdNonEmpty() throws Exception {
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -104,8 +104,8 @@ public class MaternityJsonFormUtilsTest {
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndInjectableFields() throws Exception {
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -178,8 +178,8 @@ public class MaternityJsonFormUtilsTest {
     public void testTagSyncMetadataWithEmptyEvent() throws Exception {
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -202,8 +202,8 @@ public class MaternityJsonFormUtilsTest {
     public void testGetLocationIdWithCurrentLocalityIsNotNull() throws Exception {
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -240,8 +240,8 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessGenderReplaceMwithMale() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.SEX);
-        jsonObject.put(PncConstants.Key.VALUE, "m");
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.SEX);
+        jsonObject.put(PncConstants.KeyConstants.VALUE, "m");
         jsonArray.put(jsonObject);
         PncJsonFormUtils.processGender(jsonArray);
         Assert.assertEquals("Male", jsonArray.getJSONObject(0).get("value"));
@@ -251,8 +251,8 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessGenderReplaceFwithFemale() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.SEX);
-        jsonObject.put(PncConstants.Key.VALUE, "f");
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.SEX);
+        jsonObject.put(PncConstants.KeyConstants.VALUE, "f");
         jsonArray.put(jsonObject);
         PncJsonFormUtils.processGender(jsonArray);
 
@@ -263,8 +263,8 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessGenderShouldReplaceNothing() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.SEX);
-        jsonObject.put(PncConstants.Key.VALUE, "L");
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.SEX);
+        jsonObject.put(PncConstants.KeyConstants.VALUE, "L");
         jsonArray.put(jsonObject);
         PncJsonFormUtils.processGender(jsonArray);
         Assert.assertEquals("", jsonArray.getJSONObject(0).get("value"));
@@ -281,7 +281,7 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessGenderShouldThrowJSONException() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.SEX);
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.SEX);
         jsonArray.put(jsonObject);
         PncJsonFormUtils.processGender(jsonArray);
         Assert.assertEquals(jsonArray.getJSONObject(0).length(), 1);
@@ -318,18 +318,18 @@ public class MaternityJsonFormUtilsTest {
 
         JSONArray jsonArrayDobUnknown = new JSONArray();
         JSONObject jsonObjectOptions = new JSONObject();
-        jsonObjectOptions.put(PncConstants.Key.VALUE, Boolean.TRUE.toString());
+        jsonObjectOptions.put(PncConstants.KeyConstants.VALUE, Boolean.TRUE.toString());
         jsonArrayDobUnknown.put(jsonObjectOptions);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JsonFormUtils.KEY, PncConstants.JsonFormKey.DOB_UNKNOWN);
-        jsonObject.put(PncConstants.JsonFormKey.OPTIONS, jsonArrayDobUnknown);
+        jsonObject.put(JsonFormUtils.KEY, PncConstants.JsonFormKeyConstants.DOB_UNKNOWN);
+        jsonObject.put(PncConstants.JsonFormKeyConstants.OPTIONS, jsonArrayDobUnknown);
 
         JSONObject jsonObjectDob = new JSONObject();
-        jsonObjectDob.put(JsonFormUtils.KEY, PncConstants.JsonFormKey.DOB_ENTERED);
+        jsonObjectDob.put(JsonFormUtils.KEY, PncConstants.JsonFormKeyConstants.DOB_ENTERED);
 
         JSONObject jsonObjectAgeEntered = new JSONObject();
-        jsonObjectAgeEntered.put(JsonFormUtils.KEY, PncConstants.JsonFormKey.AGE_ENTERED);
+        jsonObjectAgeEntered.put(JsonFormUtils.KEY, PncConstants.JsonFormKeyConstants.AGE_ENTERED);
         jsonObjectAgeEntered.put(JsonFormUtils.VALUE, "34");
 
 
@@ -350,14 +350,14 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessReminderSetToTrue() throws Exception {
         JSONArray jsonArrayFields = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.JsonFormKey.REMINDERS);
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.JsonFormKeyConstants.REMINDERS);
 
         JSONArray jsonArrayOptions = new JSONArray();
         JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put(PncConstants.Key.VALUE, Boolean.toString(true));
+        jsonObject1.put(PncConstants.KeyConstants.VALUE, Boolean.toString(true));
         jsonArrayOptions.put(jsonObject1);
 
-        jsonObject.put(PncConstants.JsonFormKey.OPTIONS, jsonArrayOptions);
+        jsonObject.put(PncConstants.JsonFormKeyConstants.OPTIONS, jsonArrayOptions);
         jsonArrayFields.put(jsonObject);
 
         Whitebox.invokeMethod(PncJsonFormUtils.class, "processReminder", jsonArrayFields);
@@ -371,14 +371,14 @@ public class MaternityJsonFormUtilsTest {
     public void testProcessReminderSetToFalse() throws Exception {
         JSONArray jsonArrayFields = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncConstants.Key.KEY, PncConstants.JsonFormKey.REMINDERS);
+        jsonObject.put(PncConstants.KeyConstants.KEY, PncConstants.JsonFormKeyConstants.REMINDERS);
 
         JSONArray jsonArrayOptions = new JSONArray();
         JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put(PncConstants.Key.VALUE, Boolean.toString(false));
+        jsonObject1.put(PncConstants.KeyConstants.VALUE, Boolean.toString(false));
         jsonArrayOptions.put(jsonObject1);
 
-        jsonObject.put(PncConstants.JsonFormKey.OPTIONS, jsonArrayOptions);
+        jsonObject.put(PncConstants.JsonFormKeyConstants.OPTIONS, jsonArrayOptions);
         jsonArrayFields.put(jsonObject);
 
         Whitebox.invokeMethod(PncJsonFormUtils.class, "processReminder", jsonArrayFields);
@@ -438,13 +438,13 @@ public class MaternityJsonFormUtilsTest {
         JSONObject jsonStep = new JSONObject();
         JSONArray jsonArrayFields = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(PncJsonFormUtils.KEY, PncConstants.JsonFormKey.REMINDERS);
+        jsonObject.put(PncJsonFormUtils.KEY, PncConstants.JsonFormKeyConstants.REMINDERS);
         jsonObject.put(PncJsonFormUtils.VALUE, "some reminder");
         jsonArrayFields.put(jsonObject);
         jsonStep.put(PncJsonFormUtils.FIELDS, jsonArrayFields);
         jsonForm.put(PncJsonFormUtils.STEP1, jsonStep);
 
-        Assert.assertEquals("some reminder", PncJsonFormUtils.getFieldValue(jsonForm.toString(), PncJsonFormUtils.STEP1, PncConstants.JsonFormKey.REMINDERS));
+        Assert.assertEquals("some reminder", PncJsonFormUtils.getFieldValue(jsonForm.toString(), PncJsonFormUtils.STEP1, PncConstants.JsonFormKeyConstants.REMINDERS));
     }
 
     @Test

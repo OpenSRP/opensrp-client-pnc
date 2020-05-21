@@ -35,8 +35,8 @@ public class PncBarcodeFactory extends BarcodeFactory {
         List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener);
         this.jsonFormFragment = formFragment;
         try {
-            this.forLookUp = jsonObject.has(PncConstants.Key.LOOK_UP) &&
-                    jsonObject.get(PncConstants.Key.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
+            this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
+                    jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
         } catch (JSONException e) {
             Timber.e(e);
         }
@@ -49,8 +49,8 @@ public class PncBarcodeFactory extends BarcodeFactory {
         List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener, popup);
         this.jsonFormFragment = formFragment;
         try {
-            this.forLookUp = jsonObject.has(PncConstants.Key.LOOK_UP) &&
-                    jsonObject.get(PncConstants.Key.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
+            this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
+                    jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
         } catch (JSONException e) {
             Timber.e(e);
         }

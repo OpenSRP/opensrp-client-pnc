@@ -190,7 +190,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         PncMetadata maternityMetadata = PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata();
         if (maternityMetadata != null) {
             Intent intent = new Intent(context, maternityMetadata.getPncFormActivity());
-            intent.putExtra(PncConstants.JsonFormExtra.JSON, jsonForm.toString());
+            intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonForm.toString());
 
             Form form = new Form();
             form.setWizard(false);
@@ -213,7 +213,7 @@ public class PncUtils extends org.smartregister.util.Utils {
             form.setHideNextButton(false);
             form.setHidePreviousButton(false);
 
-            if (PncConstants.EventType.MATERNITY_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKey.ENCOUNTER_TYPE))) {
+            if (PncConstants.EventTypeConstants.MATERNITY_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
                 form.setSaveLabel(context.getString(R.string.submit_and_close_maternity));
             }
 

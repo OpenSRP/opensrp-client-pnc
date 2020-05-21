@@ -103,8 +103,8 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
         //Pnc Initialization
         PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.MATERNITY_REGISTRATION
-                , PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
                 , PncConstants.CONFIG
                 , PncFormActivity.class
                 , BasePncProfileActivity.class

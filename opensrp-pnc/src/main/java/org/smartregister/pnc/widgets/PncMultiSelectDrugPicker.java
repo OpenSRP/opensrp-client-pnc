@@ -91,8 +91,8 @@ public class PncMultiSelectDrugPicker extends MultiSelectListFactory implements 
         try {
             jsonObject = new JSONObject(multiSelectValue);
             JSONObject jsonAdditionalObject = new JSONObject();
-            jsonAdditionalObject.put(PncConstants.JsonFormKey.DURATION, duration);
-            jsonAdditionalObject.put(PncConstants.JsonFormKey.DOSAGE, dosage);
+            jsonAdditionalObject.put(PncConstants.JsonFormKeyConstants.DURATION, duration);
+            jsonAdditionalObject.put(PncConstants.JsonFormKeyConstants.DOSAGE, dosage);
             jsonAdditionalObject.put(JsonFormConstants.MultiSelectUtils.INFO, msg);
             jsonObject.put(JsonFormConstants.MultiSelectUtils.META, jsonAdditionalObject);
         } catch (JSONException e) {

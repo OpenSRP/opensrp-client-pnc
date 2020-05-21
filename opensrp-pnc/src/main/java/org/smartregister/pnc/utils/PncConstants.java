@@ -46,7 +46,7 @@ public class PncConstants extends AllConstants {
         String MULTI_SELECT_DRUG_PICKER = "multi_select_drug_picker";
     }
 
-    public static class JsonFormKey {
+    public static class JsonFormKeyConstants {
         public static final String OPTIONS = "options";
         public static final String LAST_INTERACTED_WITH = "last_interacted_with";
         public static final String DOB = "dob";
@@ -75,18 +75,18 @@ public class PncConstants extends AllConstants {
         public static final String OPENSRP_ID = "opensrp_id";
     }
 
-    public static class JsonFormExtra {
+    public static class JsonFormExtraConstants {
         public static final String NEXT = "next";
         public static final String JSON = "json";
         public static final String ID = "id";
     }
 
-    public static class OpenMrs {
+    public static class OpenMrsConstants {
         public static final String ENTITY = "openmrs_entity";
         public static final String ENTITY_ID = "openmrs_entity_id";
     }
 
-    public static final class Key {
+    public static final class KeyConstants {
         public static final String KEY = "key";
         public static final String VALUE = "value";
         public static final String PHOTO = "photo";
@@ -100,19 +100,19 @@ public class PncConstants extends AllConstants {
         public static final String GENDER = "gender";
     }
 
-    public static class Entity {
+    public static class EntityConstants {
         public static final String PERSON = "person";
     }
 
-    public static class booleanInt {
+    public static class booleanIntConstants {
         public static final int TRUE = 1;
     }
 
-    public static final class FormActivity {
+    public static final class FormActivityConstants {
         public static final String ENABLE_ON_CLOSE_DIALOG = "EnableOnCloseDialog";
     }
 
-    public static final class EventType {
+    public static final class EventTypeConstants {
         public static final String MATERNITY_REGISTRATION = "Maternity Registration";
         public static final String UPDATE_MATERNITY_REGISTRATION = "Update Maternity Registration";
         public static final String MATERNITY_OUTCOME = "Maternity Outcome";

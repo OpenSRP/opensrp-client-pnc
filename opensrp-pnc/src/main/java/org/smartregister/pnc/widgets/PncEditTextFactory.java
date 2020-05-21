@@ -19,8 +19,8 @@ public class PncEditTextFactory extends EditTextFactory {
                              MaterialEditText editText, ImageView editable) throws Exception {
         super.attachLayout(stepName, context, formFragment, jsonObject, editText, editable);
 
-        if (jsonObject.has(PncConstants.Key.LOOK_UP) &&
-                jsonObject.get(PncConstants.Key.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString())) {
+        if (jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
+                jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString())) {
 
             editText.addTextChangedListener(new LookUpTextWatcher(formFragment, editText));
             editText.setTag(com.vijay.jsonwizard.R.id.after_look_up, false);

@@ -142,7 +142,7 @@ public class MaternityUtilsTest {
         jsonForm.put("step2", new JSONObject());
         jsonForm.put("step3", new JSONObject());
 
-        jsonForm.put(PncJsonFormUtils.ENCOUNTER_TYPE, PncConstants.EventType.MATERNITY_OUTCOME);
+        jsonForm.put(PncJsonFormUtils.ENCOUNTER_TYPE, PncConstants.EventTypeConstants.MATERNITY_OUTCOME);
 
         HashMap<String, String> parcelableData = new HashMap<>();
         String baseEntityId = "89283-23dsd-23sdf";
@@ -152,7 +152,7 @@ public class MaternityUtilsTest {
         Form form = (Form) actualResult.getSerializableExtra(JsonFormConstants.JSON_FORM_KEY.FORM);
 
         assertTrue(form.isWizard());
-        assertEquals(PncConstants.EventType.MATERNITY_OUTCOME, form.getName());
+        assertEquals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME, form.getName());
         assertEquals(baseEntityId, actualResult.getStringExtra(PncConstants.IntentKey.BASE_ENTITY_ID));
     }
 

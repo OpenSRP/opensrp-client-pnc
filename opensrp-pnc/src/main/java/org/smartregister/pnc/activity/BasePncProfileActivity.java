@@ -243,7 +243,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
-                String jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
+                String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
                 Timber.d("JSON-Result : %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
@@ -254,10 +254,10 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                 ongoingTask.setTaskDetail(encounterType);
 
                 addOngoingTask(ongoingTask);
-                if (encounterType.equals(PncConstants.EventType.MATERNITY_OUTCOME)) {
+                if (encounterType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).saveOutcomeForm(encounterType, data);
-                } else if (encounterType.equals(PncConstants.EventType.UPDATE_MATERNITY_REGISTRATION)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION)) {
                     removeOngoingTask(ongoingTask);
                     showProgressDialog(R.string.saving_dialog_title);
 
@@ -267,7 +267,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                     showProgressDialog(R.string.saving_dialog_title);
 
                     ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventType.MATERNITY_CLOSE)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).saveMaternityCloseForm(encounterType, data);
                 } else {

@@ -138,7 +138,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         if (profileView != null) {
             profileView.setProfileName(client.get(PncDbConstants.KEY.FIRST_NAME) + " " + client.get(PncDbConstants.KEY.LAST_NAME));
                 String translatedYearInitial = profileView.getString(R.string.abbrv_years);
-            String dobString = client.get(PncConstants.Key.DOB);
+            String dobString = client.get(PncConstants.KeyConstants.DOB);
 
             if (dobString != null) {
                 String clientAge = PncUtils.getClientAge(Utils.getDuration(dobString), translatedYearInitial);
@@ -190,14 +190,14 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         String jsonString = null;
         PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
         }
 
         if (jsonString == null) {
             return;
         }
 
-        if (eventType.equals(PncConstants.EventType.MATERNITY_OUTCOME)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
             try {
                 List<Event> maternityOutcomeAndCloseEvents = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
                 pncEventUtils.saveEvents(maternityOutcomeAndCloseEvents, this);
@@ -212,7 +212,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         String jsonString = null;
         PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
         }
 
         if (jsonString == null) {
@@ -220,7 +220,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             return;
         }
 
-        if (eventType.equals(PncConstants.EventType.MATERNITY_CLOSE)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
             try {
                 List<Event> maternityCloseEvents = PncLibrary.getInstance().processMaternityCloseForm(eventType, jsonString, data);
                 pncEventUtils.saveEvents(maternityCloseEvents, this);

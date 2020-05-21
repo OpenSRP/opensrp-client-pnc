@@ -99,14 +99,14 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
         String jsonString = null;
         if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtra.JSON);
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
         }
 
         if (jsonString == null) {
             return;
         }
 
-        if (eventType.equals(PncConstants.EventType.MATERNITY_OUTCOME)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
             try {
                 List<Event> maternityOutcomeAndCloseEvent = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
                 interactor.saveEvents(maternityOutcomeAndCloseEvent, this);

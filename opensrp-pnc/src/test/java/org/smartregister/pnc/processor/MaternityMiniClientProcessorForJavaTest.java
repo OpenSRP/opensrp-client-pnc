@@ -40,7 +40,7 @@ public class MaternityMiniClientProcessorForJavaTest extends BaseTest {
         MockitoAnnotations.initMocks(this);
         maternityMiniClientProcessorForJava = Mockito.spy(new PncMiniClientProcessorForJava(Mockito.mock(Context.class)));
         Event event = new Event();
-        event.addDetails(PncConstants.JsonFormKey.VISIT_ID, "visitId");
+        event.addDetails(PncConstants.JsonFormKeyConstants.VISIT_ID, "visitId");
     }
 
     @After
@@ -64,7 +64,7 @@ public class MaternityMiniClientProcessorForJavaTest extends BaseTest {
         expectedException.expect(PncCloseEventProcessException.class);
         expectedException.expectMessage("Could not process this Maternity Close Event because Client bei referenced by Maternity Close event does not exist");
 
-        Event event = new Event().withEventType(PncConstants.EventType.MATERNITY_CLOSE).withBaseEntityId("bei");
+        Event event = new Event().withEventType(PncConstants.EventTypeConstants.MATERNITY_CLOSE).withBaseEntityId("bei");
         event.addDetails("d", "d");
 
         EventClient eventClient = new EventClient(event, null);

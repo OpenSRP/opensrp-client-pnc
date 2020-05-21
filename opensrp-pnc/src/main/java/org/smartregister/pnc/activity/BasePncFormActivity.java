@@ -47,14 +47,14 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        enableOnCloseDialog = getIntent().getBooleanExtra(PncConstants.FormActivity.ENABLE_ON_CLOSE_DIALOG, true);
+        enableOnCloseDialog = getIntent().getBooleanExtra(PncConstants.FormActivityConstants.ENABLE_ON_CLOSE_DIALOG, true);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             Set<String> keySet = extras.keySet();
 
             for (String key : keySet) {
-                if (!key.equals(PncConstants.JsonFormExtra.JSON)) {
+                if (!key.equals(PncConstants.JsonFormExtraConstants.JSON)) {
                     Object objectValue = extras.get(key);
 
                     if (objectValue instanceof String) {
@@ -105,7 +105,7 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     @Override
     public void onBackPressed() {
         if (enableOnCloseDialog) {
-            if (mJSONObject.optString(PncJsonFormUtils.ENCOUNTER_TYPE).equals(PncConstants.EventType.MATERNITY_OUTCOME)) {
+            if (mJSONObject.optString(PncJsonFormUtils.ENCOUNTER_TYPE).equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
                 AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                         .setMessage(getString(R.string.save_form_fill_session))
                         .setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {

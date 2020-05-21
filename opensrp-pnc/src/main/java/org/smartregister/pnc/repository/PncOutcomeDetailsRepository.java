@@ -19,7 +19,7 @@ public class PncOutcomeDetailsRepository extends PncDetailsRepository {
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         String CREATE_TABLE_SQL = "CREATE TABLE " + getTableNameStatic() + "("
-                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY Key AUTOINCREMENT, "
+                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY KeyConstants AUTOINCREMENT, "
                 + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
                 + PncDbConstants.Column.PncDetails.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
                 + PncDbConstants.Column.PncDetails.EVENT_DATE + " DATETIME NOT NULL, ";

@@ -157,7 +157,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
 
     private void addImageLocation(@NonNull String jsonString, @Nullable Client baseClient, @Nullable Event baseEvent) {
         if (baseClient != null || baseEvent != null) {
-            String imageLocation = PncJsonFormUtils.getFieldValue(jsonString, PncConstants.Key.PHOTO);
+            String imageLocation = PncJsonFormUtils.getFieldValue(jsonString, PncConstants.KeyConstants.PHOTO);
             if (StringUtils.isNotBlank(imageLocation)) {
                 PncJsonFormUtils.saveImage(baseEvent.getProviderId(), baseClient.getBaseEntityId(), imageLocation);
             }

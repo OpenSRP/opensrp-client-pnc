@@ -116,8 +116,6 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         dueOnlyLayout.setVisibility(View.VISIBLE);
         dueOnlyLayout.setOnClickListener(registerActionHandler);
 
-        TextView dueOnlyTextView = view.findViewById(R.id.due_only_text_view);
-
         topRightLayout.setOnClickListener(v -> startRegistration());
     }
 

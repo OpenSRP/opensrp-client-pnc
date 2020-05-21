@@ -20,7 +20,7 @@ public class PncFormFragmentPresenter extends JsonWizardFormFragmentPresenter {
     @Override
     protected boolean moveToNextWizardStep() {
         if (!TextUtils.isEmpty(mStepDetails.optString(JsonFormConstants.NEXT))) {
-            JsonFormFragment next = BasePncFormFragment.getFormFragment(mStepDetails.optString(PncConstants.JsonFormExtra.NEXT));
+            JsonFormFragment next = BasePncFormFragment.getFormFragment(mStepDetails.optString(PncConstants.JsonFormExtraConstants.NEXT));
             getView().hideKeyBoard();
             getView().transactThis(next);
             return true;

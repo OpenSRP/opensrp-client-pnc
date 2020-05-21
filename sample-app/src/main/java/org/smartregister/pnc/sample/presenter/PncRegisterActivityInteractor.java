@@ -113,10 +113,10 @@ public class PncRegisterActivityInteractor extends BasePncRegisterActivityIntera
         if (baseClient != null && baseEvent != null) {
             String imageLocation = null;
             if (i == 0) {
-                imageLocation = PncJsonFormUtils.getFieldValue(jsonString, PncConstants.Key.PHOTO);
+                imageLocation = PncJsonFormUtils.getFieldValue(jsonString, PncConstants.KeyConstants.PHOTO);
             } else if (i == 1) {
                 imageLocation =
-                        PncJsonFormUtils.getFieldValue(jsonString, PncJsonFormUtils.STEP2, PncConstants.Key.PHOTO);
+                        PncJsonFormUtils.getFieldValue(jsonString, PncJsonFormUtils.STEP2, PncConstants.KeyConstants.PHOTO);
             }
 
             if (StringUtils.isNotBlank(imageLocation)) {

@@ -240,9 +240,9 @@ public class PncLibrary {
         eventList.add(maternityOutcomeEvent);
 
         Event closeMaternityEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
-                formTag, baseEntityId, PncConstants.EventType.MATERNITY_CLOSE, "");
+                formTag, baseEntityId, PncConstants.EventTypeConstants.MATERNITY_CLOSE, "");
         PncJsonFormUtils.tagSyncMetadata(closeMaternityEvent);
-        closeMaternityEvent.addDetails(PncConstants.JsonFormKey.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
+        closeMaternityEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
         eventList.add(closeMaternityEvent);
 
         return eventList;
@@ -268,14 +268,14 @@ public class PncLibrary {
 
     public String maternityLookUpQuery() {
         String lookUpQueryForChild = "select id as _id, %s, %s, %s, %s, %s, %s, zeir_id as %s, null as national_id from ec_child where [condition] ";
-        lookUpQueryForChild = String.format(lookUpQueryForChild, PncConstants.Key.RELATIONALID, PncConstants.Key.FIRST_NAME,
-                PncConstants.Key.LAST_NAME, PncConstants.Key.GENDER, PncConstants.Key.DOB, PncConstants.Key.BASE_ENTITY_ID, PncDbConstants.KEY.OPENSRP_ID);
+        lookUpQueryForChild = String.format(lookUpQueryForChild, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
+                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncDbConstants.KEY.OPENSRP_ID);
         String lookUpQueryForMother = "select id as _id, %s, %s, %s, %s, %s, %s, register_id as %s, nrc_number as national_id from ec_mother where [condition] ";
-        lookUpQueryForMother = String.format(lookUpQueryForMother, PncConstants.Key.RELATIONALID, PncConstants.Key.FIRST_NAME,
-                PncConstants.Key.LAST_NAME, PncConstants.Key.GENDER, PncConstants.Key.DOB, PncConstants.Key.BASE_ENTITY_ID, PncConstants.Key.OPENSRP_ID);
+        lookUpQueryForMother = String.format(lookUpQueryForMother, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
+                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncConstants.KeyConstants.OPENSRP_ID);
         String lookUpQueryForOpdOrMaternityClient = "select id as _id, %s, %s, %s, %s, %s, %s, %s, national_id from ec_client where [condition] ";
-        lookUpQueryForOpdOrMaternityClient = String.format(lookUpQueryForOpdOrMaternityClient, PncConstants.Key.RELATIONALID, PncConstants.Key.FIRST_NAME,
-                PncConstants.Key.LAST_NAME, PncConstants.Key.GENDER, PncConstants.Key.DOB, PncConstants.Key.BASE_ENTITY_ID, PncConstants.Key.OPENSRP_ID);
+        lookUpQueryForOpdOrMaternityClient = String.format(lookUpQueryForOpdOrMaternityClient, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
+                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncConstants.KeyConstants.OPENSRP_ID);
         return lookUpQueryForChild + " union all " + lookUpQueryForMother + " union all " + lookUpQueryForOpdOrMaternityClient;
     }
 
