@@ -377,7 +377,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
                     //Mark the birth date as an approximation
                     JSONObject isBirthdateApproximate = new JSONObject();
                     isBirthdateApproximate.put(PncConstants.KeyConstants.KEY, FormEntityConstants.Person.birthdate_estimated);
-                    isBirthdateApproximate.put(PncConstants.KeyConstants.VALUE, PncConstants.booleanIntConstants.TRUE);
+                    isBirthdateApproximate.put(PncConstants.KeyConstants.VALUE, PncConstants.BooleanIntConstants.TRUE);
                     isBirthdateApproximate
                             .put(PncConstants.OpenMrsConstants.ENTITY, PncConstants.EntityConstants.PERSON);//Required for value to be processed
                     isBirthdateApproximate.put(PncConstants.OpenMrsConstants.ENTITY_ID, FormEntityConstants.Person.birthdate_estimated);

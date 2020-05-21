@@ -104,7 +104,7 @@ public class PncConstants extends AllConstants {
         public static final String PERSON = "person";
     }
 
-    public static class booleanIntConstants {
+    public static class BooleanIntConstants {
         public static final int TRUE = 1;
     }
 
