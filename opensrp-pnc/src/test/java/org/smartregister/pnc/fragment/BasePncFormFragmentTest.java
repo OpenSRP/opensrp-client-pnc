@@ -34,7 +34,7 @@ import org.smartregister.repository.Repository;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class BaseMaternityFormFragmentTest {
+public class BasePncFormFragmentTest {
 
     @After
     public void tearDown() {
