@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.smartregister.pnc">
+
+    <application
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:theme">
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".activity.BasePncFormActivity"/>
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".activity.BasePncProfileActivity"/>
+    </application>
+
+</manifest>
