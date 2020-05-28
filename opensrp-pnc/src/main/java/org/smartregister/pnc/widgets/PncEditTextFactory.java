@@ -22,7 +22,7 @@ public class PncEditTextFactory extends EditTextFactory {
         if (jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
                 jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString())) {
 
-            editText.addTextChangedListener(new LookUpTextWatcher(formFragment, editText));
+            editText.addTextChangedListener(new LookUpTextWatcher());
             editText.setTag(com.vijay.jsonwizard.R.id.after_look_up, false);
         }
 

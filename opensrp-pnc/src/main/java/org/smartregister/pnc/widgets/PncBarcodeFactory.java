@@ -71,7 +71,7 @@ public class PncBarcodeFactory extends BarcodeFactory {
                                     Barcode barcode = data.getParcelableExtra(JsonFormConstants.BARCODE_CONSTANTS.BARCODE_KEY);
                                     Timber.d("Scanned QR Code %s ", barcode.displayValue);
                                     if (forLookUp) {
-                                        editText.addTextChangedListener(new LookUpTextWatcher(jsonFormFragment, editText));
+                                        editText.addTextChangedListener(new LookUpTextWatcher());
                                         editText.setTag(com.vijay.jsonwizard.R.id.after_look_up, false);
                                     }
                                     editText.setText(barcode.displayValue);

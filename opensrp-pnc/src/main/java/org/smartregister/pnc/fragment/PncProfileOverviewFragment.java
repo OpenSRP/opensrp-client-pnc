@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +43,6 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
             if (commonPersonObjectClient != null) {
                 presenter.setClient(commonPersonObjectClient);
-                String baseEntityId = commonPersonObjectClient.getCaseId();
             }
         }
     }
@@ -58,10 +55,6 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.pnc_fragment_profile_overview, container, false);
-
-        LinearLayout pncOutcomeSectionLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
-        Button recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
-
         return view;
     }
 

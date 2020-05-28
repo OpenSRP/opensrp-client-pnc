@@ -38,7 +38,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
 
     private AppExecutors appExecutors;
 
-    public PncProfileInteractor(@NonNull PncProfileActivityContract.Presenter presenter) {
+    public PncProfileInteractor() {
         appExecutors = new AppExecutors();
     }
 
@@ -173,7 +173,6 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
 
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
-        if (!isChangingConfiguration) {
-        }
+        // do nothing
     }
 }

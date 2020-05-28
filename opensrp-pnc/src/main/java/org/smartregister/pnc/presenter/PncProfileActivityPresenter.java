@@ -57,7 +57,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
 
     public PncProfileActivityPresenter(PncProfileActivityContract.View profileView) {
         mProfileView = new WeakReference<>(profileView);
-        mProfileInteractor = new PncProfileInteractor(this);
+        mProfileInteractor = new PncProfileInteractor();
         model = new PncProfileActivityModel();
     }
 

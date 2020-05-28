@@ -93,10 +93,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void generateKeyValuesFromEvent(@NonNull Event event, HashMap<String, String> keyValues) {
-        generateKeyValuesFromEvent(event, keyValues, false);
-    }
-
     @Override
     public boolean unSync(@Nullable List<Event> events) {
         // Do nothing for now
