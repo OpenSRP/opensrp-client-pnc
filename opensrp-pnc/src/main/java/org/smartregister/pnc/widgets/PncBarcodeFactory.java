@@ -26,14 +26,12 @@ import timber.log.Timber;
 
 public class PncBarcodeFactory extends BarcodeFactory {
 
-    private JsonFormFragment jsonFormFragment;
     private boolean forLookUp;
 
     @Override
     public List<View> getViewsFromJson(@NonNull String stepName, @NonNull Context context, @NonNull JsonFormFragment formFragment,
                                        @NonNull JSONObject jsonObject, @NonNull CommonListener listener) throws Exception {
         List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener);
-        this.jsonFormFragment = formFragment;
         try {
             this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
                     jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
@@ -47,7 +45,6 @@ public class PncBarcodeFactory extends BarcodeFactory {
     public List<View> getViewsFromJson(@NonNull String stepName, @NonNull Context context, @NonNull JsonFormFragment formFragment, @NonNull JSONObject jsonObject,
                                        @NonNull CommonListener listener, boolean popup) {
         List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener, popup);
-        this.jsonFormFragment = formFragment;
         try {
             this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
                     jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
