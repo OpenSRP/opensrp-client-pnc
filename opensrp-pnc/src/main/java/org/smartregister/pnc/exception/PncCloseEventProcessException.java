@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 public class PncCloseEventProcessException extends Exception {
 
     public PncCloseEventProcessException() {
-        super("Could not process this Maternity Close Event");
+        super("Could not process this Pnc Close Event");
     }
 
     public PncCloseEventProcessException(@NonNull String message) {
-        super("Could not process this Maternity Close Event because " + message);
+        super("Could not process this Pnc Close Event because " + message);
     }
 
 }

@@ -9,23 +9,15 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.activity.BasePncProfileActivity;
-import org.smartregister.pnc.adapter.PncProfileOverviewAdapter;
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
-import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.presenter.PncProfileOverviewFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.view.fragment.BaseProfileFragment;
-
-import java.util.List;
 
 
 /**
@@ -36,7 +28,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     private String baseEntityId;
     private PncProfileOverviewFragmentContract.Presenter presenter;
 
-    private LinearLayout maternityOutcomeSectionLayout;
+    private LinearLayout pncOutcomeSectionLayout;
     private Button recordOutcomeBtn;
 
     public static PncProfileOverviewFragment newInstance(Bundle bundle) {
@@ -66,53 +58,15 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     @Override
     protected void onResumption() {
-        if (baseEntityId != null) {
-            presenter.loadOverviewFacts(baseEntityId, new PncProfileOverviewFragmentContract.Presenter.OnFinishedCallback() {
-
-                @Override
-                public void onFinished(@Nullable Facts facts, @Nullable List<YamlConfigWrapper> yamlConfigListGlobal) {
-                    if (getActivity() != null && facts != null && yamlConfigListGlobal != null) {
-                        showOutcomeBtn();
-
-                        PncProfileOverviewAdapter adapter = new PncProfileOverviewAdapter(getActivity(), yamlConfigListGlobal, facts);
-                        adapter.notifyDataSetChanged();
-
-                        // set up the RecyclerView
-                        RecyclerView recyclerView = getActivity().findViewById(R.id.profile_overview_recycler);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        recyclerView.setAdapter(adapter);
-                    }
-                }
-
-            });
-        }
-    }
-
-    private void showOutcomeBtn() {
-        if (getActivity() != null) {
-            maternityOutcomeSectionLayout.setVisibility(View.VISIBLE);
-            recordOutcomeBtn.setText(R.string.outcome);
-            recordOutcomeBtn.setBackgroundResource(R.drawable.outcome_btn_overview_bg);
-            recordOutcomeBtn.setTextColor(getActivity().getResources().getColorStateList(R.color.check_in_btn_overview_text_color));
-            recordOutcomeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FragmentActivity activity = getActivity();
-
-                    if (activity instanceof BasePncProfileActivity) {
-                        ((BasePncProfileActivity) activity).openMaternityOutcomeForm();
-                    }
-                }
-            });
-        }
+        // do nothing
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.maternity_fragment_profile_overview, container, false);
+        View view =  inflater.inflate(R.layout.pnc_fragment_profile_overview, container, false);
 
-        maternityOutcomeSectionLayout = view.findViewById(R.id.ll_maternityFragmentProfileOverview_outcomeLayout);
-        recordOutcomeBtn = view.findViewById(R.id.btn_maternityFragmentProfileOverview_outcome);
+        pncOutcomeSectionLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
+        recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
 
         return view;
     }

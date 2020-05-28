@@ -3,7 +3,6 @@ package org.smartregister.pnc.model;
 
 import androidx.annotation.NonNull;
 
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.util.AppExecutors;
@@ -15,30 +14,14 @@ import org.smartregister.util.AppExecutors;
 public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragmentContract.Model {
 
     private AppExecutors appExecutors;
-    private PncBaseDetails maternityDetails = null;
+    private PncBaseDetails pncDetails = null;
 
     public PncProfileOverviewFragmentModel() {
         this.appExecutors = new AppExecutors();
     }
 
     @Override
-    public void fetchMaternityOverviewDetails(final @NonNull String baseEntityId, @NonNull final OnFetchedCallback onFetchedCallback) {
-        appExecutors.diskIO().execute(new Runnable() {
-
-            @Override
-            public void run() {
-                maternityDetails = new PncBaseDetails();
-                maternityDetails.setBaseEntityId(baseEntityId);
-                maternityDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(maternityDetails);
-
-                appExecutors.mainThread().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        onFetchedCallback.onFetched(maternityDetails);
-                    }
-                });
-            }
-        });
+    public void fetchPncOverviewDetails(final @NonNull String baseEntityId, @NonNull final OnFetchedCallback onFetchedCallback) {
+        // Do nothing
     }
 }

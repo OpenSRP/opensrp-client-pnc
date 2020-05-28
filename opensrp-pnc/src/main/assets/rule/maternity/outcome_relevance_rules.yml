@@ -1,7 +1,0 @@
----
-name: step2_nvp_administration
-description: nvp_administration
-priority: 1
-condition: "step1_mother_hiv_status =! null && step1_mother_hiv_status == 'Positive' && step2_discharged_alive != null && step2_discharged_alive == 'Yes'"
-actions:
-  - "isRelevant = true"

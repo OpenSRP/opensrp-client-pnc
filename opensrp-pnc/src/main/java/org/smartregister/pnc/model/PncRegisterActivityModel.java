@@ -51,15 +51,15 @@ public class PncRegisterActivityModel implements PncRegisterActivityContract.Mod
     @Nullable
     @Override
     public List<PncEventClient> processRegistration(String jsonString, FormTag formTag) {
-        List<PncEventClient> maternityEventClientList = new ArrayList<>();
-        PncEventClient maternityEventClient = PncJsonFormUtils.processMaternityRegistrationForm(jsonString, formTag);
+        List<PncEventClient> pncEventClientList = new ArrayList<>();
+        PncEventClient pncEventClient = PncJsonFormUtils.processPncRegistrationForm(jsonString, formTag);
 
-        if (maternityEventClient == null) {
+        if (pncEventClient == null) {
             return null;
         }
 
-        maternityEventClientList.add(maternityEventClient);
-        return maternityEventClientList;
+        pncEventClientList.add(pncEventClient);
+        return pncEventClientList;
     }
 
     @Nullable

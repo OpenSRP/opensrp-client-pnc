@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/maternity_menu_item_close_client"
-        android:title="@string/maternity_close"
+        android:id="@+id/pnc_menu_item_close_client"
+        android:title="@string/pnc_close"
         app:showAsAction="always"
         tools:ignore="HardcodedText" />
 </menu>

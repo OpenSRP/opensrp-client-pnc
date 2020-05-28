@@ -43,8 +43,8 @@ public class BasePncFormFragmentTest {
 
     @Test
     public void startActivityOnLookUpShouldCallStartActivity() {
-        PncConfiguration maternityConfiguration = new PncConfiguration.Builder(PncRegisterQueryProvider.class)
-                .setMaternityRegisterProviderMetadata(BasePncRegisterProviderMetadata.class)
+        PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProvider.class)
+                .setPncRegisterProviderMetadata(BasePncRegisterProviderMetadata.class)
                 .setPncMetadata(new PncMetadata("form-name"
                         , "table-name"
                         , "register-event-type"
@@ -55,15 +55,15 @@ public class BasePncFormFragmentTest {
                         , false))
                 .build();
 
-        PncLibrary.init(Mockito.mock(Context.class), Mockito.mock(Repository.class), maternityConfiguration, BuildConfig.VERSION_CODE, 1);
+        PncLibrary.init(Mockito.mock(Context.class), Mockito.mock(Repository.class), pncConfiguration, BuildConfig.VERSION_CODE, 1);
         CommonPersonObjectClient client = Mockito.mock(CommonPersonObjectClient.class);
 
-        BasePncFormFragment baseMaternityFormFragment = new BasePncFormFragment();
+        BasePncFormFragment basePncFormFragment = new BasePncFormFragment();
 
         FragmentHostCallback host = Mockito.mock(FragmentHostCallback.class);
 
-        ReflectionHelpers.setField(baseMaternityFormFragment, "mHost", host);
-        baseMaternityFormFragment.startActivityOnLookUp(client);
+        ReflectionHelpers.setField(basePncFormFragment, "mHost", host);
+        basePncFormFragment.startActivityOnLookUp(client);
 
         Mockito.verify(host, Mockito.times(1))
                 .onStartActivityFromFragment(Mockito.any(Fragment.class)
@@ -76,22 +76,22 @@ public class BasePncFormFragmentTest {
     public void onItemClickShouldCallStartActivityOnLookupWithTheCorrectClient() {
         CommonPersonObjectClient client = Mockito.mock(CommonPersonObjectClient.class);
 
-        BasePncFormFragment baseMaternityFormFragment = Mockito.spy(new BasePncFormFragment());
-        Mockito.doNothing().when(baseMaternityFormFragment).startActivityOnLookUp(Mockito.any(CommonPersonObjectClient.class));
+        BasePncFormFragment basePncFormFragment = Mockito.spy(new BasePncFormFragment());
+        Mockito.doNothing().when(basePncFormFragment).startActivityOnLookUp(Mockito.any(CommonPersonObjectClient.class));
 
         AlertDialog alertDialog = Mockito.mock(AlertDialog.class);
         Mockito.doReturn(true).when(alertDialog).isShowing();
         Mockito.doNothing().when(alertDialog).dismiss();
-        ReflectionHelpers.setField(baseMaternityFormFragment, "alertDialog", alertDialog);
+        ReflectionHelpers.setField(basePncFormFragment, "alertDialog", alertDialog);
 
         View clickedView = Mockito.mock(View.class);
         Mockito.doReturn(client).when(clickedView).getTag();
 
         // The actual method call
-        baseMaternityFormFragment.onItemClick(clickedView);
+        basePncFormFragment.onItemClick(clickedView);
 
         // Verification
-        Mockito.verify(baseMaternityFormFragment, Mockito.times(1))
+        Mockito.verify(basePncFormFragment, Mockito.times(1))
                 .startActivityOnLookUp(Mockito.eq(client));
     }
 

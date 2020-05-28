@@ -52,7 +52,7 @@
     }
   },
   "step1": {
-    "title": "Maternity Registration",
+    "title": "Pnc Registration",
     "next": "step2",
     "fields": [
       {
@@ -225,7 +225,7 @@
         "calculation": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_calculation_rules.yml"
+              "rules-file": "pnc/registration_calculation_rules.yml"
             }
           }
         }
@@ -240,7 +240,7 @@
         "calculation": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_calculation_rules.yml"
+              "rules-file": "pnc/registration_calculation_rules.yml"
             }
           }
         }
@@ -255,7 +255,7 @@
         "calculation": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_calculation_rules.yml"
+              "rules-file": "pnc/registration_calculation_rules.yml"
             }
           }
         }
@@ -428,7 +428,7 @@
         "calculation": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_calculation_rules.yml"
+              "rules-file": "pnc/registration_calculation_rules.yml"
             }
           }
         }
@@ -451,7 +451,7 @@
         "relevance": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_relevance_rules.yml"
+              "rules-file": "pnc/registration_relevance_rules.yml"
             }
           }
         }
@@ -470,7 +470,7 @@
         "relevance": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_relevance_rules.yml"
+              "rules-file": "pnc/registration_relevance_rules.yml"
             }
           }
         }
@@ -484,7 +484,7 @@
         "calculation": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_calculation_rules.yml"
+              "rules-file": "pnc/registration_calculation_rules.yml"
             }
           }
         },
@@ -940,7 +940,7 @@
         "relevance": {
           "rules-engine": {
             "ex-rules": {
-              "rules-file": "maternity/registration_relevance_rules.yml"
+              "rules-file": "pnc/registration_relevance_rules.yml"
             }
           }
         },

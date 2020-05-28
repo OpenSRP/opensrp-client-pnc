@@ -17,12 +17,12 @@
         android:layout_marginEnd="@dimen/register_list_item_margin"
         android:layout_marginRight="@dimen/register_list_item_margin"
         android:layout_marginBottom="@dimen/register_list_top_bottom_margin"
-        android:layout_toStartOf="@+id/ll_maternityRegisterListRow_clientActionWrapper"
-        android:layout_toLeftOf="@+id/ll_maternityRegisterListRow_clientActionWrapper"
+        android:layout_toStartOf="@+id/ll_pncRegisterListRow_clientActionWrapper"
+        android:layout_toLeftOf="@+id/ll_pncRegisterListRow_clientActionWrapper"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_maternityRegisterListRow_patientName"
+            android:id="@+id/tv_pncRegisterListRow_patientName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -41,7 +41,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_maternityRegisterListRow_age"
+                android:id="@+id/tv_pncRegisterListRow_age"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_horizontal"
@@ -53,7 +53,7 @@
                 android:textSize="@dimen/child_register_list_desc_size" />
 
             <TextView
-                android:id="@+id/tv_maternityRegisterListRow_firstDotDivider"
+                android:id="@+id/tv_pncRegisterListRow_firstDotDivider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -63,7 +63,7 @@
                 android:textSize="@dimen/child_register_list_desc_size" />
 
             <TextView
-                android:id="@+id/tv_maternityRegisterListRow_ga"
+                android:id="@+id/tv_pncRegisterListRow_ga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_horizontal"
@@ -80,7 +80,7 @@
 
 
         <TextView
-            android:id="@+id/tv_maternityRegisterListRow_patientId"
+            android:id="@+id/tv_pncRegisterListRow_patientId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_horizontal"
@@ -95,7 +95,7 @@
 
 
     <LinearLayout
-        android:id="@+id/ll_maternityRegisterListRow_clientActionWrapper"
+        android:id="@+id/ll_pncRegisterListRow_clientActionWrapper"
         android:layout_width="@dimen/child_register_list_item_width"
         android:layout_height="90dp"
         android:layout_alignParentEnd="true"
@@ -109,7 +109,7 @@
         android:paddingBottom="@dimen/register_list_top_bottom_padding">
 
         <Button
-            android:id="@+id/btn_maternityRegisterListRow_clientAction"
+            android:id="@+id/btn_pncRegisterListRow_clientAction"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_gravity="center"
@@ -124,7 +124,7 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:textAppearance="?android:textAppearanceSmall"
             android:textSize="15sp"
-            android:background="@drawable/maternity_outcome_bg"
+            android:background="@drawable/pnc_outcome_bg"
             android:typeface="normal" />
 
     </LinearLayout>

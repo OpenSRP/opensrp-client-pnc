@@ -10,9 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.FetchStatus;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
 import org.smartregister.pnc.pojo.PncOutcomeForm;
@@ -97,23 +95,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
 
     @Override
     public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
-        String jsonString = null;
-        if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-        }
-
-        if (jsonString == null) {
-            return;
-        }
-
-        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
-            try {
-                List<Event> maternityOutcomeAndCloseEvent = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
-                interactor.saveEvents(maternityOutcomeAndCloseEvent, this);
-            } catch (JSONException e) {
-                Timber.e(e);
-            }
-        }
+        // Do nothing
     }
 
     @Override
@@ -141,8 +123,8 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
         try {
             form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
             // Todo: Enquire if we have to save a session of the outcome form to be continued later
-            if (formName.equals(PncConstants.Form.MATERNITY_OUTCOME)) {
-                interactor.fetchSavedMaternityOutcomeForm(entityId, entityTable, this);
+            if (formName.equals(PncConstants.Form.PNC_OUTCOME)) {
+                //interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
                 return;
             }
 

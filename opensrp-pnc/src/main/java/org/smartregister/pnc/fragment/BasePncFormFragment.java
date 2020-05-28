@@ -47,12 +47,7 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
     private Snackbar snackbar = null;
     private AlertDialog alertDialog = null;
     private final Listener<List<CommonPersonObject>> lookUpListener =
-            new Listener<List<CommonPersonObject>>() {
-                @Override
-                public void onEvent(List<CommonPersonObject> data) {
-                    showClientLookUp(data);
-                }
-            };
+            data -> showClientLookUp(data);
     private PncFormFragmentPresenter presenter;
 
     public static JsonWizardFormFragment getFormFragment(String stepName) {
@@ -77,10 +72,10 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
     public void updateVisibilityOfNextAndSave(boolean next, boolean save) {
         super.updateVisibilityOfNextAndSave(next, save);
         Form form = getForm();
-        PncMetadata maternityMetadata = PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata();
+        PncMetadata pncMetadata = PncLibrary.getInstance().getPncConfiguration().getPncMetadata();
 
-        if (form != null && form.isWizard() && maternityMetadata != null
-                && !maternityMetadata.isFormWizardValidateRequiredFieldsBefore()) {
+        if (form != null && form.isWizard() && pncMetadata != null
+                && !pncMetadata.isFormWizardValidateRequiredFieldsBefore()) {
             this.getMenu().findItem(com.vijay.jsonwizard.R.id.action_save).setVisible(save);
         }
     }
@@ -109,9 +104,9 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
 
     private void updateResultDialog(final List<CommonPersonObject> data) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.maternity_lookup_results, null);
-        RecyclerView recyclerView = view.findViewById(R.id.maternity_lookup_recyclerview);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MaternityDialog);
+        View view = inflater.inflate(R.layout.pnc_lookup_results, null);
+        RecyclerView recyclerView = view.findViewById(R.id.pnc_lookup_recyclerview);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.PncDialog);
         builder.setView(view).setNegativeButton(R.string.dismiss, null);
         builder.setCancelable(true);
         alertDialog = builder.create();
@@ -204,7 +199,7 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
     }
 
     protected void startActivityOnLookUp(@NonNull CommonPersonObjectClient client) {
-        Intent intent = new Intent(getActivity(), PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata().getProfileActivity());
+        Intent intent = new Intent(getActivity(), PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getProfileActivity());
 
         // Add register_id FROM opensrp_id
         String opensrpId = client.getColumnmaps().get(PncDbConstants.Column.Client.OPENSRP_ID);
@@ -220,9 +215,9 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
         Activity activity = getActivity();
 
         if (activity instanceof BasePncFormActivity) {
-            BasePncFormActivity maternityFormActivity = (BasePncFormActivity) activity;
+            BasePncFormActivity pncFormActivity = (BasePncFormActivity) activity;
 
-            HashMap<String, String> parcelableData = maternityFormActivity.getParcelableData();
+            HashMap<String, String> parcelableData = pncFormActivity.getParcelableData();
 
             for (String key : parcelableData.keySet()) {
                 String value = parcelableData.get(key);

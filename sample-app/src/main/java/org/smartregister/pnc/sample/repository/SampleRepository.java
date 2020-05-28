@@ -6,8 +6,6 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.AllConstants;
 import org.smartregister.configurableviews.repository.ConfigurableViewsRepository;
-import org.smartregister.pnc.repository.PncOutcomeDetailsRepository;
-import org.smartregister.pnc.repository.PncOutcomeFormRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.sample.BuildConfig;
 import org.smartregister.pnc.sample.app.PncApplication;
@@ -51,8 +49,6 @@ public class SampleRepository extends Repository {
 
         SettingsRepository.onUpgrade(database);
         PncRegistrationDetailsRepository.createTable(database);
-        PncOutcomeDetailsRepository.createTable(database);
-        PncOutcomeFormRepository.createTable(database);
     }
 
 

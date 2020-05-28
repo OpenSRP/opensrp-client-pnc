@@ -28,7 +28,6 @@ import org.smartregister.pnc.fragment.PncProfileVisitsFragment;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.listener.OngoingTaskCompleteListener;
 import org.smartregister.pnc.pojo.OngoingTask;
-import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncProfileActivityPresenter;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.PncConstants;
@@ -72,7 +71,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         ancIdView = findViewById(R.id.textview_detail_one);
         nameView = findViewById(R.id.textview_name);
         imageView = findViewById(R.id.imageview_profile);
-        switchRegBtn = findViewById(R.id.btn_maternityActivityBaseProfile_switchRegView);
+        switchRegBtn = findViewById(R.id.btn_pncActivityBaseProfile_switchRegView);
 
         setTitle("");
     }
@@ -115,8 +114,8 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         // When user click home menu item then quit this activity.
         if (itemId == android.R.id.home) {
             finish();
-        } else if (itemId == R.id.maternity_menu_item_close_client) {
-            openMaternityCloseForm();
+        } else if (itemId == R.id.pnc_menu_item_close_client) {
+            openPncCloseForm();
         }
 
         return super.onOptionsItemSelected(item);
@@ -125,28 +124,28 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     protected void onResumption() {
         super.onResumption();
-        PncProfileActivityContract.Presenter maternityProfilePresenter = (PncProfileActivityPresenter) presenter;
+        PncProfileActivityContract.Presenter pncProfilePresenter = (PncProfileActivityPresenter) presenter;
 
-        if (!maternityProfilePresenter.hasOngoingTask()) {
+        if (!pncProfilePresenter.hasOngoingTask()) {
             commonPersonObjectClient = (CommonPersonObjectClient) getIntent()
                     .getSerializableExtra(PncConstants.IntentKey.CLIENT_OBJECT);
             baseEntityId = commonPersonObjectClient.getCaseId();
-            maternityProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
+            pncProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
 
             // Enable switcher
             configureRegisterSwitcher();
 
-            // Disable the registration info button if the client is not in Maternity
+            // Disable the registration info button if the client is not in Pnc
             if (commonPersonObjectClient != null) {
                 String register_type = commonPersonObjectClient.getDetails().get(PncConstants.ColumnMapKey.REGISTER_TYPE);
                 View view = findViewById(R.id.btn_profile_registration_info);
-                view.setEnabled(PncConstants.RegisterType.MATERNITY.equalsIgnoreCase(register_type));
+                view.setEnabled(PncConstants.RegisterType.PNC.equalsIgnoreCase(register_type));
             }
         } else {
-            maternityProfilePresenter.addOngoingTaskCompleteListener(new OngoingTaskCompleteListener() {
+            pncProfilePresenter.addOngoingTaskCompleteListener(new OngoingTaskCompleteListener() {
                 @Override
                 public void onTaskComplete(@NonNull OngoingTask ongoingTask) {
-                    maternityProfilePresenter.removeOngoingTaskCompleteListener(this);
+                    pncProfilePresenter.removeOngoingTaskCompleteListener(this);
                     onResumption();
                 }
             });
@@ -154,15 +153,15 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     private void configureRegisterSwitcher() {
-        Class<? extends PncRegisterSwitcher> maternityRegisterSwitcherClass = PncLibrary.getInstance().getPncConfiguration().getMaternityRegisterSwitcher();
-        if (maternityRegisterSwitcherClass != null) {
-            final PncRegisterSwitcher maternityRegisterSwitcher = ConfigurationInstancesHelper.newInstance(maternityRegisterSwitcherClass);
+        Class<? extends PncRegisterSwitcher> pncRegisterSwitcherClass = PncLibrary.getInstance().getPncConfiguration().getPncRegisterSwitcher();
+        if (pncRegisterSwitcherClass != null) {
+            final PncRegisterSwitcher pncRegisterSwitcher = ConfigurationInstancesHelper.newInstance(pncRegisterSwitcherClass);
 
-            switchRegBtn.setVisibility(maternityRegisterSwitcher.showRegisterSwitcher(commonPersonObjectClient) ? View.VISIBLE : View.GONE);
+            switchRegBtn.setVisibility(pncRegisterSwitcher.showRegisterSwitcher(commonPersonObjectClient) ? View.VISIBLE : View.GONE);
             switchRegBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    maternityRegisterSwitcher.switchFromMaternityRegister(commonPersonObjectClient, BasePncProfileActivity.this);
+                    pncRegisterSwitcher.switchFromPncRegister(commonPersonObjectClient, BasePncProfileActivity.this);
                 }
             });
         } else {
@@ -213,16 +212,17 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     @Override
-    public void openMaternityOutcomeForm() {
+    public void openPncOutcomeForm() {
         if (commonPersonObjectClient != null) {
-            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.MATERNITY_OUTCOME, commonPersonObjectClient);
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient);
         }
     }
 
     @Override
-    public void openMaternityCloseForm() {
+    public void openPncCloseForm() {
         if (commonPersonObjectClient != null) {
-            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.MATERNITY_CLOSE, commonPersonObjectClient);
+            // FIXME paternity_close.json file not found
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_CLOSE, commonPersonObjectClient);
         }
     }
 
@@ -235,12 +235,13 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_maternity_profile_activity, menu);
+        inflater.inflate(R.menu.menu_pnc_profile_activity, menu);
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
                 String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
@@ -254,25 +255,6 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                 ongoingTask.setTaskDetail(encounterType);
 
                 addOngoingTask(ongoingTask);
-                if (encounterType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
-                    showProgressDialog(R.string.saving_dialog_title);
-                    ((PncProfileActivityPresenter) this.presenter).saveOutcomeForm(encounterType, data);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION)) {
-                    removeOngoingTask(ongoingTask);
-                    showProgressDialog(R.string.saving_dialog_title);
-
-                    RegisterParams registerParam = new RegisterParams();
-                    registerParam.setEditMode(true);
-                    registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
-                    showProgressDialog(R.string.saving_dialog_title);
-
-                    ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
-                    showProgressDialog(R.string.saving_dialog_title);
-                    ((PncProfileActivityPresenter) this.presenter).saveMaternityCloseForm(encounterType, data);
-                } else {
-                    removeOngoingTask(ongoingTask);
-                }
 
             } catch (JSONException e) {
                 Timber.e(e);
@@ -290,19 +272,19 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     @Override
     public void setContentView(int layoutResID) {
-        super.setContentView(R.layout.maternity_activity_base_profile);
+        super.setContentView(R.layout.pnc_activity_base_profile);
     }
 
     @Override
     public void onClick(View view) {
         String register_type = commonPersonObjectClient.getDetails().get(PncConstants.ColumnMapKey.REGISTER_TYPE);
         if (view.getId() == R.id.btn_profile_registration_info) {
-            if (PncConstants.RegisterType.MATERNITY.equalsIgnoreCase(register_type)) {
+            if (PncConstants.RegisterType.PNC.equalsIgnoreCase(register_type)) {
                 if (presenter instanceof PncProfileActivityContract.Presenter) {
                     ((PncProfileActivityContract.Presenter) presenter).onUpdateRegistrationBtnCLicked(baseEntityId);
                 }
             } else {
-                showToast(getString(R.string.edit_maternity_registration_failure_message));
+                showToast(getString(R.string.edit_pnc_registration_failure_message));
             }
         } else {
             super.onClick(view);

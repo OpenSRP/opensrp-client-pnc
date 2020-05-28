@@ -41,7 +41,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
     @Override
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.maternity_profile_overview_row, parent, false);
+        View view = mInflater.inflate(R.layout.pnc_profile_overview_row, parent, false);
         return new ViewHolder(view);
     }
 

@@ -1,6 +1,7 @@
 package org.smartregister.pnc.presenter;
 
 import org.smartregister.configurableviews.model.Field;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterFragmentContract;
 
 import java.lang.ref.WeakReference;
@@ -27,7 +28,7 @@ public class PncRegisterFragmentPresenter implements PncRegisterFragmentContract
 
     @Override
     public void initializeQueries(String mainCondition) {
-        getView().initializeQueryParams("ec_client", null, null);
+        getView().initializeQueryParams(PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getTableName(), null, null);
         getView().initializeAdapter();
 
         getView().countExecute();

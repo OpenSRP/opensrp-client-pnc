@@ -10,16 +10,10 @@ import org.smartregister.domain.db.Event;
 import org.smartregister.domain.db.EventClient;
 import org.smartregister.domain.db.Obs;
 import org.smartregister.domain.jsonmapping.ClientClassification;
-import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.exception.PncCloseEventProcessException;
-import org.smartregister.pnc.pojo.PncDetails;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,10 +35,10 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     public HashSet<String> getEventTypes() {
         if (eventTypes == null) {
             eventTypes = new HashSet<>();
-            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_REGISTRATION);
-            eventTypes.add(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION);
-            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_OUTCOME);
-            eventTypes.add(PncConstants.EventTypeConstants.MATERNITY_CLOSE);
+            eventTypes.add(PncConstants.EventTypeConstants.PNC_REGISTRATION);
+            eventTypes.add(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION);
+            eventTypes.add(PncConstants.EventTypeConstants.PNC_OUTCOME);
+            eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
         }
 
         return eventTypes;
@@ -57,39 +51,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
     @Override
     public void processEventClient(@NonNull EventClient eventClient, @NonNull List<Event> unsyncEvents, @Nullable ClientClassification clientClassification) throws Exception {
-        Event event = eventClient.getEvent();
 
-        String eventType = event.getEventType();
-
-        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_REGISTRATION)
-                || eventType.equals(PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION)) {
-            ArrayList<EventClient> eventClients = new ArrayList<>();
-            eventClients.add(eventClient);
-            processClient(eventClients);
-
-            //updateRegisterTypeColumn(event, "maternity");
-
-            HashMap<String, String> keyValues = new HashMap<>();
-            generateKeyValuesFromEvent(event, keyValues, true);
-
-            PncRegistrationDetails maternityDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-            maternityDetails.setCreatedAt(new Date());
-
-            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(maternityDetails);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
-            if (eventClient.getClient() == null) {
-                throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.MATERNITY_CLOSE));
-            }
-
-            unsyncEvents.add(event);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
-            HashMap<String, String> keyValues = new HashMap<>();
-            generateKeyValuesFromEvent(event, keyValues);
-
-            PncDetails maternityDetails = new PncDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-            maternityDetails.setCreatedAt(new Date());
-            PncLibrary.getInstance().getPncOutcomeDetailsRepository().saveOrUpdate(maternityDetails);
-        }
     }
 
     private void generateKeyValuesFromEvent(@NonNull Event event, HashMap<String, String> keyValues, boolean appendOnNewline) {
@@ -138,17 +100,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     @Override
     public boolean unSync(@Nullable List<Event> events) {
         // Do nothing for now
-        /*if (events != null) {
-            for (Event event : events) {
-                if (MaternityConstants.EventTypeConstants.MATERNITY_CLOSE.equals(event.getEventType())) {
-                    // Delete the maternity details
-                    // MaternityLibrary.getInstance().getMaternityOutcomeDetailsRepository().delete(event.getBaseEntityId());
-
-                    // Delete the actual client in the maternity table OR REMOVE THE Maternity register type
-                    //updateRegisterTypeColumn(event, null);
-                }
-            }
-        }*/
         return true;
     }
 }

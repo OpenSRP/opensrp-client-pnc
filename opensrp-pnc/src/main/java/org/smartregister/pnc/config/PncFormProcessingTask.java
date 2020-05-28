@@ -10,5 +10,5 @@ import androidx.annotation.Nullable;
  */
 public interface PncFormProcessingTask {
 
-    void processMaternityForm(@NonNull String eventType, String jsonString, @Nullable Intent data);
+    void processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data);
 }

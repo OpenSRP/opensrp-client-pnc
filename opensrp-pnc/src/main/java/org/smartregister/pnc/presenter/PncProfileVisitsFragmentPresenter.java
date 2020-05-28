@@ -97,7 +97,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
             Iterable<Object> ruleObjects = null;
 
             try {
-                ruleObjects = MaternityLibrary.getInstance().readYaml(FilePath.FILE.MATERNITY_VISIT_ROW);
+                ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_VISIT_ROW);
             } catch (IOException e) {
                 Timber.e(e);
             }
@@ -118,7 +118,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     if (configItems != null) {
                         for (YamlConfigItem configItem : configItems) {
                             String relevance = configItem.getRelevance();
-                            if (relevance != null && MaternityLibrary.getInstance().getMaternityRulesEngineHelper()
+                            if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper()
                                     .getRelevance(facts, relevance)) {
                                 YamlConfigWrapper yamlConfigWrapper = new YamlConfigWrapper(null, null, configItem);
                                 items.add(new Pair<>(yamlConfigWrapper, facts));

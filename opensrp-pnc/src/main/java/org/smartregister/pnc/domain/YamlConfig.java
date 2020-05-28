@@ -10,27 +10,27 @@ import java.util.List;
 public class YamlConfig {
 
     private String group;
-    private String sub_group;
+    private String subGroup;
     private List<YamlConfigItem> fields;
-    private String test_results;
+    private String testResults;
 
     public YamlConfig() {
     }
 
-    public YamlConfig(@Nullable String group, @Nullable String sub_group, @Nullable List<YamlConfigItem> fields, @Nullable String test_results) {
+    public YamlConfig(@Nullable String group, @Nullable String subGroup, @Nullable List<YamlConfigItem> fields, @Nullable String testResults) {
         this.group = group;
-        this.sub_group = sub_group;
+        this.subGroup = subGroup;
         this.fields = fields;
-        this.test_results = test_results;
+        this.testResults = testResults;
     }
 
     @Nullable
     public String getSubGroup() {
-        return sub_group;
+        return subGroup;
     }
 
     public void setSubGroup(@Nullable String sub_group) {
-        this.sub_group = sub_group;
+        this.subGroup = sub_group;
     }
 
     @Nullable
@@ -53,11 +53,11 @@ public class YamlConfig {
 
     @Nullable
     public String getTestResults() {
-        return test_results;
+        return testResults;
     }
 
     public void setTestResults(@Nullable String test_results) {
-        this.test_results = test_results;
+        this.testResults = test_results;
     }
 
 }

@@ -73,13 +73,11 @@ public interface PncRegisterActivityContract {
 
     interface Interactor {
 
-        void fetchSavedMaternityOutcomeForm(@NonNull String baseEntityId, @Nullable String entityTable, @NonNull InteractorCallBack interactorCallBack);
-
         void getNextUniqueId(Triple<String, String, String> triple, PncRegisterActivityContract.InteractorCallBack callBack);
 
         void onDestroy(boolean isChangingConfiguration);
 
-        void saveRegistration(List<PncEventClient> maternityEventClientList, String jsonString, RegisterParams registerParams, PncRegisterActivityContract.InteractorCallBack callBack);
+        void saveRegistration(List<PncEventClient> pncEventClientList, String jsonString, RegisterParams registerParams, PncRegisterActivityContract.InteractorCallBack callBack);
 
         void saveEvents(@NonNull List<Event> events, @NonNull InteractorCallBack callBack);
     }

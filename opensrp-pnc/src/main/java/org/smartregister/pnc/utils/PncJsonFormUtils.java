@@ -84,12 +84,12 @@ public class PncJsonFormUtils extends JsonFormUtils {
             }
         }
 
-        if (PncUtils.metadata() != null && PncUtils.metadata().getMaternityRegistrationFormName().equals(formName)) {
+        if (PncUtils.metadata() != null && PncUtils.metadata().getPncRegistrationFormName().equals(formName)) {
             if (StringUtils.isBlank(entityId)) {
                 UniqueIdRepository uniqueIdRepo = PncLibrary.getInstance().getUniqueIdRepository();
                 entityId = uniqueIdRepo.getNextUniqueId() != null ? uniqueIdRepo.getNextUniqueId().getOpenmrsId() : "";
                 if (entityId.isEmpty()) {
-                    Timber.e("MaternityJsonFormUtils --> UniqueIds are empty");
+                    Timber.e("PncJsonFormUtils --> UniqueIds are empty");
                     return null;
                 }
             }
@@ -113,10 +113,10 @@ public class PncJsonFormUtils extends JsonFormUtils {
             }
 
         } else {
-            Timber.w("MaternityJsonFormUtils --> Unsupported form requested for launch %s", formName);
+            Timber.w("PncJsonFormUtils --> Unsupported form requested for launch %s", formName);
         }
 
-        Timber.d("MaternityJsonFormUtils --> form is %s", form.toString());
+        Timber.d("PncJsonFormUtils --> form is %s", form.toString());
         return form;
     }
 
@@ -242,7 +242,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 widget.put("default", new JSONArray(updateString));
             }
         } catch (JSONException e) {
-            Timber.e(e, "MaternityJsonFormUtils --> addLocationDefault");
+            Timber.e(e, "PncJsonFormUtils --> addLocationDefault");
         }
     }
 
@@ -476,7 +476,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
             return step1.has(FIELDS) ? step1.getJSONArray(FIELDS) : null;
 
         } catch (JSONException e) {
-            Timber.e(e, "MaternityJsonFormUtils --> fields");
+            Timber.e(e, "PncJsonFormUtils --> fields");
         }
         return null;
     }
@@ -504,7 +504,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
     }
 
     @Nullable
-    public static PncEventClient processMaternityRegistrationForm(@NonNull String jsonString, @NonNull FormTag formTag) {
+    public static PncEventClient processPncRegistrationForm(@NonNull String jsonString, @NonNull FormTag formTag) {
         try {
             Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(jsonString);
 

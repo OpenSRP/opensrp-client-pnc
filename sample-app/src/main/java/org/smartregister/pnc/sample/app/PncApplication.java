@@ -101,10 +101,10 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
         CoreLibrary.init(context, new SampleSyncConfiguration());
 
         //Pnc Initialization
-        PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.MATERNITY_REGISTRATION
+        PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventTypeConstants.MATERNITY_REGISTRATION
-                , PncConstants.EventTypeConstants.UPDATE_MATERNITY_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , PncFormActivity.class
                 , BasePncProfileActivity.class

@@ -27,38 +27,38 @@ public class PncConfiguration {
     }
 
     private void setDefaults() {
-        if (builder.maternityRegisterProviderMetadata == null) {
-            builder.maternityRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
+        if (builder.pncRegisterProviderMetadata == null) {
+            builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
         }
     }
 
     @Nullable
-    public PncMetadata getMaternityMetadata() {
-        return builder.maternityMetadata;
+    public PncMetadata getPncMetadata() {
+        return builder.pncMetadata;
     }
 
     @NonNull
-    public Class<? extends PncRegisterProviderMetadata> getMaternityRegisterProviderMetadata() {
-        return builder.maternityRegisterProviderMetadata;
+    public Class<? extends PncRegisterProviderMetadata> getPncRegisterProviderMetadata() {
+        return builder.pncRegisterProviderMetadata;
     }
 
     @Nullable
-    public Class<? extends PncRegisterRowOptions> getMaternityRegisterRowOptions() {
-        return builder.maternityRegisterRowOptions;
+    public Class<? extends PncRegisterRowOptions> getPncRegisterRowOptions() {
+        return builder.pncRegisterRowOptions;
     }
 
     @NonNull
-    public Class<? extends PncRegisterQueryProviderContract> getMaternityRegisterQueryProvider() {
-        return builder.maternityRegisterQueryProvider;
+    public Class<? extends PncRegisterQueryProviderContract> getPncRegisterQueryProvider() {
+        return builder.pncRegisterQueryProvider;
     }
 
     @Nullable
-    public Class<? extends PncRegisterSwitcher> getMaternityRegisterSwitcher() {
-        return builder.maternityRegisterSwitcher;
+    public Class<? extends PncRegisterSwitcher> getPncRegisterSwitcher() {
+        return builder.pncRegisterSwitcher;
     }
 
-    public ArrayList<Class<? extends PncFormProcessingTask>> getMaternityFormProcessingTasks() {
-        return builder.maternityFormProcessingClasses;
+    public ArrayList<Class<? extends PncFormProcessingTask>> getPncFormProcessingTasks() {
+        return builder.pncFormProcessingClasses;
     }
 
     public int getMaxCheckInDurationInMinutes() {
@@ -72,41 +72,41 @@ public class PncConfiguration {
     public static class Builder {
 
         @Nullable
-        private Class<? extends PncRegisterProviderMetadata> maternityRegisterProviderMetadata;
+        private Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata;
 
         @Nullable
-        private Class<? extends PncRegisterRowOptions> maternityRegisterRowOptions;
+        private Class<? extends PncRegisterRowOptions> pncRegisterRowOptions;
 
         @NonNull
-        private Class<? extends PncRegisterQueryProviderContract> maternityRegisterQueryProvider;
+        private Class<? extends PncRegisterQueryProviderContract> pncRegisterQueryProvider;
 
         @Nullable
-        private Class<? extends PncRegisterSwitcher> maternityRegisterSwitcher;
+        private Class<? extends PncRegisterSwitcher> pncRegisterSwitcher;
 
         @NonNull
-        private ArrayList<Class<? extends PncFormProcessingTask>> maternityFormProcessingClasses = new ArrayList<>();
+        private ArrayList<Class<? extends PncFormProcessingTask>> pncFormProcessingClasses = new ArrayList<>();
 
         private boolean isBottomNavigationEnabled;
 
-        private PncMetadata maternityMetadata;
+        private PncMetadata pncMetadata;
         private int maxCheckInDurationInMinutes = 24 * 60;
 
-        public Builder(@NonNull Class<? extends PncRegisterQueryProviderContract> maternityRegisterQueryProvider) {
-            this.maternityRegisterQueryProvider = maternityRegisterQueryProvider;
+        public Builder(@NonNull Class<? extends PncRegisterQueryProviderContract> pncRegisterQueryProvider) {
+            this.pncRegisterQueryProvider = pncRegisterQueryProvider;
         }
 
-        public Builder setMaternityRegisterProviderMetadata(@Nullable Class<? extends PncRegisterProviderMetadata> maternityRegisterProviderMetadata) {
-            this.maternityRegisterProviderMetadata = maternityRegisterProviderMetadata;
+        public Builder setPncRegisterProviderMetadata(@Nullable Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata) {
+            this.pncRegisterProviderMetadata = pncRegisterProviderMetadata;
             return this;
         }
 
-        public Builder setMaternityRegisterRowOptions(@Nullable Class<? extends PncRegisterRowOptions> maternityRegisterRowOptions) {
-            this.maternityRegisterRowOptions = maternityRegisterRowOptions;
+        public Builder setPncRegisterRowOptions(@Nullable Class<? extends PncRegisterRowOptions> pncRegisterRowOptions) {
+            this.pncRegisterRowOptions = pncRegisterRowOptions;
             return this;
         }
 
-        public Builder setMaternityRegisterSwitcher(@Nullable Class<? extends PncRegisterSwitcher> maternityRegisterSwitcher) {
-            this.maternityRegisterSwitcher = maternityRegisterSwitcher;
+        public Builder setPncRegisterSwitcher(@Nullable Class<? extends PncRegisterSwitcher> pncRegisterSwitcher) {
+            this.pncRegisterSwitcher = pncRegisterSwitcher;
             return this;
         }
 
@@ -115,8 +115,8 @@ public class PncConfiguration {
             return this;
         }
 
-        public Builder setPncMetadata(@NonNull PncMetadata maternityMetadata) {
-            this.maternityMetadata = maternityMetadata;
+        public Builder setPncMetadata(@NonNull PncMetadata pncMetadata) {
+            this.pncMetadata = pncMetadata;
             return this;
         }
 
@@ -125,8 +125,8 @@ public class PncConfiguration {
             return this;
         }
 
-        public Builder addMaternityFormProcessingTask(@NonNull Class<? extends PncFormProcessingTask> maternityFormProcessingTask) {
-            this.maternityFormProcessingClasses.add(maternityFormProcessingTask);
+        public Builder addPncFormProcessingTask(@NonNull Class<? extends PncFormProcessingTask> pncFormProcessingTask) {
+            this.pncFormProcessingClasses.add(pncFormProcessingTask);
             return this;
         }
 

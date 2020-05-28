@@ -39,10 +39,6 @@ public interface PncProfileActivityContract {
 
         void startFormActivity(@Nullable JSONObject form, @NonNull String caseId, @NonNull String entityTable);
 
-        void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data);
-
-        void saveMaternityCloseForm(@NonNull String eventType, @Nullable Intent data);
-
         void saveUpdateRegistrationForm(@NonNull String jsonString, @NonNull RegisterParams registerParams);
 
         @Nullable
@@ -75,9 +71,9 @@ public interface PncProfileActivityContract {
 
         void setProfileImage(@NonNull String baseEntityId);
 
-        void openMaternityOutcomeForm();
+        void openPncOutcomeForm();
 
-        void openMaternityCloseForm();
+        void openPncCloseForm();
 
         void startFormActivity(@NonNull JSONObject form, @NonNull HashMap<String, String> intentData);
 
@@ -108,7 +104,7 @@ public interface PncProfileActivityContract {
 
         void fetchSavedDiagnosisAndTreatmentForm(@NonNull String baseEntityId, @NonNull String entityTable);
 
-        void saveRegistration(@NonNull PncEventClient maternityEventClient, @NonNull String jsonString, RegisterParams registerParams, @NonNull PncProfileActivityContract.InteractorCallBack callBack);
+        void saveRegistration(@NonNull PncEventClient pncEventClient, @NonNull String jsonString, RegisterParams registerParams, @NonNull PncProfileActivityContract.InteractorCallBack callBack);
 
         @Nullable
         CommonPersonObjectClient retrieveUpdatedClient(@NonNull String baseEntityId);

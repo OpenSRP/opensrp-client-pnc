@@ -31,9 +31,9 @@ public interface PncProfileOverviewFragmentContract {
 
         void loadOverviewFacts(@NonNull String baseEntityId, @NonNull OnFinishedCallback onFinishedCallback);
 
-        void loadOverviewDataAndDisplay(@NonNull PncBaseDetails maternityDetails, @NonNull final OnFinishedCallback onFinishedCallback);
+        void loadOverviewDataAndDisplay(@NonNull PncBaseDetails pncDetails, @NonNull final OnFinishedCallback onFinishedCallback);
 
-        void setDataFromRegistration(@NonNull PncBaseDetails maternityDetails, @NonNull Facts facts);
+        void setDataFromRegistration(@NonNull PncBaseDetails pncDetails, @NonNull Facts facts);
 
         void setClient(@NonNull CommonPersonObjectClient client);
 
@@ -51,11 +51,11 @@ public interface PncProfileOverviewFragmentContract {
 
     interface Model {
 
-        void fetchMaternityOverviewDetails(@NonNull String baseEntityId, @NonNull OnFetchedCallback onFetchedCallback);
+        void fetchPncOverviewDetails(@NonNull String baseEntityId, @NonNull OnFetchedCallback onFetchedCallback);
 
         interface OnFetchedCallback {
 
-            void onFetched(@NonNull PncBaseDetails maternityDetails);
+            void onFetched(@NonNull PncBaseDetails pncDetails);
         }
     }
 }

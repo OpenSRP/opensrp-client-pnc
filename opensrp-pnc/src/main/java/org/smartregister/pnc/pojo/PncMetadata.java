@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class PncMetadata {
 
-    private String maternityRegistrationFormName;
+    private String pncRegistrationFormName;
 
     private String tableName;
 
@@ -32,7 +32,7 @@ public class PncMetadata {
 
     public PncMetadata(@NonNull String pncRegistrationFormName, @NonNull String tableName, @NonNull String registerEventType, @NonNull String updateEventType,
                        @NonNull String config, @NonNull Class pncFormActivity, @Nullable Class profileActivity, boolean formWizardValidateRequiredFieldsBefore) {
-        this.maternityRegistrationFormName = pncRegistrationFormName;
+        this.pncRegistrationFormName = pncRegistrationFormName;
         this.tableName = tableName;
         this.registerEventType = registerEventType;
         this.updateEventType = updateEventType;
@@ -42,12 +42,12 @@ public class PncMetadata {
         this.formWizardValidateRequiredFieldsBefore = formWizardValidateRequiredFieldsBefore;
     }
 
-    public String getMaternityRegistrationFormName() {
-        return maternityRegistrationFormName;
+    public String getPncRegistrationFormName() {
+        return pncRegistrationFormName;
     }
 
-    public void setMaternityRegistrationFormName(String maternityRegistrationFormName) {
-        this.maternityRegistrationFormName = maternityRegistrationFormName;
+    public void setPncRegistrationFormName(String pncRegistrationFormName) {
+        this.pncRegistrationFormName = pncRegistrationFormName;
     }
 
     public String getTableName() {

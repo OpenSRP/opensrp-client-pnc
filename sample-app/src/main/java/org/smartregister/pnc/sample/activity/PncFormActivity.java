@@ -16,7 +16,7 @@ public class PncFormActivity extends BasePncFormActivity {
     }
 
     protected void initializeFormFragmentCore() {
-        PncFormFragment maternityFormFragment = PncFormFragment.getFormFragment(JsonFormConstants.FIRST_STEP_NAME);
-        getSupportFragmentManager().beginTransaction().add(R.id.container, maternityFormFragment).commit();
+        PncFormFragment pncFormFragment = PncFormFragment.getFormFragment(JsonFormConstants.FIRST_STEP_NAME);
+        getSupportFragmentManager().beginTransaction().add(R.id.container, pncFormFragment).commit();
     }
 }

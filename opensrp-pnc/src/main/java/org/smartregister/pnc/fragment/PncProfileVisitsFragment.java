@@ -89,12 +89,12 @@ public class PncProfileVisitsFragment extends BaseProfileFragment implements Pnc
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.maternity_fragment_profile_visits, container, false);
+        View fragmentView = inflater.inflate(R.layout.pnc_fragment_profile_visits, container, false);
 
-        recyclerView = fragmentView.findViewById(R.id.rv_maternityFragmentProfileVisit_recyclerView);
-        nextPageBtn = fragmentView.findViewById(R.id.btn_maternityFragmentProfileVisit_nextPageBtn);
-        previousPageBtn = fragmentView.findViewById(R.id.btn_maternityFragmentProfileVisit_previousPageBtn);
-        pageCounter = fragmentView.findViewById(R.id.tv_maternityFragmentProfileVisit_pageCounter);
+        recyclerView = fragmentView.findViewById(R.id.rv_pncFragmentProfileVisit_recyclerView);
+        nextPageBtn = fragmentView.findViewById(R.id.btn_pncFragmentProfileVisit_nextPageBtn);
+        previousPageBtn = fragmentView.findViewById(R.id.btn_pncFragmentProfileVisit_previousPageBtn);
+        pageCounter = fragmentView.findViewById(R.id.tv_pncFragmentProfileVisit_pageCounter);
 
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override

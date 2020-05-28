@@ -12,10 +12,8 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
-import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.domain.tag.FormTag;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.interactor.PncProfileInteractor;
@@ -31,16 +29,13 @@ import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.tasks.FetchRegistrationDataTask;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
-import org.smartregister.pnc.utils.PncEventUtils;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.util.AppExecutors;
 import org.smartregister.util.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -174,56 +169,11 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
                 // Fetch saved form & continue editing
-                if (formName.equals(PncConstants.Form.MATERNITY_OUTCOME)) {
+                if (formName.equals(PncConstants.Form.PNC_OUTCOME)) {
                     mProfileInteractor.fetchSavedDiagnosisAndTreatmentForm(caseId, entityTable);
                 } else {
                     startFormActivity(form, caseId, entityTable);
                 }
-            } catch (JSONException e) {
-                Timber.e(e);
-            }
-        }
-    }
-
-    @Override
-    public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
-        String jsonString = null;
-        PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
-        if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-        }
-
-        if (jsonString == null) {
-            return;
-        }
-
-        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
-            try {
-                List<Event> maternityOutcomeAndCloseEvents = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
-                pncEventUtils.saveEvents(maternityOutcomeAndCloseEvents, this);
-            } catch (JSONException e) {
-                Timber.e(e);
-            }
-        }
-    }
-
-    @Override
-    public void saveMaternityCloseForm(@NonNull String eventType, @Nullable Intent data) {
-        String jsonString = null;
-        PncEventUtils pncEventUtils = new PncEventUtils(new AppExecutors());
-        if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-        }
-
-        if (jsonString == null) {
-            Timber.e(new Exception("Maternity Close form JSON is null"));
-            return;
-        }
-
-        if (eventType.equals(PncConstants.EventTypeConstants.MATERNITY_CLOSE)) {
-            try {
-                List<Event> maternityCloseEvents = PncLibrary.getInstance().processMaternityCloseForm(eventType, jsonString, data);
-                pncEventUtils.saveEvents(maternityCloseEvents, this);
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -237,12 +187,12 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
                 registerParams.setFormTag(PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences()));
             }
 
-            PncEventClient maternityEventClient = processRegistration(jsonString, registerParams.getFormTag());
-            if (maternityEventClient == null) {
+            PncEventClient pncEventClient = processRegistration(jsonString, registerParams.getFormTag());
+            if (pncEventClient == null) {
                 return;
             }
 
-            mProfileInteractor.saveRegistration(maternityEventClient, jsonString, registerParams, this);
+            mProfileInteractor.saveRegistration(pncEventClient, jsonString, registerParams, this);
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -251,25 +201,25 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     @Nullable
     @Override
     public PncEventClient processRegistration(@NonNull String jsonString, @NonNull FormTag formTag) {
-        PncEventClient maternityEventClient = PncJsonFormUtils.processMaternityRegistrationForm(jsonString, formTag);
+        PncEventClient pncEventClient = PncJsonFormUtils.processPncRegistrationForm(jsonString, formTag);
         //TODO: Show the user this error toast
         //showErrorToast();
 
-        if (maternityEventClient == null) {
+        if (pncEventClient == null) {
             return null;
         }
 
-        return maternityEventClient;
+        return pncEventClient;
     }
 
     @Override
-    public void onMaternityEventSaved() {
+    public void onPncEventSaved() {
         PncProfileActivityContract.View view = getProfileView();
         if (view != null) {
             view.hideProgressDialog();
 
             if(getOngoingTask() != null) {
-                view.showMessage(view.getString(R.string.maternity_client_close_message));
+                view.showMessage(view.getString(R.string.pnc_client_close_message));
                 view.closeView();
 
                 removeOngoingTask(ongoingTask);

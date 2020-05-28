@@ -21,13 +21,9 @@ import org.smartregister.pnc.config.PncFormProcessingTask;
 import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
-import org.smartregister.pnc.repository.PncOutcomeDetailsRepository;
-import org.smartregister.pnc.repository.PncOutcomeFormRepository;
-import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
-import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.repository.Repository;
@@ -43,7 +39,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -64,9 +59,6 @@ public class PncLibrary {
     private ECSyncHelper syncHelper;
 
     private UniqueIdRepository uniqueIdRepository;
-    private PncOutcomeDetailsRepository pncOutcomeDetailsRepository;
-    private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
-    private PncOutcomeFormRepository pncOutcomeFormRepository;
 
     private Compressor compressor;
     private int applicationVersion;
@@ -124,31 +116,6 @@ public class PncLibrary {
             uniqueIdRepository = new UniqueIdRepository();
         }
         return uniqueIdRepository;
-    }
-
-    @NonNull
-    public PncOutcomeDetailsRepository getPncOutcomeDetailsRepository() {
-        if (pncOutcomeDetailsRepository == null) {
-            pncOutcomeDetailsRepository = new PncOutcomeDetailsRepository();
-        }
-        return pncOutcomeDetailsRepository;
-    }
-
-    @NonNull
-    public PncRegistrationDetailsRepository getPncRegistrationDetailsRepository() {
-        if (pncRegistrationDetailsRepository == null) {
-            pncRegistrationDetailsRepository = new PncRegistrationDetailsRepository();
-        }
-
-        return pncRegistrationDetailsRepository;
-    }
-
-    @NonNull
-    public PncOutcomeFormRepository getPncOutcomeFormRepository() {
-        if (pncOutcomeFormRepository == null) {
-            pncOutcomeFormRepository = new PncOutcomeFormRepository();
-        }
-        return pncOutcomeFormRepository;
     }
 
     @NonNull
@@ -219,11 +186,11 @@ public class PncLibrary {
 
     @NonNull
     public List<Event> processPncOutcomeForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        ArrayList<Class<? extends PncFormProcessingTask>> maternityFormProcessingTasks = getPncConfiguration().getMaternityFormProcessingTasks();
+        ArrayList<Class<? extends PncFormProcessingTask>> pncFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
 
-        for (Class<? extends PncFormProcessingTask> maternityFormProcessingTaskClass: maternityFormProcessingTasks) {
-            PncFormProcessingTask maternityFormProcessingTask = ConfigurationInstancesHelper.newInstance(maternityFormProcessingTaskClass);
-            maternityFormProcessingTask.processMaternityForm(eventType, jsonString, data);
+        for (Class<? extends PncFormProcessingTask> pncFormProcessingTaskClass: pncFormProcessingTasks) {
+            PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(pncFormProcessingTaskClass);
+            pncFormProcessingTask.processPncForm(eventType, jsonString, data);
         }
 
         ArrayList<Event> eventList = new ArrayList<>();
@@ -235,21 +202,21 @@ public class PncLibrary {
 
         String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
         String entityTable = PncUtils.getIntentValue(data, PncConstants.IntentKey.ENTITY_TABLE);
-        Event maternityOutcomeEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
+        Event pncOutcomeEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
                 , formTag, baseEntityId, eventType, entityTable);
-        eventList.add(maternityOutcomeEvent);
+        eventList.add(pncOutcomeEvent);
 
-        Event closeMaternityEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
-                formTag, baseEntityId, PncConstants.EventTypeConstants.MATERNITY_CLOSE, "");
-        PncJsonFormUtils.tagSyncMetadata(closeMaternityEvent);
-        closeMaternityEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
-        eventList.add(closeMaternityEvent);
+        Event closePncEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
+                formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_CLOSE, "");
+        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
+        closePncEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
+        eventList.add(closePncEvent);
 
         return eventList;
     }
 
     @NonNull
-    public List<Event> processMaternityCloseForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
+    public List<Event> processPncCloseForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
         ArrayList<Event> eventList = new ArrayList<>();
         JSONObject jsonFormObject = new JSONObject(jsonString);
 
@@ -258,64 +225,12 @@ public class PncLibrary {
 
         String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
         String entityTable = PncUtils.getIntentValue(data, PncConstants.IntentKey.ENTITY_TABLE);
-        Event closeMaternityEvent = JsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
+        Event closePncEvent = JsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
                 , formTag, baseEntityId, eventType, entityTable);
-        PncJsonFormUtils.tagSyncMetadata(closeMaternityEvent);
-        eventList.add(closeMaternityEvent);
+        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
+        eventList.add(closePncEvent);
 
         return eventList;
-    }
-
-    public String maternityLookUpQuery() {
-        String lookUpQueryForChild = "select id as _id, %s, %s, %s, %s, %s, %s, zeir_id as %s, null as national_id from ec_child where [condition] ";
-        lookUpQueryForChild = String.format(lookUpQueryForChild, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
-                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncDbConstants.KEY.OPENSRP_ID);
-        String lookUpQueryForMother = "select id as _id, %s, %s, %s, %s, %s, %s, register_id as %s, nrc_number as national_id from ec_mother where [condition] ";
-        lookUpQueryForMother = String.format(lookUpQueryForMother, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
-                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncConstants.KeyConstants.OPENSRP_ID);
-        String lookUpQueryForOpdOrMaternityClient = "select id as _id, %s, %s, %s, %s, %s, %s, %s, national_id from ec_client where [condition] ";
-        lookUpQueryForOpdOrMaternityClient = String.format(lookUpQueryForOpdOrMaternityClient, PncConstants.KeyConstants.RELATIONALID, PncConstants.KeyConstants.FIRST_NAME,
-                PncConstants.KeyConstants.LAST_NAME, PncConstants.KeyConstants.GENDER, PncConstants.KeyConstants.DOB, PncConstants.KeyConstants.BASE_ENTITY_ID, PncConstants.KeyConstants.OPENSRP_ID);
-        return lookUpQueryForChild + " union all " + lookUpQueryForMother + " union all " + lookUpQueryForOpdOrMaternityClient;
-    }
-
-    /**
-     * This method enables us to configure how-long ago we should consider a valid check-in so that
-     * we enable the next step which is DIAGNOSE & TREAT. This method returns the latest date that a check-in
-     * should be so that it can be considered for moving to DIAGNOSE & TREAT
-     *
-     * @return Date
-     */
-    @NonNull
-    public Date getLatestValidCheckInDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-
-        return calendar.getTime();
-    }
-
-    public boolean isPatientInTreatedState(@NonNull String strVisitEndDate) {
-        Date visitEndDate = PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, strVisitEndDate);
-        if (visitEndDate != null) {
-            return isPatientInTreatedState(visitEndDate);
-        }
-
-        return false;
-    }
-
-    public boolean isPatientInTreatedState(@NonNull Date visitEndDate) {
-        // Get the midnight of that day when the visit happened
-        Calendar date = Calendar.getInstance();
-        date.setTime(visitEndDate);
-        // reset hour, minutes, seconds and millis
-        date.set(Calendar.HOUR_OF_DAY, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MILLISECOND, 0);
-
-        // next day
-        date.add(Calendar.DAY_OF_MONTH, 1);
-        return getDateNow().before(date.getTime());
     }
 
     @VisibleForTesting

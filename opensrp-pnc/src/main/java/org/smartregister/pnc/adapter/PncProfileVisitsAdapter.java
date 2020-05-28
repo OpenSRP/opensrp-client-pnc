@@ -43,7 +43,7 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
     @Override
     @NonNull
     public YamlViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.maternity_profile_overview_row, parent, false);
+        View view = mInflater.inflate(R.layout.pnc_profile_overview_row, parent, false);
         return new YamlViewHolder(view);
     }
 

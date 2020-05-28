@@ -30,7 +30,7 @@ public class ClientLookUpListAdapter extends RecyclerView.Adapter<ClientLookUpLi
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.maternity_lookup_item, viewGroup, false);
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.pnc_lookup_item, viewGroup, false);
         return new MyViewHolder(itemView);
     }
 
@@ -41,7 +41,7 @@ public class ClientLookUpListAdapter extends RecyclerView.Adapter<ClientLookUpLi
         String lastName = Utils.getValue(commonPersonObject.getColumnmaps(), PncDbConstants.Column.Client.LAST_NAME, true);
         String opensrpId = Utils.getValue(commonPersonObject.getColumnmaps(), PncDbConstants.KEY.OPENSRP_ID, true);
         String fullName = firstName + " " + lastName;
-        String details = context.getString(R.string.maternity_opensrp_id_type) + " - " + opensrpId;
+        String details = context.getString(R.string.pnc_opensrp_id_type) + " - " + opensrpId;
 
         holder.txtName.setText(fullName);
         holder.itemView.setTag(Utils.convert(commonPersonObject));

@@ -45,13 +45,13 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
             View topLeftLayout = view.findViewById(R.id.top_left_layout);
             topLeftLayout.setVisibility(View.VISIBLE);
 
-            ImageView addPatientBtn = view.findViewById(R.id.add_maternity_image_view);
+            ImageView addPatientBtn = view.findViewById(R.id.add_pnc_image_view);
 
             if (addPatientBtn != null) {
                 addPatientBtn.setOnClickListener(v -> startRegistration());
             }
 
-            // Disable go-back on clicking the Maternity Register title
+            // Disable go-back on clicking the Pnc Register title
             view.findViewById(R.id.title_layout).setOnClickListener(null);
         }
 
@@ -61,10 +61,10 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
     @Override
     protected void startRegistration() {
         PncRegisterActivity pncRegisterActivity = (PncRegisterActivity) getActivity();
-        PncMetadata maternityMetadata = PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata();
+        PncMetadata pncMetadata = PncLibrary.getInstance().getPncConfiguration().getPncMetadata();
 
-        if (maternityMetadata != null && pncRegisterActivity != null) {
-            pncRegisterActivity.startFormActivity(maternityMetadata.getMaternityRegistrationFormName()
+        if (pncMetadata != null && pncRegisterActivity != null) {
+            pncRegisterActivity.startFormActivity(pncMetadata.getPncRegistrationFormName()
                     , null
                     , null);
         }
@@ -84,17 +84,17 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
             injectableFormValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, currentHivStatus);
 
 
-            pncRegisterActivity.startFormActivityFromFormName(PncConstants.Form.MATERNITY_OUTCOME, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
+            pncRegisterActivity.startFormActivityFromFormName(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
         }
     }
 
     @Override
     protected void goToClientDetailActivity(@NonNull CommonPersonObjectClient commonPersonObjectClient) {
         final Context context = getActivity();
-        PncMetadata maternityMetadata = PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata();
+        PncMetadata pncMetadata = PncLibrary.getInstance().getPncConfiguration().getPncMetadata();
 
-        if (context != null && maternityMetadata != null) {
-            Intent intent = new Intent(getActivity(), maternityMetadata.getProfileActivity());
+        if (context != null && pncMetadata != null) {
+            Intent intent = new Intent(getActivity(), pncMetadata.getProfileActivity());
             intent.putExtra(PncConstants.IntentKey.CLIENT_OBJECT, commonPersonObjectClient);
             startActivity(intent);
         }

@@ -1,31 +1,20 @@
 package org.smartregister.pnc.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import com.vijay.jsonwizard.activities.JsonFormActivity;
 import com.vijay.jsonwizard.activities.JsonWizardFormActivity;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
-import org.smartregister.pnc.dao.PncOutcomeFormDao;
 import org.smartregister.pnc.fragment.BasePncFormFragment;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
-import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.util.AppExecutors;
 import org.smartregister.util.LangUtils;
-import org.smartregister.util.Utils;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -87,8 +76,8 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     }
 
     protected void initializeFormFragmentCore() {
-        BasePncFormFragment maternityFormFragment = (BasePncFormFragment) BasePncFormFragment.getFormFragment(JsonFormConstants.FIRST_STEP_NAME);
-        getSupportFragmentManager().beginTransaction().add(com.vijay.jsonwizard.R.id.container, maternityFormFragment).commit();
+        BasePncFormFragment pncFormFragment = (BasePncFormFragment) BasePncFormFragment.getFormFragment(JsonFormConstants.FIRST_STEP_NAME);
+        getSupportFragmentManager().beginTransaction().add(com.vijay.jsonwizard.R.id.container, pncFormFragment).commit();
     }
 
     @Override
@@ -105,63 +94,10 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     @Override
     public void onBackPressed() {
         if (enableOnCloseDialog) {
-            if (mJSONObject.optString(PncJsonFormUtils.ENCOUNTER_TYPE).equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
-                AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
-                        .setMessage(getString(R.string.save_form_fill_session))
-                        .setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                saveFormFillSession();
-                                BasePncFormActivity.this.finish();
-                            }
-                        }).setPositiveButton(R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Timber.d("No button on dialog in %s", JsonFormActivity.class.getCanonicalName());
-                            }
-                        }).setNeutralButton(getString(R.string.end_session), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteSession();
-                                BasePncFormActivity.this.finish();
-                            }
-                        }).create();
-
-                dialog.show();
-            } else {
-                super.onBackPressed();
-            }
-
+            super.onBackPressed();
         } else {
             BasePncFormActivity.this.finish();
         }
-    }
-
-    private void saveFormFillSession() {
-        JSONObject jsonObject = getmJSONObject();
-        final PncOutcomeForm maternityOutcomeForm = new PncOutcomeForm(0, PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID),
-                jsonObject.toString(), Utils.convertDateFormat(new DateTime()));
-        final PncOutcomeFormDao maternityOutcomeFormDao = PncLibrary.getInstance().getPncOutcomeFormRepository();
-        new AppExecutors().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                maternityOutcomeFormDao.saveOrUpdate(maternityOutcomeForm);
-            }
-        });
-    }
-
-    private void deleteSession() {
-        JSONObject jsonObject = getmJSONObject();
-        final PncOutcomeForm maternityOutcomeForm = new PncOutcomeForm(0, PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID),
-                jsonObject.toString(), Utils.convertDateFormat(new DateTime()));
-        final PncOutcomeFormDao maternityOutcomeFormDao = PncLibrary.getInstance().getPncOutcomeFormRepository();
-        new AppExecutors().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                maternityOutcomeFormDao.delete(maternityOutcomeForm);
-            }
-        });
     }
 
     @NonNull

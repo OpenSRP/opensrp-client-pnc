@@ -28,15 +28,15 @@ public class PncRegisterViewHolder extends RecyclerView.ViewHolder {
     public PncRegisterViewHolder(View itemView) {
         super(itemView);
 
-        textViewPatientName = itemView.findViewById(R.id.tv_maternityRegisterListRow_patientName);
-        textViewGa = itemView.findViewById(R.id.tv_maternityRegisterListRow_ga);
-        dueButton = itemView.findViewById(R.id.btn_maternityRegisterListRow_clientAction);
-        dueButtonLayout = itemView.findViewById(R.id.ll_maternityRegisterListRow_clientActionWrapper);
-        tvAge = itemView.findViewById(R.id.tv_maternityRegisterListRow_age);
-        tvPatientId = itemView.findViewById(R.id.tv_maternityRegisterListRow_patientId);
+        textViewPatientName = itemView.findViewById(R.id.tv_pncRegisterListRow_patientName);
+        textViewGa = itemView.findViewById(R.id.tv_pncRegisterListRow_ga);
+        dueButton = itemView.findViewById(R.id.btn_pncRegisterListRow_clientAction);
+        dueButtonLayout = itemView.findViewById(R.id.ll_pncRegisterListRow_clientActionWrapper);
+        tvAge = itemView.findViewById(R.id.tv_pncRegisterListRow_age);
+        tvPatientId = itemView.findViewById(R.id.tv_pncRegisterListRow_patientId);
 
         patientColumn = itemView.findViewById(R.id.patient_column);
-        firstDotDivider = itemView.findViewById(R.id.tv_maternityRegisterListRow_firstDotDivider);
+        firstDotDivider = itemView.findViewById(R.id.tv_pncRegisterListRow_firstDotDivider);
     }
 
     public void showPatientAge() {

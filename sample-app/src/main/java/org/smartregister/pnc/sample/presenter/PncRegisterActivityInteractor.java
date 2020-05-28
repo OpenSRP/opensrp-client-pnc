@@ -50,12 +50,12 @@ public class PncRegisterActivityInteractor extends BasePncRegisterActivityIntera
     }
 
     @Override
-    public void saveRegistration(final List<PncEventClient> maternityEventClientList, final String jsonString
+    public void saveRegistration(final List<PncEventClient> pncEventClientList, final String jsonString
             , final RegisterParams registerParams, @NonNull final PncRegisterActivityContract.InteractorCallBack callBack) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                saveRegistration(maternityEventClientList, jsonString, registerParams);
+                saveRegistration(pncEventClientList, jsonString, registerParams);
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -68,17 +68,17 @@ public class PncRegisterActivityInteractor extends BasePncRegisterActivityIntera
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void saveRegistration(@NonNull List<PncEventClient> maternityEventClients, @NonNull String jsonString,
+    private void saveRegistration(@NonNull List<PncEventClient> pncEventClients, @NonNull String jsonString,
                                   @NonNull RegisterParams params) {
         try {
             List<String> currentFormSubmissionIds = new ArrayList<>();
 
-            for (int i = 0; i < maternityEventClients.size(); i++) {
+            for (int i = 0; i < pncEventClients.size(); i++) {
                 try {
 
-                    PncEventClient maternityEventClient = maternityEventClients.get(i);
-                    Client baseClient = maternityEventClient.getClient();
-                    Event baseEvent = maternityEventClient.getEvent();
+                    PncEventClient pncEventClient = pncEventClients.get(i);
+                    Client baseClient = pncEventClient.getClient();
+                    Event baseEvent = pncEventClient.getEvent();
 
                     if (baseClient != null) {
                         JSONObject clientJson = new JSONObject(PncJsonFormUtils.gson.toJson(baseClient));

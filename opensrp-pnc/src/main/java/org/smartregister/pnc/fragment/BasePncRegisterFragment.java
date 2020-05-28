@@ -48,12 +48,12 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
     private static final String DUE_FILTER_TAG = "PRESSED";
     private View dueOnlyLayout;
     private boolean dueFilterActive = false;
-    private PncRegisterQueryProviderContract maternityRegisterQueryProvider;
+    private PncRegisterQueryProviderContract pncRegisterQueryProvider;
 
     public BasePncRegisterFragment() {
         super();
 
-        maternityRegisterQueryProvider = ConfigurationInstancesHelper.newInstance(PncLibrary.getInstance().getPncConfiguration().getMaternityRegisterQueryProvider());
+        pncRegisterQueryProvider = ConfigurationInstancesHelper.newInstance(PncLibrary.getInstance().getPncConfiguration().getPncRegisterQueryProvider());
     }
 
     @Override
@@ -297,7 +297,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
     }
 
     protected int getToolBarTitle() {
-        return R.string.maternity_register_title_name;
+        return R.string.pnc_register_title_name;
     }
 
     @Override
@@ -331,11 +331,11 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         String query = "";
         try {
             if (isValidFilterForFts(commonRepository())) {
-                String sql = maternityRegisterQueryProvider.getObjectIdsQuery(filters, mainCondition);
+                String sql = pncRegisterQueryProvider.getObjectIdsQuery(filters, mainCondition);
                 sql = sqb.addlimitandOffset(sql, clientAdapter.getCurrentlimit(), clientAdapter.getCurrentoffset());
 
                 List<String> ids = commonRepository().findSearchIds(sql);
-                query = maternityRegisterQueryProvider.mainSelectWhereIDsIn();
+                query = pncRegisterQueryProvider.mainSelectWhereIDsIn();
 
                 String joinedIds = "'" + StringUtils.join(ids, "','") + "'";
                 return query.replace("%s", joinedIds);
@@ -360,7 +360,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
     public void countExecute() {
         try {
             int totalCount = 0;
-            for (String sql : maternityRegisterQueryProvider.countExecuteQueries(filters, mainCondition)) {
+            for (String sql : pncRegisterQueryProvider.countExecuteQueries(filters, mainCondition)) {
                 Timber.i(sql);
                 totalCount += commonRepository().countSearchIds(sql);
             }

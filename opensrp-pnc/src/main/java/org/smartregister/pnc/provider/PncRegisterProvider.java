@@ -45,10 +45,10 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     private View.OnClickListener paginationClickListener;
     private Context context;
 
-    private PncRegisterProviderMetadata maternityRegisterProviderMetadata;
+    private PncRegisterProviderMetadata pncRegisterProviderMetadata;
 
     @Nullable
-    private PncRegisterRowOptions maternityRegisterRowOptions;
+    private PncRegisterRowOptions pncRegisterRowOptions;
 
     public PncRegisterProvider(@NonNull Context context, @NonNull View.OnClickListener onClickListener, @NonNull View.OnClickListener paginationClickListener) {
 
@@ -58,16 +58,16 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
         this.context = context;
 
         // Get the configuration
-        this.maternityRegisterProviderMetadata = ConfigurationInstancesHelper
+        this.pncRegisterProviderMetadata = ConfigurationInstancesHelper
                 .newInstance(PncLibrary.getInstance()
                         .getPncConfiguration()
-                        .getMaternityRegisterProviderMetadata());
+                        .getPncRegisterProviderMetadata());
 
-        Class<? extends PncRegisterRowOptions> maternityRegisterRowOptionsClass = PncLibrary.getInstance()
+        Class<? extends PncRegisterRowOptions> pncRegisterRowOptionsClass = PncLibrary.getInstance()
                 .getPncConfiguration()
-                .getMaternityRegisterRowOptions();
-        if (maternityRegisterRowOptionsClass != null) {
-            this.maternityRegisterRowOptions = ConfigurationInstancesHelper.newInstance(maternityRegisterRowOptionsClass);
+                .getPncRegisterRowOptions();
+        if (pncRegisterRowOptionsClass != null) {
+            this.pncRegisterRowOptions = ConfigurationInstancesHelper.newInstance(pncRegisterRowOptionsClass);
         }
     }
 
@@ -81,13 +81,13 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     public void getView(Cursor cursor, SmartRegisterClient client, PncRegisterViewHolder viewHolder) {
         CommonPersonObjectClient pc = (CommonPersonObjectClient) client;
 
-        if (maternityRegisterRowOptions != null && maternityRegisterRowOptions.isDefaultPopulatePatientColumn()) {
-            maternityRegisterRowOptions.populateClientRow(cursor, pc, client, viewHolder);
+        if (pncRegisterRowOptions != null && pncRegisterRowOptions.isDefaultPopulatePatientColumn()) {
+            pncRegisterRowOptions.populateClientRow(cursor, pc, client, viewHolder);
         } else {
             populatePatientColumn(pc, viewHolder);
 
-            if (maternityRegisterRowOptions != null) {
-                maternityRegisterRowOptions.populateClientRow(cursor, pc, client, viewHolder);
+            if (pncRegisterRowOptions != null) {
+                pncRegisterRowOptions.populateClientRow(cursor, pc, client, viewHolder);
             }
         }
     }
@@ -127,18 +127,18 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
 
     @Override
     public PncRegisterViewHolder createViewHolder(ViewGroup parent) {
-        int resId = R.layout.maternity_register_list_row;
+        int resId = R.layout.pnc_register_list_row;
 
-        if (maternityRegisterRowOptions != null
-                && maternityRegisterRowOptions.useCustomViewLayout()
-                && maternityRegisterRowOptions.getCustomViewLayoutId() != 0) {
-            resId = maternityRegisterRowOptions.getCustomViewLayoutId();
+        if (pncRegisterRowOptions != null
+                && pncRegisterRowOptions.useCustomViewLayout()
+                && pncRegisterRowOptions.getCustomViewLayoutId() != 0) {
+            resId = pncRegisterRowOptions.getCustomViewLayoutId();
         }
 
         View view = inflater.inflate(resId, parent, false);
 
-        if (maternityRegisterRowOptions != null && maternityRegisterRowOptions.isCustomViewHolder()) {
-            return maternityRegisterRowOptions.createCustomViewHolder(view);
+        if (pncRegisterRowOptions != null && pncRegisterRowOptions.isCustomViewHolder()) {
+            return pncRegisterRowOptions.createCustomViewHolder(view);
         } else {
             return new PncRegisterViewHolder(view);
         }
@@ -158,20 +158,20 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     public void populatePatientColumn(CommonPersonObjectClient commonPersonObjectClient, PncRegisterViewHolder viewHolder) {
         Map<String, String> patientColumnMaps = commonPersonObjectClient.getColumnmaps();
 
-        String firstName = maternityRegisterProviderMetadata.getClientFirstName(patientColumnMaps);
-        String middleName = maternityRegisterProviderMetadata.getClientMiddleName(patientColumnMaps);
-        String lastName = maternityRegisterProviderMetadata.getClientLastName(patientColumnMaps);
+        String firstName = pncRegisterProviderMetadata.getClientFirstName(patientColumnMaps);
+        String middleName = pncRegisterProviderMetadata.getClientMiddleName(patientColumnMaps);
+        String lastName = pncRegisterProviderMetadata.getClientLastName(patientColumnMaps);
         String patientName = Utils.getName(firstName, middleName + " " + lastName);
 
-        String dobString = Utils.getDuration(maternityRegisterProviderMetadata.getDob(patientColumnMaps));
+        String dobString = Utils.getDuration(pncRegisterProviderMetadata.getDob(patientColumnMaps));
         String translatedYearInitial = context.getResources().getString(R.string.abbrv_years);
         fillValue(viewHolder.textViewPatientName, WordUtils.capitalize(patientName));
 
         fillValue(viewHolder.tvAge, String.format(context.getString(R.string.patient_age_holder), WordUtils.capitalize(PncUtils.getClientAge(dobString, translatedYearInitial))));
-        String ga = maternityRegisterProviderMetadata.getGA(patientColumnMaps);
+        String ga = pncRegisterProviderMetadata.getGA(patientColumnMaps);
         fillValue(viewHolder.textViewGa, String.format(context.getString(R.string.patient_ga_holder), ga));
 
-        String patientId = maternityRegisterProviderMetadata.getPatientID(patientColumnMaps);
+        String patientId = pncRegisterProviderMetadata.getPatientID(patientColumnMaps);
         fillValue(viewHolder.tvPatientId, String.format(context.getString(R.string.patient_id_holder), patientId));
 
         addButtonClickListeners(commonPersonObjectClient, viewHolder);

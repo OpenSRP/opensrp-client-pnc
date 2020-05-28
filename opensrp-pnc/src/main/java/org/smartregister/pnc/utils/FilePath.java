@@ -12,7 +12,7 @@ public interface FilePath {
 
     interface FILE {
 
-        String MATERNITY_PROFILE_OVERVIEW = "maternity-profile-overview.yml";
-        String MATERNITY_VISIT_ROW = "maternity-visit-row.yml";
+        String PNC_PROFILE_OVERVIEW = "pnc-profile-overview.yml";
+        String PNC_VISIT_ROW = "pnc-visit-row.yml";
     }
 }

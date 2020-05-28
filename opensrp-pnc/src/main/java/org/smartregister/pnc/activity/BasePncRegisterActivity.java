@@ -115,7 +115,7 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
         if (intent != null) {
             startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
         } else {
-            Timber.e(new Exception(), "FormActivityConstants cannot be started because MaternityMetadata is NULL");
+            Timber.e(new Exception(), "FormActivityConstants cannot be started because PncMetadata is NULL");
         }
     }
 }

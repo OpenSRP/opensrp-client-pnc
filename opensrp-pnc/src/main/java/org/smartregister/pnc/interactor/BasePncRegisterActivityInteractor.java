@@ -2,7 +2,6 @@ package org.smartregister.pnc.interactor;
 
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -13,7 +12,6 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
@@ -47,26 +45,6 @@ public class BasePncRegisterActivityInteractor implements PncRegisterActivityCon
     }
 
     @Override
-    public void fetchSavedMaternityOutcomeForm(final @NonNull String baseEntityId, final @Nullable String entityTable, @NonNull final PncRegisterActivityContract.InteractorCallBack interactorCallBack) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                final PncOutcomeForm diagnosisAndTreatmentForm = PncLibrary
-                        .getInstance()
-                        .getPncOutcomeFormRepository()
-                        .findOne(new PncOutcomeForm(baseEntityId));
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        interactorCallBack.onFetchedSavedDiagnosisAndTreatmentForm(diagnosisAndTreatmentForm, baseEntityId, entityTable);
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
     public void getNextUniqueId(final Triple<String, String, String> triple, final PncRegisterActivityContract.InteractorCallBack callBack) {
         // Do nothing for now, this will be handled by the class that extends this
     }
@@ -77,7 +55,7 @@ public class BasePncRegisterActivityInteractor implements PncRegisterActivityCon
     }
 
     @Override
-    public void saveRegistration(List<PncEventClient> maternityEventClientList, String jsonString, RegisterParams registerParams, PncRegisterActivityContract.InteractorCallBack callBack) {
+    public void saveRegistration(List<PncEventClient> pncEventClientList, String jsonString, RegisterParams registerParams, PncRegisterActivityContract.InteractorCallBack callBack) {
         // Do nothing for now, this will be handled by the class that extends this
     }
 

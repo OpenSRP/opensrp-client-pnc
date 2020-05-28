@@ -5,7 +5,7 @@ import org.smartregister.AllConstants;
 public class PncConstants extends AllConstants {
 
     public static final String SEX = "Sex";
-    public static final String CONFIG = "maternity_register";
+    public static final String CONFIG = "pnc_register";
 
     public interface IntentKey {
         String BASE_ENTITY_ID = "base-entity-id";
@@ -15,7 +15,7 @@ public class PncConstants extends AllConstants {
 
     public interface Event {
 
-        interface MaternityRegistration {
+        interface PncRegistration {
 
             String CONCEPTION_DATE = "conception_date";
             String PARA = "parity";
@@ -70,7 +70,7 @@ public class PncConstants extends AllConstants {
         public static final String ENCOUNTER_TYPE = "encounter_type";
         public static final String ENTITY_ID = "entity_id";
         public static final String AGE = "age";
-        public static final String MATERNITY_EDIT_FORM_TITLE = "Update Maternity Registration";
+        public static final String PNC_EDIT_FORM_TITLE = "Update Pnc Registration";
         public static final String FORM_TITLE = "title";
         public static final String OPENSRP_ID = "opensrp_id";
     }
@@ -113,10 +113,10 @@ public class PncConstants extends AllConstants {
     }
 
     public static final class EventTypeConstants {
-        public static final String MATERNITY_REGISTRATION = "Maternity Registration";
-        public static final String UPDATE_MATERNITY_REGISTRATION = "Update Maternity Registration";
-        public static final String MATERNITY_OUTCOME = "Maternity Outcome";
-        public static final String MATERNITY_CLOSE = "Maternity Close";
+        public static final String PNC_REGISTRATION = "Pnc Registration";
+        public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
+        public static final String PNC_OUTCOME = "Pnc Outcome";
+        public static final String PNC_CLOSE = "Pnc Close";
     }
 
     public interface ColumnMapKey {
@@ -130,9 +130,9 @@ public class PncConstants extends AllConstants {
     }
 
     public interface Form {
-        String MATERNITY_REGISTRATION = "maternity_registration";
-        String MATERNITY_OUTCOME = "maternity_outcome";
-        String MATERNITY_CLOSE = "maternity_close";
+        String PNC_REGISTRATION = "pnc_registration";
+        String PNC_OUTCOME = "pnc_outcome";
+        String PNC_CLOSE = "pnc_close";
     }
 
     public interface FormValue {
@@ -142,7 +142,7 @@ public class PncConstants extends AllConstants {
     }
 
     public interface RegisterType {
-        String MATERNITY = "maternity";
+        String PNC = "pnc";
     }
 
     public interface ClientMapKey {

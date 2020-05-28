@@ -43,26 +43,26 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     @Override
     public void loadOverviewFacts(@NonNull String baseEntityId, @NonNull final OnFinishedCallback onFinishedCallback) {
-        model.fetchMaternityOverviewDetails(baseEntityId, new PncProfileOverviewFragmentContract.Model.OnFetchedCallback() {
+        model.fetchPncOverviewDetails(baseEntityId, new PncProfileOverviewFragmentContract.Model.OnFetchedCallback() {
             @Override
-            public void onFetched(@NonNull PncBaseDetails maternityDetails) {
-                loadOverviewDataAndDisplay(maternityDetails, onFinishedCallback);
+            public void onFetched(@NonNull PncBaseDetails pncDetails) {
+                loadOverviewDataAndDisplay(pncDetails, onFinishedCallback);
 
                 // Update the client map
                 CommonPersonObjectClient commonPersonObjectClient = getProfileView().getActivityClientMap();
                 if (commonPersonObjectClient != null) {
-                    commonPersonObjectClient.getColumnmaps().putAll(maternityDetails.getProperties());
-                    commonPersonObjectClient.getDetails().putAll(maternityDetails.getProperties());
+                    commonPersonObjectClient.getColumnmaps().putAll(pncDetails.getProperties());
+                    commonPersonObjectClient.getDetails().putAll(pncDetails.getProperties());
                 }
             }
         });
     }
 
     @Override
-    public void loadOverviewDataAndDisplay(@NonNull PncBaseDetails maternityDetails, @NonNull final OnFinishedCallback onFinishedCallback) {
+    public void loadOverviewDataAndDisplay(@NonNull PncBaseDetails pncDetails, @NonNull final OnFinishedCallback onFinishedCallback) {
         List<YamlConfigWrapper> yamlConfigListGlobal = new ArrayList<>();
         Facts facts = new Facts();
-        setDataFromRegistration(maternityDetails, facts);
+        setDataFromRegistration(pncDetails, facts);
 
         try {
             generateYamlConfigList(facts, yamlConfigListGlobal);
@@ -74,7 +74,9 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
     }
 
     private void generateYamlConfigList(@NonNull Facts facts, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal) throws IOException {
-        Iterable<Object> ruleObjects = loadFile(FilePath.FILE.MATERNITY_PROFILE_OVERVIEW);
+
+        // FIXME pnc overview file not found
+        Iterable<Object> ruleObjects = loadFile(FilePath.FILE.PNC_PROFILE_OVERVIEW);
 
         for (Object ruleObject : ruleObjects) {
             List<YamlConfigWrapper> yamlConfigList = new ArrayList<>();
@@ -110,27 +112,27 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
     }
 
     @Override
-    public void setDataFromRegistration(@NonNull PncBaseDetails maternityDetails, @NonNull Facts facts) {
-        for (String property: maternityDetails.getProperties().keySet()) {
-            PncFactsUtil.putNonNullFact(facts, property, maternityDetails.get(property));
+    public void setDataFromRegistration(@NonNull PncBaseDetails pncDetails, @NonNull Facts facts) {
+        for (String property: pncDetails.getProperties().keySet()) {
+            PncFactsUtil.putNonNullFact(facts, property, pncDetails.get(property));
         }
 
         /*
-        PncFactsUtil.putNonNullFact(facts, MaternityConstants.FactKey.ProfileOverview.INTAKE_TIME, maternityDetails.getRecordedAt());
-        PncFactsUtil.putNonNullFact(facts, MaternityConstants.FactKey.ProfileOverview.GRAVIDA, maternityDetails.get(MaternityDetails.Property));
-        PncFactsUtil.putNonNullFact(facts, MaternityConstants.FactKey.ProfileOverview.PARA, maternityDetails.getPara());
+        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.INTAKE_TIME, pncDetails.getRecordedAt());
+        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GRAVIDA, pncDetails.get(PncDetails.Property));
+        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.PARA, pncDetails.getPara());
         */
 
-        int maternityWeeks = 0;
-        String conceptionDate = maternityDetails.get(PncRegistrationDetails.Property.conception_date.name());
+        int pncWeeks = 0;
+        String conceptionDate = pncDetails.get(PncRegistrationDetails.Property.conception_date.name());
 
         if (!TextUtils.isEmpty(conceptionDate)) {
-            maternityWeeks = PncLibrary.getGestationAgeInWeeks(conceptionDate);
+            pncWeeks = PncLibrary.getGestationAgeInWeeks(conceptionDate);
         }
 
-        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GESTATION_WEEK, "" + maternityWeeks);
+        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GESTATION_WEEK, "" + pncWeeks);
 
-        String currentHivStatus = maternityDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
+        String currentHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
         String hivStatus = currentHivStatus == null ? getString(R.string.unknown) : currentHivStatus;
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.HIV_STATUS, hivStatus);
     }

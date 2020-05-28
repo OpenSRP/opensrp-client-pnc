@@ -29,31 +29,31 @@ public abstract class PncDetailsRepository extends BaseRepository implements Pnc
     public abstract String getTableName();
 
     @NonNull
-    public ContentValues createValuesFor(@NonNull PncBaseDetails maternityDetails) {
+    public ContentValues createValuesFor(@NonNull PncBaseDetails pncDetails) {
         ContentValues contentValues = new ContentValues();
-        if (maternityDetails.getId() != 0) {
-            contentValues.put(PncDbConstants.Column.PncDetails.ID, maternityDetails.getId());
+        if (pncDetails.getId() != 0) {
+            contentValues.put(PncDbConstants.Column.PncDetails.ID, pncDetails.getId());
         }
 
-        if (maternityDetails.getCreatedAt() != null) {
-            contentValues.put(PncDbConstants.Column.PncDetails.CREATED_AT, PncUtils.convertDate(maternityDetails.getCreatedAt(), PncDbConstants.DATE_FORMAT));
+        if (pncDetails.getCreatedAt() != null) {
+            contentValues.put(PncDbConstants.Column.PncDetails.CREATED_AT, PncUtils.convertDate(pncDetails.getCreatedAt(), PncDbConstants.DATE_FORMAT));
         }
 
-        if (maternityDetails.getEventDate() != null) {
-            contentValues.put(PncDbConstants.Column.PncDetails.EVENT_DATE, PncUtils.convertDate(maternityDetails.getEventDate(), PncDbConstants.DATE_FORMAT));
+        if (pncDetails.getEventDate() != null) {
+            contentValues.put(PncDbConstants.Column.PncDetails.EVENT_DATE, PncUtils.convertDate(pncDetails.getEventDate(), PncDbConstants.DATE_FORMAT));
         }
 
-        contentValues.put(PncDbConstants.Column.PncDetails.BASE_ENTITY_ID, maternityDetails.getBaseEntityId());
+        contentValues.put(PncDbConstants.Column.PncDetails.BASE_ENTITY_ID, pncDetails.getBaseEntityId());
         for (String column: getPropertyNames()) {
-            contentValues.put(column, maternityDetails.getProperties().get(column));
+            contentValues.put(column, pncDetails.getProperties().get(column));
         }
 
         return contentValues;
     }
 
     @Override
-    public boolean saveOrUpdate(@NonNull PncBaseDetails maternityDetails) {
-        ContentValues contentValues = createValuesFor(maternityDetails);
+    public boolean saveOrUpdate(@NonNull PncBaseDetails pncDetails) {
+        ContentValues contentValues = createValuesFor(pncDetails);
 
         SQLiteDatabase database = getWritableDatabase();
         long recordId = database.insertWithOnConflict(getTableName(), null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
@@ -63,13 +63,13 @@ public abstract class PncDetailsRepository extends BaseRepository implements Pnc
 
     @Nullable
     @Override
-    public PncBaseDetails findOne(@NonNull PncBaseDetails maternityDetails) {
+    public PncBaseDetails findOne(@NonNull PncBaseDetails pncDetails) {
         PncBaseDetails details = null;
-        if (maternityDetails.getBaseEntityId() != null) {
+        if (pncDetails.getBaseEntityId() != null) {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
             Cursor cursor = sqLiteDatabase.query(getTableName(), getColumns(), PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = ?",
-                    new String[]{maternityDetails.getBaseEntityId()}, null, null, null, "1");
+                    new String[]{pncDetails.getBaseEntityId()}, null, null, null, "1");
             if (cursor.getCount() == 0) {
                 return null;
             }
@@ -84,27 +84,27 @@ public abstract class PncDetailsRepository extends BaseRepository implements Pnc
     }
 
     public PncBaseDetails convert(@NonNull Cursor cursor) {
-        PncBaseDetails maternityDetails = new PncBaseDetails();
+        PncBaseDetails pncDetails = new PncBaseDetails();
 
-        maternityDetails.setId(cursor.getInt(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.ID)));
-        maternityDetails.setBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.BASE_ENTITY_ID)));
-        maternityDetails.setEventDate(PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.EVENT_DATE))));
-        maternityDetails.setCreatedAt(PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.CREATED_AT))));
+        pncDetails.setId(cursor.getInt(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.ID)));
+        pncDetails.setBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.BASE_ENTITY_ID)));
+        pncDetails.setEventDate(PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.EVENT_DATE))));
+        pncDetails.setCreatedAt(PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncDetails.CREATED_AT))));
 
         for (String column: getPropertyNames()) {
             int colIndex = cursor.getColumnIndex(column);
             if (colIndex != -1) {
-                maternityDetails.put(column, cursor.getString(colIndex));
+                pncDetails.put(column, cursor.getString(colIndex));
             }
         }
 
-        return maternityDetails;
+        return pncDetails;
     }
 
     public abstract String[] getPropertyNames();
 
     @Override
-    public boolean delete(PncBaseDetails maternityDetails) {
+    public boolean delete(PncBaseDetails pncDetails) {
         throw new NotImplementedException("Not Implemented");
     }
 

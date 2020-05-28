@@ -37,7 +37,7 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                /*final List<OpdVisitSummary> summaries = MaternityLibrary.getInstance().getOpdVisitSummaryRepository().getOpdVisitSummaries(baseEntityId, pageNo);
+                /*final List<OpdVisitSummary> summaries = PncLibrary.getInstance().getOpdVisitSummaryRepository().getOpdVisitSummaries(baseEntityId, pageNo);
 
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
@@ -54,7 +54,7 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                /*final int visitsPageCount = MaternityLibrary.getInstance().getOpdVisitSummaryRepository().getVisitPageCount(baseEntityId);
+                /*final int visitsPageCount = PncLibrary.getInstance().getOpdVisitSummaryRepository().getVisitPageCount(baseEntityId);
 
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override

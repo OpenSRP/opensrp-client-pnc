@@ -17,7 +17,6 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.PncConstants;
@@ -47,35 +46,17 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
 
     @Override
     public void fetchSavedDiagnosisAndTreatmentForm(@NonNull final String baseEntityId, @NonNull final String entityTable) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                final PncOutcomeForm diagnosisAndTreatmentForm = PncLibrary
-                        .getInstance()
-                        .getPncOutcomeFormRepository()
-                        .findOne(new PncOutcomeForm(baseEntityId));
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mProfilePresenter instanceof PncProfileActivityContract.InteractorCallBack) {
-                            ((PncProfileActivityContract.InteractorCallBack) mProfilePresenter)
-                                    .onFetchedSavedDiagnosisAndTreatmentForm(diagnosisAndTreatmentForm, baseEntityId, entityTable);
-                        }
-                    }
-                });
-            }
-        });
+        // Do nothing
     }
 
     @Override
-    public void saveRegistration(final @NonNull PncEventClient maternityEventClient, final @NonNull String jsonString
+    public void saveRegistration(final @NonNull PncEventClient pncEventClient, final @NonNull String jsonString
             , final @NonNull RegisterParams registerParams, final @NonNull PncProfileActivityContract.InteractorCallBack callBack) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                saveRegistration(maternityEventClient, jsonString, registerParams);
-                final CommonPersonObjectClient client = retrieveUpdatedClient(maternityEventClient.getEvent().getBaseEntityId());
+                saveRegistration(pncEventClient, jsonString, registerParams);
+                final CommonPersonObjectClient client = retrieveUpdatedClient(pncEventClient.getEvent().getBaseEntityId());
 
 
                 appExecutors.mainThread().execute(new Runnable() {
@@ -93,7 +74,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     @Nullable
     @Override
     public CommonPersonObjectClient retrieveUpdatedClient(@NonNull String baseEntityId) {
-        PncRegisterQueryProviderContract queryProviderContract = ConfigurationInstancesHelper.newInstance(PncLibrary.getInstance().getPncConfiguration().getMaternityRegisterQueryProvider());
+        PncRegisterQueryProviderContract queryProviderContract = ConfigurationInstancesHelper.newInstance(PncLibrary.getInstance().getPncConfiguration().getPncRegisterQueryProvider());
         String query = queryProviderContract.mainSelectWhereIDsIn();
 
 
@@ -117,14 +98,14 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
         return null;
     }
 
-    private void saveRegistration(@NonNull PncEventClient maternityEventClient, @NonNull String jsonString
+    private void saveRegistration(@NonNull PncEventClient pncEventClient, @NonNull String jsonString
             , @NonNull RegisterParams params) {
         try {
             List<String> currentFormSubmissionIds = new ArrayList<>();
             try {
 
-                Client baseClient = maternityEventClient.getClient();
-                Event baseEvent = maternityEventClient.getEvent();
+                Client baseClient = pncEventClient.getClient();
+                Event baseEvent = pncEventClient.getEvent();
 
                 if (baseClient != null && params.isEditMode()) {
                     try {

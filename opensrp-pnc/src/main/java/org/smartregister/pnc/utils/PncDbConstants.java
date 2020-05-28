@@ -54,19 +54,12 @@ public interface PncDbConstants {
             String EVENT_DATE = "event_date";
             String CREATED_AT = "created_at";
         }
-
-        interface PncOutcomeForm {
-            String ID = "id";
-            String BASE_ENTITY_ID = "base_entity_id";
-            String FORM = "form";
-            String CREATED_AT = "created_at";
-        }
     }
 
     interface Table {
         String EC_CLIENT = "ec_client";
-        String MATERNITY_DETAILS = "maternity_details";
-        String MATERNITY_REGISTRATION_DETAILS = "maternity_registration_details";
-        String MATERNITY_OUTCOME_FORM = "maternity_outcome_form";
+        String PNC_DETAILS = "pnc_details";
+        String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
+        String PNC_OUTCOME_FORM = "pnc_outcome_form";
     }
 }

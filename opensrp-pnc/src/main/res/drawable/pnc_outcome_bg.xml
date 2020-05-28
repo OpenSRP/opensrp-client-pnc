@@ -7,6 +7,6 @@
         android:radius="3dp"/>
 
     <solid
-        android:color="@color/maternity_check_in_bg_grey"/>
+        android:color="@color/pnc_check_in_bg_grey"/>
 
 </shape>

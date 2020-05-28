@@ -31,21 +31,21 @@ import timber.log.Timber;
 public class PncReverseJsonFormUtils {
 
     @Nullable
-    public static String prepareJsonEditMaternityRegistrationForm(@NonNull Map<String, String> detailsMap, @NonNull List<String> nonEditableFields, @NonNull Context context) {
+    public static String prepareJsonEditPncRegistrationForm(@NonNull Map<String, String> detailsMap, @NonNull List<String> nonEditableFields, @NonNull Context context) {
         try {
-            PncMetadata maternityMetadata = PncUtils.metadata();
+            PncMetadata pncMetadata = PncUtils.metadata();
 
-            if (maternityMetadata != null) {
-                JSONObject form = new FormUtils(context).getFormJson(maternityMetadata.getMaternityRegistrationFormName());
+            if (pncMetadata != null) {
+                JSONObject form = new FormUtils(context).getFormJson(pncMetadata.getPncRegistrationFormName());
                 Timber.d("Original Form %s", form);
                 if (form != null) {
                     PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKeyConstants.HOME_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
                     form.put(PncConstants.JsonFormKeyConstants.ENTITY_ID, detailsMap.get(PncConstants.KeyConstants.BASE_ENTITY_ID));
 
-                    form.put(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE, maternityMetadata.getUpdateEventType());
+                    form.put(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE, pncMetadata.getUpdateEventType());
                     form.put(PncJsonFormUtils.CURRENT_ZEIR_ID, Utils.getValue(detailsMap, PncConstants.KeyConstants.OPENSRP_ID, true).replace("-", ""));
 
-                    form.getJSONObject(PncJsonFormUtils.STEP1).put(PncConstants.JsonFormKeyConstants.FORM_TITLE, PncConstants.JsonFormKeyConstants.MATERNITY_EDIT_FORM_TITLE);
+                    form.getJSONObject(PncJsonFormUtils.STEP1).put(PncConstants.JsonFormKeyConstants.FORM_TITLE, PncConstants.JsonFormKeyConstants.PNC_EDIT_FORM_TITLE);
 
                     JSONObject metadata = form.getJSONObject(PncJsonFormUtils.METADATA);
                     metadata.put(PncJsonFormUtils.ENCOUNTER_LOCATION, PncUtils.getAllSharedPreferences().fetchCurrentLocality());
@@ -62,42 +62,42 @@ public class PncReverseJsonFormUtils {
                     Timber.e("Form cannot be found");
                 }
             } else {
-                Timber.e(new Exception(), "Could not start MATERNITY Edit Registration Form because MaternityMetadata is null");
+                Timber.e(new Exception(), "Could not start PNC Edit Registration Form because PncMetadata is null");
             }
         } catch (Exception e) {
-            Timber.e(e, "MaternityJsonFormUtils --> getMetadataForEditForm");
+            Timber.e(e, "PncJsonFormUtils --> getMetadataForEditForm");
         }
         return null;
     }
 
-    private static void setFormFieldValues(@NonNull Map<String, String> maternityDetails, @NonNull List<String> nonEditableFields, @NonNull JSONObject jsonObject) throws JSONException {
+    private static void setFormFieldValues(@NonNull Map<String, String> pncDetails, @NonNull List<String> nonEditableFields, @NonNull JSONObject jsonObject) throws JSONException {
         if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.KeyConstants.PHOTO)) {
-            reversePhoto(maternityDetails.get(PncConstants.KeyConstants.BASE_ENTITY_ID), jsonObject);
+            reversePhoto(pncDetails.get(PncConstants.KeyConstants.BASE_ENTITY_ID), jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.DOB_UNKNOWN)) {
-            reverseDobUnknown(maternityDetails, jsonObject);
+            reverseDobUnknown(pncDetails, jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.AGE_ENTERED)) {
-            reverseAge(Utils.getValue(maternityDetails, PncConstants.JsonFormKeyConstants.AGE, false), jsonObject);
+            reverseAge(Utils.getValue(pncDetails, PncConstants.JsonFormKeyConstants.AGE, false), jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.DOB_ENTERED)) {
-            reverseDobEntered(maternityDetails, jsonObject);
+            reverseDobEntered(pncDetails, jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY).equalsIgnoreCase(PncJsonFormUtils.PERSON_IDENTIFIER)) {
             if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncJsonFormUtils.OPENSRP_ID)) {
-                jsonObject.put(PncJsonFormUtils.VALUE, maternityDetails.get(PncConstants.KeyConstants.OPENSRP_ID));
+                jsonObject.put(PncJsonFormUtils.VALUE, pncDetails.get(PncConstants.KeyConstants.OPENSRP_ID));
             } else {
-                jsonObject.put(PncJsonFormUtils.VALUE, Utils.getValue(maternityDetails, jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID)
+                jsonObject.put(PncJsonFormUtils.VALUE, Utils.getValue(pncDetails, jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID)
                         .toLowerCase(), false).replace("-", ""));
             }
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.HOME_ADDRESS)) {
-            reverseHomeAddress(jsonObject, maternityDetails.get(PncConstants.JsonFormKeyConstants.HOME_ADDRESS));
+            reverseHomeAddress(jsonObject, pncDetails.get(PncConstants.JsonFormKeyConstants.HOME_ADDRESS));
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.REMINDERS)) {
-            reverseReminders(maternityDetails, jsonObject);
+            reverseReminders(pncDetails, jsonObject);
         } else {
-            jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), maternityDetails));
+            jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), pncDetails));
         }
         jsonObject.put(PncJsonFormUtils.READ_ONLY, nonEditableFields.contains(jsonObject.getString(PncJsonFormUtils.KEY)));
     }
 
-    private static void reverseReminders(@NonNull Map<String, String> maternityDetails, @NonNull JSONObject jsonObject) throws JSONException {
-        if (Boolean.valueOf(maternityDetails.get(PncConstants.JsonFormKeyConstants.REMINDERS))) {
+    private static void reverseReminders(@NonNull Map<String, String> pncDetails, @NonNull JSONObject jsonObject) throws JSONException {
+        if (Boolean.valueOf(pncDetails.get(PncConstants.JsonFormKeyConstants.REMINDERS))) {
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(PncConstants.FormValue.IS_ENROLLED_IN_MESSAGES);
             jsonObject.put(PncJsonFormUtils.VALUE, jsonArray);
@@ -115,17 +115,17 @@ public class PncReverseJsonFormUtils {
         }
     }
 
-    private static void reverseDobUnknown(@NonNull Map<String, String> maternityDetails, @NonNull JSONObject jsonObject) throws JSONException {
-        String value = Utils.getValue(maternityDetails, PncConstants.JsonFormKeyConstants.DOB_UNKNOWN, false);
-        if (!value.isEmpty() && Boolean.valueOf(maternityDetails.get(PncConstants.JsonFormKeyConstants.DOB_UNKNOWN))) {
+    private static void reverseDobUnknown(@NonNull Map<String, String> pncDetails, @NonNull JSONObject jsonObject) throws JSONException {
+        String value = Utils.getValue(pncDetails, PncConstants.JsonFormKeyConstants.DOB_UNKNOWN, false);
+        if (!value.isEmpty() && Boolean.valueOf(pncDetails.get(PncConstants.JsonFormKeyConstants.DOB_UNKNOWN))) {
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(PncConstants.FormValue.IS_DOB_UNKNOWN);
             jsonObject.put(PncJsonFormUtils.VALUE, jsonArray);
         }
     }
 
-    private static void reverseDobEntered(@NonNull Map<String, String> maternityDetails, @NonNull JSONObject jsonObject) throws JSONException {
-        String dateString = maternityDetails.get(PncConstants.JsonFormKeyConstants.DOB);
+    private static void reverseDobEntered(@NonNull Map<String, String> pncDetails, @NonNull JSONObject jsonObject) throws JSONException {
+        String dateString = pncDetails.get(PncConstants.JsonFormKeyConstants.DOB);
         Date date = Utils.dobStringToDate(dateString);
         if (StringUtils.isNotBlank(dateString) && date != null) {
             jsonObject.put(PncJsonFormUtils.VALUE, com.vijay.jsonwizard.widgets.DatePickerFactory.DATE_FORMAT.format(date));
@@ -150,9 +150,9 @@ public class PncReverseJsonFormUtils {
         }
     }
 
-    protected static String getMappedValue(@NonNull String key, @NonNull Map<String, String> maternityDetails) {
-        String value = Utils.getValue(maternityDetails, key, false);
-        return !TextUtils.isEmpty(value) ? value : Utils.getValue(maternityDetails, key.toLowerCase(), false);
+    protected static String getMappedValue(@NonNull String key, @NonNull Map<String, String> pncDetails) {
+        String value = Utils.getValue(pncDetails, key, false);
+        return !TextUtils.isEmpty(value) ? value : Utils.getValue(pncDetails, key.toLowerCase(), false);
     }
 
     private static void reverseAge(@NonNull String value, @NonNull JSONObject jsonObject) throws JSONException {

@@ -52,7 +52,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
     @Override
     protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
-        //TODO: Continue fixing maternity outcome form from here
+        //TODO: Continue fixing pnc outcome form from here
         // After filling in the form, we need to process it, create event(s) and process the event(s) (probably)
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
@@ -68,7 +68,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().saveForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.MATERNITY_OUTCOME)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().saveOutcomeForm(encounterType, data);
                 }
@@ -90,10 +90,10 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
     @Override
     public void startFormActivity(JSONObject jsonForm) {
-        Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getMaternityMetadata().getPncFormActivity());
+        Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getPncFormActivity());
         if (jsonForm.has(SampleConstants.KEY.ENCOUNTER_TYPE) && jsonForm.optString(SampleConstants.KEY.ENCOUNTER_TYPE).equals(
                 SampleConstants.KEY.PNC_REGISTRATION)) {
-//            MaternityJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KeyConstants.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
+//            PncJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KeyConstants.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
         }
 
         intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonForm.toString());

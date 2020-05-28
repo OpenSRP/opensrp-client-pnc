@@ -12,7 +12,7 @@ import org.smartregister.commonregistry.CommonPersonObjectClient;
 
 public interface PncRegisterSwitcher {
 
-    void switchFromMaternityRegister(@NonNull CommonPersonObjectClient client, @NonNull Context context);
+    void switchFromPncRegister(@NonNull CommonPersonObjectClient client, @NonNull Context context);
 
     boolean showRegisterSwitcher(@NonNull CommonPersonObjectClient client);
 }

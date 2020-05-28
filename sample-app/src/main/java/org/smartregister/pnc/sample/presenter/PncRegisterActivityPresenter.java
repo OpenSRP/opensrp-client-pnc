@@ -29,13 +29,13 @@ public class PncRegisterActivityPresenter extends BasePncRegisterActivityPresent
             registerParams.setFormTag(PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences()));
         }
 
-        List<PncEventClient> maternityEventClientList = model.processRegistration(jsonString, registerParams.getFormTag());
-        if (maternityEventClientList == null || maternityEventClientList.isEmpty()) {
+        List<PncEventClient> pncEventClientList = model.processRegistration(jsonString, registerParams.getFormTag());
+        if (pncEventClientList == null || pncEventClientList.isEmpty()) {
             return;
         }
 
         registerParams.setEditMode(false);
-        interactor.saveRegistration(maternityEventClientList, jsonString, registerParams, this);
+        interactor.saveRegistration(pncEventClientList, jsonString, registerParams, this);
     }
 
     @Override
