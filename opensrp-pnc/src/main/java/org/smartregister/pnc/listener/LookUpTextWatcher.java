@@ -13,14 +13,8 @@ import java.util.Map;
 
 public class LookUpTextWatcher implements TextWatcher {
 
-    private Map<String, String> lookUpFields;
-    private final View editText;
-    private final JsonFormFragment jsonFormFragment;
-
     public LookUpTextWatcher(@NonNull JsonFormFragment jsonFormFragment, @NonNull View editText) {
-        this.jsonFormFragment = jsonFormFragment;
-        this.editText = editText;
-        lookUpFields = new HashMap<>();
+        Map<String, String> lookUpFields = new HashMap<>();
     }
 
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

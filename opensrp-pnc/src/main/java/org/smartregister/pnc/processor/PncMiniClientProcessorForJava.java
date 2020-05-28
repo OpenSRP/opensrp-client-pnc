@@ -51,7 +51,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
     @Override
     public void processEventClient(@NonNull EventClient eventClient, @NonNull List<Event> unsyncEvents, @Nullable ClientClassification clientClassification) throws Exception {
-
+        // do nothing
     }
 
     private void generateKeyValuesFromEvent(@NonNull Event event, HashMap<String, String> keyValues, boolean appendOnNewline) {

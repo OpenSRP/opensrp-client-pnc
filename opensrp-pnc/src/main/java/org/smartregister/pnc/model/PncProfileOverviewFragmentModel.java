@@ -4,7 +4,6 @@ package org.smartregister.pnc.model;
 import androidx.annotation.NonNull;
 
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.util.AppExecutors;
 
 /**
@@ -13,11 +12,8 @@ import org.smartregister.util.AppExecutors;
 
 public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragmentContract.Model {
 
-    private AppExecutors appExecutors;
-    private PncBaseDetails pncDetails = null;
-
     public PncProfileOverviewFragmentModel() {
-        this.appExecutors = new AppExecutors();
+        AppExecutors appExecutors = new AppExecutors();
     }
 
     @Override

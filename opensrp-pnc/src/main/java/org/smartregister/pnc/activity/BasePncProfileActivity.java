@@ -266,10 +266,6 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         ((PncProfileActivityContract.Presenter) this.presenter).setOngoingTask(ongoingTask);
     }
 
-    private void removeOngoingTask(@NonNull OngoingTask ongoingTask) {
-        ((PncProfileActivityContract.Presenter) this.presenter).removeOngoingTask(ongoingTask);
-    }
-
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(R.layout.pnc_activity_base_profile);

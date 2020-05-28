@@ -36,11 +36,9 @@ import timber.log.Timber;
  */
 public class PncProfileInteractor implements PncProfileActivityContract.Interactor {
 
-    private PncProfileActivityContract.Presenter mProfilePresenter;
     private AppExecutors appExecutors;
 
     public PncProfileInteractor(@NonNull PncProfileActivityContract.Presenter presenter) {
-        this.mProfilePresenter = presenter;
         appExecutors = new AppExecutors();
     }
 
@@ -176,7 +174,6 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
         if (!isChangingConfiguration) {
-            mProfilePresenter = null;
         }
     }
 }

@@ -25,12 +25,6 @@ import org.smartregister.view.fragment.BaseProfileFragment;
  */
 public class PncProfileOverviewFragment extends BaseProfileFragment implements PncProfileOverviewFragmentContract.View, OnSendActionToFragment {
 
-    private String baseEntityId;
-    private PncProfileOverviewFragmentContract.Presenter presenter;
-
-    private LinearLayout pncOutcomeSectionLayout;
-    private Button recordOutcomeBtn;
-
     public static PncProfileOverviewFragment newInstance(Bundle bundle) {
         Bundle args = bundle;
         PncProfileOverviewFragment fragment = new PncProfileOverviewFragment();
@@ -43,7 +37,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     @Override
     protected void onCreation() {
-        presenter = new PncProfileOverviewFragmentPresenter(this);
+        PncProfileOverviewFragmentContract.Presenter presenter = new PncProfileOverviewFragmentPresenter(this);
 
         if (getArguments() != null) {
             CommonPersonObjectClient commonPersonObjectClient = (CommonPersonObjectClient) getArguments()
@@ -51,7 +45,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
             if (commonPersonObjectClient != null) {
                 presenter.setClient(commonPersonObjectClient);
-                baseEntityId = commonPersonObjectClient.getCaseId();
+                String baseEntityId = commonPersonObjectClient.getCaseId();
             }
         }
     }
@@ -65,8 +59,8 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.pnc_fragment_profile_overview, container, false);
 
-        pncOutcomeSectionLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
-        recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
+        LinearLayout pncOutcomeSectionLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
+        Button recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
 
         return view;
     }

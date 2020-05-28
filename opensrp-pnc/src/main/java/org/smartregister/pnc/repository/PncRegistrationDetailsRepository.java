@@ -1,6 +1,5 @@
 package org.smartregister.pnc.repository;
 
-
 import androidx.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -19,7 +18,7 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         String CREATE_TABLE_SQL = "CREATE TABLE " + getTableNameStatic() + "("
-                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY KeyConstants AUTOINCREMENT, "
+                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
                 + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
                 + PncDbConstants.Column.PncDetails.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
                 + PncDbConstants.Column.PncDetails.EVENT_DATE + " DATETIME NOT NULL, ";
@@ -40,12 +39,12 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
 
     @NonNull
     private static String getTableNameStatic() {
-        return PncDbConstants.Table.MATERNITY_REGISTRATION_DETAILS;
+        return PncDbConstants.Table.PNC_REGISTRATION_DETAILS;
     }
 
     @Override
     public String getTableName() {
-        return PncDbConstants.Table.MATERNITY_REGISTRATION_DETAILS;
+        return PncDbConstants.Table.PNC_REGISTRATION_DETAILS;
     }
 
     @Override
