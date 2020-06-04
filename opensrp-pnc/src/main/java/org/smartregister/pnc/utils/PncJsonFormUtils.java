@@ -349,7 +349,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
-    protected static void lastInteractedWith(@NonNull JSONArray fields) {
+    public static void lastInteractedWith(@NonNull JSONArray fields) {
         try {
             JSONObject lastInteractedWith = new JSONObject();
             lastInteractedWith.put(PncConstants.KeyConstants.KEY, PncConstants.JsonFormKeyConstants.LAST_INTERACTED_WITH);
@@ -528,8 +528,6 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
             dobUnknownUpdateFromAge(fields);
 
-            processReminder(fields);
-
             Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
 
             Event baseEvent = JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA),
@@ -547,21 +545,6 @@ public class PncJsonFormUtils extends JsonFormUtils {
         } catch (IllegalArgumentException e) {
             Timber.e(e);
             return null;
-        }
-    }
-
-    private static void processReminder(@NonNull JSONArray fields) {
-        try {
-            JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JsonFormKeyConstants.REMINDERS);
-            if (reminderObject != null) {
-                JSONArray options = getJSONArray(reminderObject, PncConstants.JsonFormKeyConstants.OPTIONS);
-                JSONObject option = getJSONObject(options, 0);
-                String value = option.optString(JsonFormConstants.VALUE);
-                int result = value.equals(Boolean.toString(false)) ? 0 : 1;
-                reminderObject.put(PncConstants.KeyConstants.VALUE, result);
-            }
-        } catch (JSONException e) {
-            Timber.e(e);
         }
     }
 }

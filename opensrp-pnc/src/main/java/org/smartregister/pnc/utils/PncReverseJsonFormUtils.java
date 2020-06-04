@@ -88,20 +88,10 @@ public class PncReverseJsonFormUtils {
             }
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.HOME_ADDRESS)) {
             reverseHomeAddress(jsonObject, pncDetails.get(PncConstants.JsonFormKeyConstants.HOME_ADDRESS));
-        } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.REMINDERS)) {
-            reverseReminders(pncDetails, jsonObject);
-        } else {
+        }  else {
             jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), pncDetails));
         }
         jsonObject.put(PncJsonFormUtils.READ_ONLY, nonEditableFields.contains(jsonObject.getString(PncJsonFormUtils.KEY)));
-    }
-
-    private static void reverseReminders(@NonNull Map<String, String> pncDetails, @NonNull JSONObject jsonObject) throws JSONException {
-        if (Boolean.valueOf(pncDetails.get(PncConstants.JsonFormKeyConstants.REMINDERS))) {
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put(PncConstants.FormValue.IS_ENROLLED_IN_MESSAGES);
-            jsonObject.put(PncJsonFormUtils.VALUE, jsonArray);
-        }
     }
 
     private static void reversePhoto(@NonNull String baseEntityId, @NonNull JSONObject jsonObject) throws JSONException {

@@ -5,8 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.utils.PncConstants;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This is the object used to configure any configurations added to Pnc. We mostly use objects that are
@@ -29,6 +30,10 @@ public class PncConfiguration {
     private void setDefaults() {
         if (builder.pncRegisterProviderMetadata == null) {
             builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
+        }
+
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_OUTCOME, PncOutcomeFormProcessing.class);
         }
     }
 
@@ -57,7 +62,7 @@ public class PncConfiguration {
         return builder.pncRegisterSwitcher;
     }
 
-    public ArrayList<Class<? extends PncFormProcessingTask>> getPncFormProcessingTasks() {
+    public HashMap<String, Class<? extends PncFormProcessingTask>> getPncFormProcessingTasks() {
         return builder.pncFormProcessingClasses;
     }
 
@@ -84,7 +89,7 @@ public class PncConfiguration {
         private Class<? extends PncRegisterSwitcher> pncRegisterSwitcher;
 
         @NonNull
-        private ArrayList<Class<? extends PncFormProcessingTask>> pncFormProcessingClasses = new ArrayList<>();
+        private HashMap<String, Class<? extends PncFormProcessingTask>> pncFormProcessingClasses = new HashMap<>();
 
         private boolean isBottomNavigationEnabled;
 
@@ -125,8 +130,8 @@ public class PncConfiguration {
             return this;
         }
 
-        public Builder addPncFormProcessingTask(@NonNull Class<? extends PncFormProcessingTask> pncFormProcessingTask) {
-            this.pncFormProcessingClasses.add(pncFormProcessingTask);
+        public Builder addPncFormProcessingTask(@NonNull String eventType, @NonNull Class<? extends PncFormProcessingTask> pncFormProcessingTask) {
+            this.pncFormProcessingClasses.put(eventType, pncFormProcessingTask);
             return this;
         }
 

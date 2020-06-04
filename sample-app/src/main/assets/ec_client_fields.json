@@ -67,13 +67,6 @@
           }
         },
         {
-          "column_name": "reminders",
-          "type": "Client",
-          "json_mapping": {
-            "field": "attributes.reminders"
-          }
-        },
-        {
           "column_name": "gender",
           "type": "Client",
           "json_mapping": {
@@ -99,13 +92,6 @@
           "type": "Event",
           "json_mapping": {
             "field": "version"
-          }
-        },
-        {
-          "column_name": "register_type",
-          "type": "Client",
-          "json_mapping": {
-            "field": "register_type"
           }
         }
       ]

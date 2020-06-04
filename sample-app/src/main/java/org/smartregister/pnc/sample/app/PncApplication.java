@@ -62,7 +62,7 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
         } else if (tableName.equals(Constants.Table.MOTHER)) {
             return new String[]{Constants.Columns.FIRST_NAME, Constants.Columns.MIDDLE_NAME, Constants.Columns.LAST_NAME, Constants.Columns.DOB, Constants.Columns.LAST_INTERACTED_WITH};
         } else if (tableName.equals(PncDbConstants.KEY.TABLE)) {
-            return new String[]{Constants.Columns.FIRST_NAME, Constants.Columns.LAST_NAME, Constants.Columns.DOB, Constants.Columns.LAST_INTERACTED_WITH, PncDbConstants.Column.Client.REGISTER_TYPE};
+            return new String[]{Constants.Columns.FIRST_NAME, Constants.Columns.LAST_NAME, Constants.Columns.DOB, Constants.Columns.LAST_INTERACTED_WITH};
         }
 
         return null;
@@ -80,7 +80,7 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
         } else if (tableName.equals(PncDbConstants.KEY.TABLE)){
 
             return new String[]{PncDbConstants.KEY.BASE_ENTITY_ID, PncDbConstants.KEY.FIRST_NAME, PncDbConstants.KEY.LAST_NAME,
-                    PncDbConstants.KEY.LAST_INTERACTED_WITH, PncDbConstants.KEY.DATE_REMOVED, PncDbConstants.Column.Client.REGISTER_TYPE};
+                    PncDbConstants.KEY.LAST_INTERACTED_WITH, PncDbConstants.KEY.DATE_REMOVED};
         }
         return null;
     }

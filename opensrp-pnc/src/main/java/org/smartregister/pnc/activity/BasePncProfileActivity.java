@@ -135,12 +135,6 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
             // Enable switcher
             configureRegisterSwitcher();
 
-            // Disable the registration info button if the client is not in Pnc
-            if (commonPersonObjectClient != null) {
-                String register_type = commonPersonObjectClient.getDetails().get(PncConstants.ColumnMapKey.REGISTER_TYPE);
-                View view = findViewById(R.id.btn_profile_registration_info);
-                view.setEnabled(PncConstants.RegisterType.PNC.equalsIgnoreCase(register_type));
-            }
         } else {
             pncProfilePresenter.addOngoingTaskCompleteListener(new OngoingTaskCompleteListener() {
                 @Override
@@ -273,14 +267,9 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     @Override
     public void onClick(View view) {
-        String register_type = commonPersonObjectClient.getDetails().get(PncConstants.ColumnMapKey.REGISTER_TYPE);
         if (view.getId() == R.id.btn_profile_registration_info) {
-            if (PncConstants.RegisterType.PNC.equalsIgnoreCase(register_type)) {
-                if (presenter instanceof PncProfileActivityContract.Presenter) {
-                    ((PncProfileActivityContract.Presenter) presenter).onUpdateRegistrationBtnCLicked(baseEntityId);
-                }
-            } else {
-                showToast(getString(R.string.edit_pnc_registration_failure_message));
+            if (presenter instanceof PncProfileActivityContract.Presenter) {
+                ((PncProfileActivityContract.Presenter) presenter).onUpdateRegistrationBtnCLicked(baseEntityId);
             }
         } else {
             super.onClick(view);

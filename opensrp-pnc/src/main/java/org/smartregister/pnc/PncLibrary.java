@@ -21,6 +21,10 @@ import org.smartregister.pnc.config.PncFormProcessingTask;
 import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
+import org.smartregister.pnc.repository.PncChildRepository;
+import org.smartregister.pnc.repository.PncOutcomeDetailsRepository;
+import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
+import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -30,6 +34,7 @@ import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
+import org.smartregister.util.AppExecutors;
 import org.smartregister.util.JsonFormUtils;
 import org.smartregister.view.activity.DrishtiApplication;
 import org.yaml.snakeyaml.TypeDescription;
@@ -40,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
@@ -59,6 +65,11 @@ public class PncLibrary {
     private ECSyncHelper syncHelper;
 
     private UniqueIdRepository uniqueIdRepository;
+    private PncStillBornRepository pncStillBornRepository;
+    private PncChildRepository pncChildRepository;
+    private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
+    private PncOutcomeDetailsRepository pncOutcomeDetailsRepository;
+    private AppExecutors appExecutors;
 
     private Compressor compressor;
     private int applicationVersion;
@@ -116,6 +127,37 @@ public class PncLibrary {
             uniqueIdRepository = new UniqueIdRepository();
         }
         return uniqueIdRepository;
+    }
+
+    @NonNull
+    public PncRegistrationDetailsRepository getPncRegistrationDetailsRepository() {
+        if (pncRegistrationDetailsRepository == null) {
+            pncRegistrationDetailsRepository = new PncRegistrationDetailsRepository();
+        }
+
+        return pncRegistrationDetailsRepository;
+    }
+
+    public PncStillBornRepository getPncStillBornRepository() {
+        if (pncStillBornRepository == null) {
+            pncStillBornRepository = new PncStillBornRepository();
+        }
+        return pncStillBornRepository;
+    }
+
+    public PncChildRepository getPncChildRepository() {
+        if (pncChildRepository == null) {
+            pncChildRepository = new PncChildRepository();
+        }
+        return pncChildRepository;
+    }
+
+    @NonNull
+    public PncOutcomeDetailsRepository getPncOutcomeDetailsRepository() {
+        if (pncOutcomeDetailsRepository == null) {
+            pncOutcomeDetailsRepository = new PncOutcomeDetailsRepository();
+        }
+        return pncOutcomeDetailsRepository;
     }
 
     @NonNull
@@ -186,32 +228,12 @@ public class PncLibrary {
 
     @NonNull
     public List<Event> processPncOutcomeForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        ArrayList<Class<? extends PncFormProcessingTask>> pncFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
-
-        for (Class<? extends PncFormProcessingTask> pncFormProcessingTaskClass: pncFormProcessingTasks) {
-            PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(pncFormProcessingTaskClass);
-            pncFormProcessingTask.processPncForm(eventType, jsonString, data);
+        HashMap<String, Class<? extends PncFormProcessingTask>> maternityFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
+        List<Event> eventList = new ArrayList<>();
+        if (maternityFormProcessingTasks.get(eventType) != null) {
+            PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(maternityFormProcessingTasks.get(eventType));
+            eventList = pncFormProcessingTask.processPncForm(eventType, jsonString, data);
         }
-
-        ArrayList<Event> eventList = new ArrayList<>();
-        JSONObject jsonFormObject = new JSONObject(jsonString);
-
-        JSONArray fieldsArray = PncUtils.generateFieldsFromJsonForm(jsonFormObject);
-
-        FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
-
-        String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
-        String entityTable = PncUtils.getIntentValue(data, PncConstants.IntentKey.ENTITY_TABLE);
-        Event pncOutcomeEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, eventType, entityTable);
-        eventList.add(pncOutcomeEvent);
-
-        Event closePncEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
-                formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_CLOSE, "");
-        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
-        closePncEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
-        eventList.add(closePncEvent);
-
         return eventList;
     }
 
@@ -237,5 +259,12 @@ public class PncLibrary {
     @NonNull
     protected Date getDateNow() {
         return new Date();
+    }
+
+    public AppExecutors getAppExecutors() {
+        if (appExecutors == null) {
+            appExecutors = new AppExecutors();
+        }
+        return appExecutors;
     }
 }

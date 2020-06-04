@@ -18,10 +18,10 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     @Override
     public String getObjectIdsQuery(@Nullable String filters, @Nullable String mainCondition) {
         if (TextUtils.isEmpty(filters)) {
-            return "SELECT object_id, last_interacted_with FROM ec_client_search WHERE register_type = 'pnc' " +
+            return "SELECT object_id, last_interacted_with FROM ec_client_search " +
                     "ORDER BY last_interacted_with DESC";
         } else {
-            String sql = "SELECT object_id FROM ec_client_search WHERE date_removed IS NULL AND register_type = 'pnc' AND phrase MATCH '%s*'" +
+            String sql = "SELECT object_id FROM ec_client_search WHERE date_removed IS NULL AND phrase MATCH '%s*'" +
                     "ORDER BY last_interacted_with DESC";
             sql = sql.replace("%s", filters);
             return sql;
@@ -33,7 +33,7 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     public String[] countExecuteQueries(@Nullable String filters, @Nullable String mainCondition) {
         SmartRegisterQueryBuilder sqb = new SmartRegisterQueryBuilder();
         return new String[] {
-                sqb.countQueryFts("ec_client", null, "register_type = 'pnc'", filters)
+                sqb.countQueryFts("ec_client", null, null, filters)
         };
     }
 

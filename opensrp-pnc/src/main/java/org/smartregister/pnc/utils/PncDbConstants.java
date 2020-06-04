@@ -39,7 +39,6 @@ public interface PncDbConstants {
             String RELATIONALID = "relationalid";
             String NATIONAL_ID = "national_id";
             String GENDER = "gender";
-            String REGISTER_TYPE = "register_type";
         }
 
         interface PncDetails {
@@ -54,6 +53,31 @@ public interface PncDbConstants {
             String EVENT_DATE = "event_date";
             String CREATED_AT = "created_at";
         }
+
+        interface PncBaby {
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String FIRST_NAME = "first_name";
+            String LAST_NAME = "last_name";
+            String DOB = "dob";
+            String GENDER = "gender";
+            String DISCHARGED_ALIVE = "discharged_alive";
+            String WEIGHT = "weight";
+            String HEIGHT = "height";
+            String APGAR = "apgar";
+            String FIRST_CRY = "first_cry";
+            String COMPLICATIONS = "complications";
+            String COMPLICATIONS_OTHER = "complications_other";
+            String NVP_ADMINISTRATION = "nvp_administration";
+            String BF_FIRST_HOUR = "bf_first_hour";
+            String INTERVENTION_REFERRAL_LOCATION = "intervention_referral_location";
+            String INTERVENTION_SPECIFY = "intervention_specify";
+            String CARE_MGT = "care_mgt";
+        }
+
+        interface PncStillBorn {
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String STILLBIRTH__CONDITION = "stillbirth_condition";
+        }
     }
 
     interface Table {
@@ -61,5 +85,7 @@ public interface PncDbConstants {
         String PNC_DETAILS = "pnc_details";
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
         String PNC_OUTCOME_FORM = "pnc_outcome_form";
+        String PNC_BABY = "pnc_baby";
+        String PNC_STILL_BORN = "pnc_still_born";
     }
 }
