@@ -25,11 +25,6 @@ public class PncStillBornRepository extends BaseRepository implements PncGeneric
             + "_" + PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_STILL_BORN +
             "(" + PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
 
-    private String[] columns = new String[]{
-            PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID,
-            PncDbConstants.Column.PncStillBorn.STILLBIRTH__CONDITION
-    };
-
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
         database.execSQL(INDEX_BASE_ENTITY_ID);
