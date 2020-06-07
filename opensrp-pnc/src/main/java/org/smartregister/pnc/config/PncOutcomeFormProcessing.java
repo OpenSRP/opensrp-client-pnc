@@ -65,7 +65,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
             String title = step.optString(JsonFormConstants.STEP_TITLE);
 
             if (PncConstants.JsonFormStepNameConstants.BABIES_BORN.equals(title)) {
-                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroupTests(step, PncConstants.JsonFormKeyConstants.BABIES_BORN);
+                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.BABIES_BORN);
 
                 //buildChildRegEvent
                 PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
@@ -84,7 +84,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     fieldsArray.put(repeatingGroupObj);
                 }
             } else if (PncConstants.JsonFormStepNameConstants.STILL_BORN_BABIES.equals(title)) {
-                HashMap<String, HashMap<String, String>> buildRepeatingGroupStillBorn = PncUtils.buildRepeatingGroupTests(step, PncConstants.JsonFormKeyConstants.BABIES_STILLBORN);
+                HashMap<String, HashMap<String, String>> buildRepeatingGroupStillBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.BABIES_STILLBORN);
                 if (!buildRepeatingGroupStillBorn.isEmpty()) {
                     String strGroup = gson.toJson(buildRepeatingGroupStillBorn);
                     JSONObject repeatingGroupObj = new JSONObject();

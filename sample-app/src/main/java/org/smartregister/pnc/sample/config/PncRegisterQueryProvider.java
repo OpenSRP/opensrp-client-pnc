@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.cursoradapter.SmartRegisterQueryBuilder;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 
 /**
@@ -18,10 +20,10 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     @Override
     public String getObjectIdsQuery(@Nullable String filters, @Nullable String mainCondition) {
         if (TextUtils.isEmpty(filters)) {
-            return "SELECT object_id, last_interacted_with FROM ec_client_search " +
+            return "SELECT object_id, last_interacted_with FROM " + CommonFtsObject.searchTableName(PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getTableName()) + " " +
                     "ORDER BY last_interacted_with DESC";
         } else {
-            String sql = "SELECT object_id FROM ec_client_search WHERE date_removed IS NULL AND phrase MATCH '%s*'" +
+            String sql = "SELECT object_id FROM " + CommonFtsObject.searchTableName(PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getTableName()) + " WHERE date_removed IS NULL AND phrase MATCH '%s*' " +
                     "ORDER BY last_interacted_with DESC";
             sql = sql.replace("%s", filters);
             return sql;
@@ -33,7 +35,7 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     public String[] countExecuteQueries(@Nullable String filters, @Nullable String mainCondition) {
         SmartRegisterQueryBuilder sqb = new SmartRegisterQueryBuilder();
         return new String[] {
-                sqb.countQueryFts("ec_client", null, null, filters)
+                sqb.countQueryFts(PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getTableName(), null, null, filters)
         };
     }
 

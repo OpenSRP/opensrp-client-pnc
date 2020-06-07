@@ -39,7 +39,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     private AppExecutors appExecutors;
 
     public PncProfileInteractor() {
-        appExecutors = new AppExecutors();
+        appExecutors = PncLibrary.getInstance().getAppExecutors();
     }
 
     @Override

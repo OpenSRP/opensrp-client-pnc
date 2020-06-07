@@ -4,6 +4,7 @@ package org.smartregister.pnc.interactor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
 import org.smartregister.util.AppExecutors;
 
@@ -17,7 +18,7 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
 
     public PncProfileVisitsFragmentInteractor(@NonNull PncProfileVisitsFragmentContract.Presenter presenter) {
         this.mProfileFrgamentPresenter = presenter;
-        appExecutors = new AppExecutors();
+        appExecutors = PncLibrary.getInstance().getAppExecutors();
     }
 
     @Override

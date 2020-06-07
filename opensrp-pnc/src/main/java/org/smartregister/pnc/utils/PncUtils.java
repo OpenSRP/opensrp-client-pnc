@@ -303,7 +303,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         return jsonArray;
     }
 
-    public static HashMap<String, HashMap<String, String>> buildRepeatingGroupTests(@NonNull JSONObject stepJsonObject, String fieldName) throws JSONException {
+    public static HashMap<String, HashMap<String, String>> buildRepeatingGroup(@NonNull JSONObject stepJsonObject, String fieldName) throws JSONException {
         ArrayList<String> keysArrayList = new ArrayList<>();
         JSONArray fields = stepJsonObject.optJSONArray(JsonFormConstants.FIELDS);
         JSONObject jsonObject = JsonFormUtils.getFieldJSONObject(fields, fieldName);
@@ -337,8 +337,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     public static HashMap<String, String> getPncClient(String baseEntityId) {
-        ArrayList<HashMap<String, String>> hashMap;
-        hashMap = CoreLibrary.getInstance().context().getEventClientRepository().rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
+        ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance().context().getEventClientRepository().rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
                 "select * from " + metadata().getTableName() +
                         " where " + metadata().getTableName() + ".id = '" + baseEntityId + "' limit 1");
         if (!hashMap.isEmpty()) {

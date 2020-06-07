@@ -24,7 +24,6 @@ import org.smartregister.pnc.helper.PncRulesEngineHelper;
 import org.smartregister.pnc.repository.PncChildRepository;
 import org.smartregister.pnc.repository.PncOutcomeDetailsRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
-import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -65,7 +64,6 @@ public class PncLibrary {
     private ECSyncHelper syncHelper;
 
     private UniqueIdRepository uniqueIdRepository;
-    private PncStillBornRepository pncStillBornRepository;
     private PncChildRepository pncChildRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
     private PncOutcomeDetailsRepository pncOutcomeDetailsRepository;
@@ -136,13 +134,6 @@ public class PncLibrary {
         }
 
         return pncRegistrationDetailsRepository;
-    }
-
-    public PncStillBornRepository getPncStillBornRepository() {
-        if (pncStillBornRepository == null) {
-            pncStillBornRepository = new PncStillBornRepository();
-        }
-        return pncStillBornRepository;
     }
 
     public PncChildRepository getPncChildRepository() {
