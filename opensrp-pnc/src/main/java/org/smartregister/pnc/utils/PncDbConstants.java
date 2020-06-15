@@ -73,11 +73,6 @@ public interface PncDbConstants {
             String INTERVENTION_SPECIFY = "intervention_specify";
             String CARE_MGT = "care_mgt";
         }
-
-        interface PncStillBorn {
-            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
-            String STILLBIRTH__CONDITION = "stillbirth_condition";
-        }
     }
 
     interface Table {
@@ -86,6 +81,5 @@ public interface PncDbConstants {
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
         String PNC_OUTCOME_FORM = "pnc_outcome_form";
         String PNC_BABY = "pnc_baby";
-        String PNC_STILL_BORN = "pnc_still_born";
     }
 }
