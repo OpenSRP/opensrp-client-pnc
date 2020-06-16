@@ -84,7 +84,7 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
             injectableFormValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, currentHivStatus);
 
 
-            pncRegisterActivity.startFormActivityFromFormName(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
+            pncRegisterActivity.startFormActivityFromFormName(PncConstants.Form.PNC_MEDIC_INFORMATION, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
         }
     }
 

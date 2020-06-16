@@ -94,8 +94,8 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
-        // Do nothing
+    public void saveMedicInfo(@NonNull String encounterType, String jsonString, @Nullable Intent data) {
+
     }
 
     @Override
@@ -123,10 +123,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
         try {
             form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
             // Todo: Enquire if we have to save a session of the outcome form to be continued later
-            if (formName.equals(PncConstants.Form.PNC_OUTCOME)) {
-                //interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
+            /*if (formName.equals(PncConstants.Form.PNC_RECURRING_VISIT)) {
+                interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
                 return;
-            }
+            }*/
 
         } catch (JSONException e) {
             Timber.e(e);
@@ -155,7 +155,8 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             intentKeys.put(PncConstants.IntentKey.BASE_ENTITY_ID, entityId);
             intentKeys.put(PncConstants.IntentKey.ENTITY_TABLE, entityTable);
 
-            getView().startFormActivityFromFormJson(form, intentKeys);
+
+            getView().startFormActivityFromFormJson(entityId, form, intentKeys);
         }
     }
 

@@ -7,6 +7,7 @@ public class PncConstants extends AllConstants {
     public static final String SEX = "Sex";
     public static final String CONFIG = "pnc_register";
     public static final String MOTHER = "mother";
+    public static final String GLOBAL = "global";
 
     public interface IntentKey {
         String BASE_ENTITY_ID = "base-entity-id";
@@ -125,6 +126,7 @@ public class PncConstants extends AllConstants {
 
     public static final class EventTypeConstants {
         public static final String PNC_REGISTRATION = "PNC Registration";
+        public static final String PNC_MEDIC_INFORMATION = "PNC Medic Information";
         public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
         public static final String PNC_OUTCOME = "Pnc Outcome";
         public static final String PNC_CLOSE = "Pnc Close";
@@ -142,7 +144,8 @@ public class PncConstants extends AllConstants {
 
     public interface Form {
         String PNC_REGISTRATION = "pnc_registration";
-        String PNC_OUTCOME = "pnc_outcome";
+        String PNC_MEDIC_INFORMATION = "pnc_medic_information";
+        String PNC_VISIT = "pnc_visit";
         String PNC_CLOSE = "pnc_close";
     }
 
@@ -160,4 +163,10 @@ public class PncConstants extends AllConstants {
         String GENDER = "gender";
     }
 
+    public interface FormGlobalConstants {
+        String DELIVERY_DATE = "delivery_date";
+        String BABY_DOB = "baby_dob";
+        String PNC_VISIT_PERIOD = "pnc_visit_period";
+        String BABY_AGE = "baby_age";
+    }
 }

@@ -168,8 +168,8 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
         fillValue(viewHolder.textViewPatientName, WordUtils.capitalize(patientName));
 
         fillValue(viewHolder.tvAge, String.format(context.getString(R.string.patient_age_holder), WordUtils.capitalize(PncUtils.getClientAge(dobString, translatedYearInitial))));
-        String ga = pncRegisterProviderMetadata.getGA(patientColumnMaps);
-        fillValue(viewHolder.textViewGa, String.format(context.getString(R.string.patient_ga_holder), ga));
+        //String ga = pncRegisterProviderMetadata.getGA(patientColumnMaps);
+        fillValue(viewHolder.textViewGa, String.format(context.getString(R.string.patient_ga_holder), " "));
 
         String patientId = pncRegisterProviderMetadata.getPatientID(patientColumnMaps);
         fillValue(viewHolder.tvPatientId, String.format(context.getString(R.string.patient_id_holder), patientId));

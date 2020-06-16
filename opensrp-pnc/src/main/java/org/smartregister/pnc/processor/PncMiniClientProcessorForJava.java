@@ -101,10 +101,11 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             HashMap<String, String> keyValues = new HashMap<>();
             generateKeyValuesFromEvent(event, keyValues, true);
 
-            PncRegistrationDetails maternityDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-            maternityDetails.setCreatedAt(new Date());
+            PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
+            pncDetails.setCreatedAt(new Date());
 
-            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(maternityDetails);
+            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
+
 //            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
 //            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
         } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
@@ -114,6 +115,16 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
             unsyncEvents.add(event);
+        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFORMATION)) {
+
+            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+
+            HashMap<String, String> keyValues = new HashMap<>();
+            generateKeyValuesFromEvent(event, keyValues, true);
+
+            PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
+            pncDetails.setCreatedAt(new Date());
         } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             processPncOutcome(eventClient);
@@ -132,7 +143,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
         PncDetails maternityDetails = new PncDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
         maternityDetails.setCreatedAt(new Date());
-        PncLibrary.getInstance().getPncOutcomeDetailsRepository().saveOrUpdate(maternityDetails);
+        PncLibrary.getInstance().getPncOtherDetailsRepository().saveOrUpdate(maternityDetails);
     }
 
     private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event) {
@@ -141,27 +152,30 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 JSONObject jsonObject = new JSONObject(strBabiesBorn);
                 Iterator<String> repeatingGroupKeys = jsonObject.keys();
                 while (repeatingGroupKeys.hasNext()) {
-                    JSONObject jsonTestObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
+                    JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncChild pncChild = new PncChild();
                     pncChild.setMotherBaseEntityId(event.getBaseEntityId());
-                    pncChild.setApgar(jsonTestObject.optString("apgar"));
-                    pncChild.setBfFirstHour(jsonTestObject.optString("bf_first_hour"));
-                    pncChild.setComplications(jsonTestObject.optString("baby_complications"));
-                    pncChild.setComplicationsOther(jsonTestObject.optString("baby_complications_other"));
-                    pncChild.setCareMgt(jsonTestObject.optString("baby_care_mgt"));
-                    pncChild.setFirstCry(jsonTestObject.optString("baby_first_cry"));
-                    pncChild.setDischargedAlive(jsonTestObject.optString("discharged_alive"));
-                    pncChild.setDob(jsonTestObject.optString("baby_dob"));
-                    pncChild.setFirstName(jsonTestObject.optString("baby_first_name"));
-                    pncChild.setLastName(jsonTestObject.optString("baby_last_name"));
-                    pncChild.setGender(jsonTestObject.optString("baby_gender"));
-                    pncChild.setChildHivStatus(jsonTestObject.optString("child_hiv_status"));
-                    pncChild.setHeight(jsonTestObject.optString("birth_height_entered"));
-                    pncChild.setWeight(jsonTestObject.optString("birth_weight_entered"));
+                    pncChild.setDischargedAlive(jsonChildObject.optString("discharged_alive"));
+                    pncChild.setChildRegistered(jsonChildObject.optString("child_registered"));
+                    pncChild.setBirthRecordDate(jsonChildObject.optString("birth_record_date"));
+                    pncChild.setFirstName(jsonChildObject.optString("baby_first_name"));
+                    pncChild.setLastName(jsonChildObject.optString("baby_last_name"));
+                    pncChild.setDob(jsonChildObject.optString("baby_dob"));
+                    pncChild.setGender(jsonChildObject.optString("baby_gender"));
+                    pncChild.setWeightEntered(jsonChildObject.optString("birth_weight_entered"));
+                    pncChild.setWeight(jsonChildObject.optString("birth_weight_entered"));
+                    pncChild.setHeightEntered(jsonChildObject.optString("birth_height_entered"));
+                    pncChild.setApgar(jsonChildObject.optString("apgar"));
+                    pncChild.setFirstCry(jsonChildObject.optString("baby_first_cry"));
+                    pncChild.setComplications(jsonChildObject.optString("baby_complications"));
+                    pncChild.setComplicationsOther(jsonChildObject.optString("baby_complications_other"));
+                    pncChild.setCareMgt(jsonChildObject.optString("baby_care_mgt"));
+                    pncChild.setCareMgtSpecify(jsonChildObject.optString("baby_care_mgt_specify"));
+                    pncChild.setRefLocation(jsonChildObject.optString("baby_referral_location"));
+                    pncChild.setBfFirstHour(jsonChildObject.optString("bf_first_hour"));
+                    pncChild.setChildHivStatus(jsonChildObject.optString("child_hiv_status"));
+                    pncChild.setNvpAdministration(jsonChildObject.optString("nvp_administration"));
                     pncChild.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
-                    pncChild.setNvpAdministration(jsonTestObject.optString("nvp_administration"));
-                    pncChild.setInterventionSpecify(jsonTestObject.optString("baby_intervention_specify"));
-                    pncChild.setInterventionReferralLocation(jsonTestObject.optString("baby_intervention_referral_location"));
                     PncLibrary.getInstance().getPncChildRepository().saveOrUpdate(pncChild);
                 }
             } catch (JSONException e) {
@@ -239,7 +253,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             for (Event event : events) {
                 if (PncConstants.EventType.PNC_CLOSE.equals(event.getEventType())) {
                     // Delete the pnc details
-                    // PncLibrary.getInstance().getPncOutcomeDetailsRepository().delete(event.getBaseEntityId());
+                    // PncLibrary.getInstance().getPncOtherDetailsRepository().delete(event.getBaseEntityId());
 
                     // Delete the actual client in the pnc table OR REMOVE THE Pnc register type
                     //updateRegisterTypeColumn(event, null);

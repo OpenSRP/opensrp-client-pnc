@@ -56,22 +56,26 @@ public interface PncDbConstants {
 
         interface PncBaby {
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String DISCHARGED_ALIVE = "discharged_alive";
+            String CHILD_REGISTERED = "child_registered";
+            String BIRTH_RECORD = "birth_record_date";
             String FIRST_NAME = "first_name";
             String LAST_NAME = "last_name";
             String DOB = "dob";
             String GENDER = "gender";
-            String DISCHARGED_ALIVE = "discharged_alive";
-            String WEIGHT = "weight";
-            String HEIGHT = "height";
+            String BIRTH_WEIGTH_ENTERED = "birth_weight_entered";
+            String BIRTH_WEIGHT = "birth_weight";
+            String BIRTH_HEIGHT_ENTERED = "birth_height_entered";
             String APGAR = "apgar";
             String FIRST_CRY = "first_cry";
             String COMPLICATIONS = "complications";
             String COMPLICATIONS_OTHER = "complications_other";
-            String NVP_ADMINISTRATION = "nvp_administration";
-            String BF_FIRST_HOUR = "bf_first_hour";
-            String INTERVENTION_REFERRAL_LOCATION = "intervention_referral_location";
-            String INTERVENTION_SPECIFY = "intervention_specify";
             String CARE_MGT = "care_mgt";
+            String CARE_MGT_SPECIFY = "care_mgt_specify";
+            String REF_LOCATION = "referral_location";
+            String BF_FIRST_HOUR = "bf_first_hour";
+            String NVP_ADMINISTRATION = "nvp_administration";
+            String CHILD_HIV_STATUS = "child_hiv_status";
         }
     }
 

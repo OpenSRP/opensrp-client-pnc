@@ -1,7 +1,5 @@
 package org.smartregister.pnc.presenter;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -123,14 +121,14 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.PARA, pncDetails.getPara());
         */
 
-        int pncWeeks = 0;
+        /*int pncWeeks = 0;
         String conceptionDate = pncDetails.get(PncRegistrationDetails.Property.conception_date.name());
 
         if (!TextUtils.isEmpty(conceptionDate)) {
             pncWeeks = PncLibrary.getGestationAgeInWeeks(conceptionDate);
         }
 
-        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GESTATION_WEEK, "" + pncWeeks);
+        PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GESTATION_WEEK, "" + pncWeeks);*/
 
         String currentHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
         String hivStatus = currentHivStatus == null ? getString(R.string.unknown) : currentHivStatus;

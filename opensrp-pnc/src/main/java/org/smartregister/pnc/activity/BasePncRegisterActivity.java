@@ -10,21 +10,30 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
+import org.smartregister.CoreLibrary;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.presenter.BasePncRegisterActivityPresenter;
+import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.activity.BaseRegisterActivity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -110,12 +119,44 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
     }
 
     @Override
-    public void startFormActivityFromFormJson(@NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
+    public void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
+        addGlobals(entityId, jsonForm);
         Intent intent = PncUtils.buildFormActivityIntent(jsonForm, intentData, this);
         if (intent != null) {
             startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
         } else {
             Timber.e(new Exception(), "FormActivityConstants cannot be started because PncMetadata is NULL");
+        }
+    }
+
+    private void addGlobals(String entityId, JSONObject form) {
+
+        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(entityId);
+
+        try {
+            JSONObject defaultGlobal = new JSONObject();
+
+            for (Map.Entry<String, String> entry: detailMap.entrySet()) {
+                defaultGlobal.put(entry.getKey(), entry.getValue());
+            }
+
+            LocalDate todayDate = LocalDate.now();
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.DELIVERY_DATE)) {
+                LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
+                defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_DOB)) {
+                LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                int numberOfYears = new Period(babyDob, todayDate).getYears();
+                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
+            }
+
+            form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
         }
     }
 }

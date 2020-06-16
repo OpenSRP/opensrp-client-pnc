@@ -51,7 +51,8 @@
     <string name="pnc_dosage_duration_text">Dose: %s, Duration: %s</string>
 
     <string name="diagnose_and_treat"><![CDATA[DIAGNOSE & TREAT]]></string>
-    <string name="outcome">OUTCOME</string>
+    <string name="pnc_due">PNC DUE</string>
+    <string name="start_pnc">START PNC</string>
     <string name="diagnosis">Diagnosis</string>
     <string name="diagnosis_type">Diagnosis Type</string>
     <string name="disease_code">Disease Code</string>

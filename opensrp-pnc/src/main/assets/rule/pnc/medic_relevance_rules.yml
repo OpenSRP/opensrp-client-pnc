@@ -1,0 +1,210 @@
+---
+name: step1_ga_weeks_entered
+description: ga_weeks_entered
+priority: 1
+condition: "!step1_lmp_unknown.isEmpty() && step1_lmp_unknown.contains('lmp_unknown')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_ga_days_entered
+description: ga_days_entered
+priority: 1
+condition: "!step1_lmp_unknown.isEmpty() && step1_lmp_unknown.contains('lmp_unknown')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_lmp
+description: lmp
+priority: 1
+condition: "step1_lmp_unknown.isEmpty()"
+actions:
+  - "isRelevant = true"
+---
+name: step1_gest_age
+description: gest_age
+priority: 1
+condition: "step1_lmp_unknown.isEmpty() && step1_lmp != ''"
+actions:
+  - "isRelevant = true"
+---
+name: step1_protected_at_birth
+description: Whether the child's mother received 2 or more doses of Td, which transfers protection against Td to the child when they're born.
+priority: 1
+condition: "global_age < 2"
+actions:
+  - "isRelevant = true"
+---
+name: step1_delivery_person_other
+description: Provide details of other delivery person
+priority: 1
+condition: "step1_delivery_person == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_delivery_mode_other
+description: Provide details of other delivery mode
+priority: 1
+condition: "step1_delivery_mode == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_obstretic_complications_other
+description: Provide details of other complications
+priority: 1
+condition: "step1_obstretic_complications.contains('other')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_obstretic_care_other
+description: Provide details of other emergency care that was provided
+priority: 1
+condition: "step1_obstretic_care.contains('other')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_referred_out
+description: Was the patient referred to another Medical Center?
+priority: 1
+condition: "!step1_obstretic_complications.contains('none')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_on_art_treatment
+description: Is the woman receiving treatment using ART?
+priority: 1
+condition: "step1_hiv_status_previous == 'positive' || step1_hiv_status_current == 'positive'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_art_clinic_number
+description: ART Clinic Numebr
+priority: 1
+condition: "step1_on_art_treatment == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_hiv_treatment_start
+description: The ART treatment start period
+priority: 1
+condition: "step1_on_art_treatment == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_not_art_reason
+description: The ART treatment start period
+priority: 1
+condition: "step1_on_art_treatment == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_not_art_reasons_other
+description: Provide details of other reason woman is not on ART Treatment
+priority: 1
+condition: "step1_not_art_reason == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_child_registered
+description: This is to determine the child is already exisiting and creating a relationship with the PNC record
+priority: 1
+condition: "step1_discharged_alive == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_birth_record_date
+description: Birth record registration date is the same as the delivery date
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_first_name
+description: The patient's first name.
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_last_name
+description: The patient's last name.
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_dob
+description: The date and time of the birth
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_gender
+description: baby gender
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_birth_weight_entered
+description: birth weight entered
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_birth_height_entered
+description: birth height entered
+priority: 1
+condition: "step1_child_registered == 'no'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_complications_other
+description: Provide details of other newborn complications that were experienced
+priority: 1
+condition: "step1_baby_complications.contains('other')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_care_mgt
+description: If there were complications, what care was provided to manage the complications?
+priority: 1
+condition: "step1_baby_complications.contains('none')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_care_mgt_specify
+description: Provide details of the other condition or antibiotics
+priority: 1
+condition: "step1_baby_care_mgt.contains('other')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_baby_referral_location
+description: baby referral location
+priority: 1
+condition: "step1_baby_care_mgt.contains('referral')"
+actions:
+  - "isRelevant = true"
+---
+name: step1_bf_first_hour
+description: Breastfeeding intiated within 60mins
+priority: 1
+condition: "step1_discharged_alive == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_child_hiv_status
+description: The child's HIV status.
+priority: 1
+condition: "step1_hiv_status_previous == 'positive' || step1_hiv_status_previous == 'unknown' || step1_hiv_status_current == 'positive' || step1_hiv_status_current == 'unknown'"
+actions:
+  - "isRelevant = true"
+---
+name: step1_nvp_administration
+description: nvp administration
+priority: 1
+condition: "step1_child_hiv_status == 'positive' || step1_child_hiv_status == 'exposed'"
+actions:
+  - "isRelevant = true"

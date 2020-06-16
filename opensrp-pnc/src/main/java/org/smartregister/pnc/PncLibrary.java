@@ -22,7 +22,7 @@ import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
 import org.smartregister.pnc.repository.PncChildRepository;
-import org.smartregister.pnc.repository.PncOutcomeDetailsRepository;
+import org.smartregister.pnc.repository.PncOtherDetailsRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
@@ -66,7 +66,7 @@ public class PncLibrary {
     private UniqueIdRepository uniqueIdRepository;
     private PncChildRepository pncChildRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
-    private PncOutcomeDetailsRepository pncOutcomeDetailsRepository;
+    private PncOtherDetailsRepository pncOtherDetailsRepository;
     private AppExecutors appExecutors;
 
     private Compressor compressor;
@@ -144,11 +144,11 @@ public class PncLibrary {
     }
 
     @NonNull
-    public PncOutcomeDetailsRepository getPncOutcomeDetailsRepository() {
-        if (pncOutcomeDetailsRepository == null) {
-            pncOutcomeDetailsRepository = new PncOutcomeDetailsRepository();
+    public PncOtherDetailsRepository getPncOtherDetailsRepository() {
+        if (pncOtherDetailsRepository == null) {
+            pncOtherDetailsRepository = new PncOtherDetailsRepository();
         }
-        return pncOutcomeDetailsRepository;
+        return pncOtherDetailsRepository;
     }
 
     @NonNull

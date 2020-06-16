@@ -208,7 +208,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public void openPncOutcomeForm() {
         if (commonPersonObjectClient != null) {
-            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient);
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_VISIT, commonPersonObjectClient);
         }
     }
 
