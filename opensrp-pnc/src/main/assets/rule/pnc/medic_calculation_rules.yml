@@ -1,11 +1,4 @@
 ---
-name: step1_conception_date
-description: The mothers conception date
-priority: 1
-condition: "(step1_lmp != null && step1_lmp != '') || (step1_ga_weeks_entered != null && step1_ga_weeks_entered != '') || (step1_ga_days_entered != null && step1_ga_days_entered != '')"
-actions:
-  - "calculation = (step1_lmp != null && step1_lmp != '') ? step1_lmp : (step1_ga_weeks_entered != null && step1_ga_weeks_entered != '') ? helper.subtractDuration(helper.getDateToday(), ((new Integer(step1_ga_weeks_entered) * 7) + ((step1_ga_days_entered != null && step1_ga_days_entered != '') ? new Integer(step1_ga_days_entered) : 0) +'d')) : helper.getDateToday()"
----
 name: step1_gest_age
 description: The mothers gestation age
 priority: 1
@@ -20,9 +13,16 @@ condition: "step1_lmp != ''"
 actions:
   - "calculation = helper.getWeeks(helper.getDifferenceDays(helper.getSecondaryValue(step1_lmp)))"
 ---
-name: step1_birth_record_date
+name: step4_birth_record_date
 description: Birth record registration date is the same as the delivery date
 priority: 1
 condition: "true"
 actions:
   - "calculation = step1_delivery_date"
+---
+name: step4_birth_weight
+description: birth_weight
+priority: 1
+condition: "true"
+actions:
+  - "calculation = step4_birth_weight_entered / 1000"

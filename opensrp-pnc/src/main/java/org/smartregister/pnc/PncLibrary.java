@@ -219,10 +219,10 @@ public class PncLibrary {
 
     @NonNull
     public List<Event> processPncOutcomeForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        HashMap<String, Class<? extends PncFormProcessingTask>> maternityFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
+        HashMap<String, Class<? extends PncFormProcessingTask>> pncFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
         List<Event> eventList = new ArrayList<>();
-        if (maternityFormProcessingTasks.get(eventType) != null) {
-            PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(maternityFormProcessingTasks.get(eventType));
+        if (pncFormProcessingTasks.get(eventType) != null) {
+            PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(pncFormProcessingTasks.get(eventType));
             eventList = pncFormProcessingTask.processPncForm(eventType, jsonString, data);
         }
         return eventList;

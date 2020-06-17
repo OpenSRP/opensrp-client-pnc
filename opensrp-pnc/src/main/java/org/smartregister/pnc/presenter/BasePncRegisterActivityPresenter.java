@@ -10,7 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.FetchStatus;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
 import org.smartregister.pnc.pojo.PncOutcomeForm;
@@ -94,8 +96,24 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void saveMedicInfo(@NonNull String encounterType, String jsonString, @Nullable Intent data) {
+    public void saveOutcomeForm(String eventType, @Nullable Intent data) {
+        String jsonString = null;
+        if (data != null) {
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+        }
 
+        if (jsonString == null) {
+            return;
+        }
+
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+            try {
+                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
+                interactor.saveEvents(pncOutcomeAndCloseEvent, this);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
     }
 
     @Override

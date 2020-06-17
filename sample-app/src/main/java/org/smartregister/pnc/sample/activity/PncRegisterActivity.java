@@ -69,9 +69,9 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().saveForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFORMATION)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
                     showProgressDialog(R.string.saving_dialog_title);
-                    presenter().saveMedicInfo(encounterType, jsonString, data);
+                    presenter().saveOutcomeForm(encounterType, data);
                 }
 
             } catch (JSONException e) {

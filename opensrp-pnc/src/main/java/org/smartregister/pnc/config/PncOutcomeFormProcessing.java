@@ -17,6 +17,7 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.pojo.PncEventClient;
+import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
@@ -64,8 +65,8 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
 
             String title = step.optString(JsonFormConstants.STEP_TITLE);
 
-            if (PncConstants.JsonFormStepNameConstants.BABIES_BORN.equals(title)) {
-                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.BABIES_BORN);
+            if (PncConstants.JsonFormStepNameConstants.LIVE_BIRTHS.equals(title)) {
+                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS);
 
                 //buildChildRegEvent
                 PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
@@ -83,7 +84,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     repeatingGroupObj.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
                     fieldsArray.put(repeatingGroupObj);
                 }
-            } else if (PncConstants.JsonFormStepNameConstants.STILL_BORN_BABIES.equals(title)) {
+            } else if (PncConstants.JsonFormStepNameConstants.STILL_BIRTHS.equals(title)) {
                 HashMap<String, HashMap<String, String>> buildRepeatingGroupStillBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.BABIES_STILLBORN);
                 if (!buildRepeatingGroupStillBorn.isEmpty()) {
                     String strGroup = gson.toJson(buildRepeatingGroupStillBorn);
@@ -111,6 +112,15 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
         return eventList;
 
     }
+
+    private void saveOutcome(String baseEntityId) {
+        HashMap<String, String> keyValues = new HashMap<>();
+
+        PncRegistrationDetails pncDetails = new PncRegistrationDetails(baseEntityId, new Date(), keyValues);
+        pncDetails.setCreatedAt(new Date());
+        PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
+    }
+
 
     @NonNull
     private List<PncEventClient> buildChildRegistrationEvents(HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn, String baseEntityId, JSONObject jsonFormObject) {

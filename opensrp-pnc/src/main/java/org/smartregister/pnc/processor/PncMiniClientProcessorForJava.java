@@ -115,7 +115,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
             unsyncEvents.add(event);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFORMATION)) {
+        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
 
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
@@ -125,6 +125,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
             PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
             pncDetails.setCreatedAt(new Date());
+            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
         } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             processPncOutcome(eventClient);
