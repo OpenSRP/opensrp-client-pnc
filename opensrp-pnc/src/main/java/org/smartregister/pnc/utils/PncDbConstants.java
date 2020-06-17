@@ -77,6 +77,10 @@ public interface PncDbConstants {
             String NVP_ADMINISTRATION = "nvp_administration";
             String CHILD_HIV_STATUS = "child_hiv_status";
         }
+
+        interface PncStillBorn {
+            String STILL_BIRTH_CONDITION = "still_birth_condition";
+        }
     }
 
     interface Table {
@@ -85,5 +89,6 @@ public interface PncDbConstants {
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
         String PNC_OUTCOME_FORM = "pnc_outcome_form";
         String PNC_BABY = "pnc_baby";
+        String PNC_STILL_BORN = "pnc_still_born";
     }
 }

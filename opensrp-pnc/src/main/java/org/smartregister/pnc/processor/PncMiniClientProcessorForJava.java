@@ -116,17 +116,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
             unsyncEvents.add(event);
         } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-
-            HashMap<String, String> keyValues = new HashMap<>();
-            generateKeyValuesFromEvent(event, keyValues, true);
-
-            PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-            pncDetails.setCreatedAt(new Date());
-            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
             processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
             processPncOutcome(eventClient);
             CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
@@ -164,7 +153,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     pncChild.setDob(jsonChildObject.optString("baby_dob"));
                     pncChild.setGender(jsonChildObject.optString("baby_gender"));
                     pncChild.setWeightEntered(jsonChildObject.optString("birth_weight_entered"));
-                    pncChild.setWeight(jsonChildObject.optString("birth_weight_entered"));
+                    pncChild.setWeight(jsonChildObject.optString("birth_weight"));
                     pncChild.setHeightEntered(jsonChildObject.optString("birth_height_entered"));
                     pncChild.setApgar(jsonChildObject.optString("apgar"));
                     pncChild.setFirstCry(jsonChildObject.optString("baby_first_cry"));
