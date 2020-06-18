@@ -74,12 +74,18 @@ public class PncConstants extends AllConstants {
         public static final String PNC_EDIT_FORM_TITLE = "Update Pnc Registration";
         public static final String FORM_TITLE = "title";
         public static final String OPENSRP_ID = "opensrp_id";
-        public static final String LIVE_BIRTHS = "baby_count_alive";
-        public static final String BABIES_STILLBORN = "baby_count_stillborn";
+        public static final String LIVE_BIRTHS = "baby_alive_group";
+        public static final String OTHER_VISIT_GROUP = "other_pnc_visit_date_group";
+        public static final String CHILD_STATUS_GROUP = "child_status";
+        public static final String BABIES_STILLBORN = "baby_stillborn_group";
         public static final String DISCHARGED_ALIVE = "discharged_alive";
         public static final String ZEIR_ID = "zeir_id";
         public static final String BABIES_BORN_MAP = "babies_born_map";
         public static final String BABIES_STILL_BORN_MAP = "babies_still_born_map";
+        public static final String OTHER_VISIT_MAP = "other_visit_map";
+        public static final String CHILD_STATUS_MAP = "other_visit_map";
+        public static final String OUTCOME_SUBMITTED = "outcome_submitted";
+        public static final String BABY_COUNT_ALIVE = "baby_count_alive";
     }
 
     public static class JsonFormExtraConstants {
@@ -91,6 +97,8 @@ public class PncConstants extends AllConstants {
     public static class JsonFormStepNameConstants {
         public static final String LIVE_BIRTHS = "Live Births";
         public static final String STILL_BIRTHS = "Still Births";
+        public static final String PNC_VISIT_INFO = "PNC Visit information";
+        public static final String PNC_VISIT_CHILD_STATUS = "Child's Status";
     }
 
     public static class OpenMrsConstants {
@@ -130,6 +138,7 @@ public class PncConstants extends AllConstants {
         public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
         public static final String PNC_CLOSE = "Pnc Close";
         public static final String BIRTH_REGISTRATION = "Birth Registration";
+        public static final String PNC_VISIT = "PNC Visit";
     }
 
     public interface ColumnMapKey {
@@ -167,5 +176,8 @@ public class PncConstants extends AllConstants {
         String BABY_DOB = "baby_dob";
         String PNC_VISIT_PERIOD = "pnc_visit_period";
         String BABY_AGE = "baby_age";
+        String HIV_STATUS_PREVIOUS = "hiv_status_previous";
+        String HIV_STATUS_CURRENT = "hiv_status_current";
+        String BABY_COMPLICATIONS = "baby_complications";
     }
 }

@@ -35,6 +35,10 @@ public class PncConfiguration {
         if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
             builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_OUTCOME, PncOutcomeFormProcessing.class);
         }
+
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_VISIT, PncVisitFormProcessing.class);
+        }
     }
 
     @Nullable

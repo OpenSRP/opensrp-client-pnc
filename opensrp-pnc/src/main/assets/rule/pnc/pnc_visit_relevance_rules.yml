@@ -68,8 +68,26 @@ priority: 1
 condition: "step2_fp_method_other == 'other'"
 actions:
   - "isRelevant = true"
-
-
-
+---
+name: step3_baby_hiv_exposed
+description: baby_hiv_exposed
+priority: 1
+condition: "global_hiv_status_previous == 'positive' || global_hiv_status_current == 'positive'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_baby_hiv_treatment
+description: baby_hiv_treatment
+priority: 1
+condition: "step3_baby_hiv_exposed == 'yes' && step3_mother_baby_pairing == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_baby_care_mgt
+description: If there were complications, what care was provided to manage the complications?
+priority: 1
+condition: "global_baby_complications != 'none'"
+actions:
+  - "isRelevant = true"
 
 

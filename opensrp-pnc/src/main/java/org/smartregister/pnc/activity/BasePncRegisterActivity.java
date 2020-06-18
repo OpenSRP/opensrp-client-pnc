@@ -121,6 +121,9 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
     @Override
     public void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
         addGlobals(entityId, jsonForm);
+        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString("encounter_type"))){
+            addNumberOfBabyCount(entityId, jsonForm);
+        }
         Intent intent = PncUtils.buildFormActivityIntent(jsonForm, intentData, this);
         if (intent != null) {
             startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
@@ -129,9 +132,9 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
         }
     }
 
-    private void addGlobals(String entityId, JSONObject form) {
+    private void addGlobals(String baseEntityId, JSONObject form) {
 
-        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(entityId);
+        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
@@ -153,7 +156,33 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
             }
 
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS));
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT));
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
+            }
+
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
+        }
+    }
+
+    private void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
+        try {
+            String step = "step3";
+            if (form.has(step)) {
+                JSONObject childStatusObject = form.getJSONObject(step).getJSONArray("fields").getJSONObject(0);
+                int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countNumberOfChild(baseEntityId);
+                childStatusObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
+            }
         }
         catch (JSONException ex) {
             Timber.e(ex);

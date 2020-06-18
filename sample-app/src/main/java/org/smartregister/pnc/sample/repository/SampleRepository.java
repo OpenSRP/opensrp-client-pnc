@@ -9,6 +9,8 @@ import org.smartregister.configurableviews.repository.ConfigurableViewsRepositor
 import org.smartregister.pnc.repository.PncChildRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
+import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
+import org.smartregister.pnc.repository.PncVisitInfoRepository;
 import org.smartregister.pnc.sample.BuildConfig;
 import org.smartregister.pnc.sample.app.PncApplication;
 import org.smartregister.repository.EventClientRepository;
@@ -50,6 +52,8 @@ public class SampleRepository extends Repository {
         UniqueIdRepository.createTable(database);
         PncChildRepository.createTable(database);
         PncStillBornRepository.createTable(database);
+        PncVisitInfoRepository.createTable(database);
+        PncVisitChildStatusRepository.createTable(database);
         SettingsRepository.onUpgrade(database);
         PncRegistrationDetailsRepository.createTable(database);
     }

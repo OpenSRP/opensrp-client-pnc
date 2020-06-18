@@ -351,7 +351,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         return uniqueIdRepo.getNextUniqueId() != null ? uniqueIdRepo.getNextUniqueId().getOpenmrsId() : "";
     }
 
-    public static void savePncChild(@NonNull List<PncEventClient> pncEventClients) {
+    public static void processEvents(@NonNull List<PncEventClient> pncEventClients) {
         try {
             List<String> currentFormSubmissionIds = new ArrayList<>();
             for (PncEventClient eventClient : pncEventClients) {

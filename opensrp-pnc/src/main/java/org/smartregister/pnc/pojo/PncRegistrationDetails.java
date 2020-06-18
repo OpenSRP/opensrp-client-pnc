@@ -65,9 +65,7 @@ public class PncRegistrationDetails extends PncBaseDetails {
         hiv_treatment_start,
         not_art_reason,
         not_art_reasons_other,
-        baby_count_alive,
-        baby_count_stillborn,
-        stillbirth_condition
+        outcome_submitted
     }
 
     public PncRegistrationDetails(@NonNull String baseEntityId, @NonNull Date eventDate, @NonNull HashMap<String, String> properties) {

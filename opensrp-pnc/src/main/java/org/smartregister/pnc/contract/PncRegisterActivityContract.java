@@ -39,7 +39,7 @@ public interface PncRegisterActivityContract {
 
         void saveForm(String jsonString, @NonNull RegisterParams registerParams);
 
-        void saveOutcomeForm(String eventType, @Nullable Intent data);
+        void savePncForm(String eventType, @Nullable Intent data);
 
         void startForm(@NonNull String formName, @Nullable String entityId, String metaData, @NonNull String locationId, @Nullable HashMap<String, String> injectedFieldValues, @Nullable String entityTable);
 

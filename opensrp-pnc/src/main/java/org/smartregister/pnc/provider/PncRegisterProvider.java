@@ -20,7 +20,9 @@ import org.smartregister.pnc.config.PncRegisterProviderMetadata;
 import org.smartregister.pnc.config.PncRegisterRowOptions;
 import org.smartregister.pnc.holder.FooterViewHolder;
 import org.smartregister.pnc.holder.PncRegisterViewHolder;
+import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
+import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.pnc.utils.PncViewConstants;
 import org.smartregister.util.Utils;
@@ -32,6 +34,7 @@ import org.smartregister.view.dialog.SortOption;
 import org.smartregister.view.viewholder.OnClickFormLauncher;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -178,9 +181,23 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     }
 
     public void addButtonClickListeners(@NonNull CommonPersonObjectClient client, PncRegisterViewHolder viewHolder) {
+
+        PncBaseDetails pncBaseDetails = new PncBaseDetails();
+        pncBaseDetails.setBaseEntityId(client.getCaseId());
+        pncBaseDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(pncBaseDetails);
+        if (pncBaseDetails != null && pncBaseDetails.getProperties() != null) {
+            HashMap<String, String> data = pncBaseDetails.getProperties();
+            if ("1".equals(data.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED))) {
+                viewHolder.dueButton.setText(R.string.record_pnc);
+                viewHolder.dueButton.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
+            }
+        }
+
+
         View patient = viewHolder.patientColumn;
         attachPatientOnclickListener(PncViewConstants.Provider.PATIENT_COLUMN, patient, client);
         attachPatientOnclickListener(PncViewConstants.Provider.ACTION_BUTTON_COLUMN, viewHolder.dueButton, client);
+
     }
 
     public void attachPatientOnclickListener(@NonNull String viewType, @NonNull View view, @NonNull CommonPersonObjectClient client) {

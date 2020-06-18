@@ -96,7 +96,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void saveOutcomeForm(String eventType, @Nullable Intent data) {
+    public void savePncForm(String eventType, @Nullable Intent data) {
         String jsonString = null;
         if (data != null) {
             jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
@@ -106,9 +106,9 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             try {
-                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncOutcomeForm(eventType, jsonString, data);
+                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 interactor.saveEvents(pncOutcomeAndCloseEvent, this);
             } catch (JSONException e) {
                 Timber.e(e);

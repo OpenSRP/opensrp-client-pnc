@@ -78,6 +78,53 @@ public interface PncDbConstants {
             String CHILD_HIV_STATUS = "child_hiv_status";
         }
 
+        interface PncVisit {
+            String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
+            String BASE_ENTITY_ID = "base_entity_id";
+            String PERIOD = "pnc_visit_period";
+            String FIRST_VISIT_CHECK = "pnc_first_visit_check";
+            String OUTSIDE_FACILITY = "visits_outside_facility";
+            String OUTSIDE_FACILITY_NUMBER = "visits_outside_facility_number";
+            String OTHER_VISIT_DATE = "other_pnc_visit_date_group";
+            String COMPLICATIONS = "pnc_complications";
+            String COMPLICATIONS_OTHER = "pnc_complications_other";
+            String STATUS_C_SECTION = "status_csection";
+            String EPISOTOMY_TEAR_STATUS = "episotomy_tear_status";
+            String LOCHIA_STATUS = "lochia_status";
+            String LOCHIA_STATUS_OTHER = "lochia_status_other";
+            String UTERUS_STATUS = "uterus_status";
+            String UTERUS_STATUS_OTHER = "uterus_status_other";
+            String INTERVENTION_GIVEN = "intervention_given";
+            String INTERVENTION_GIVEN_TEXT = "intervention_given_text";
+            String REFERRED_OUT = "referred_out";
+            String REFERRED_OUT_SPECIFY = "referred_out_specify";
+            String BREAST_FEEDING = "breastfeeding";
+            String NOT_BREAST_FEEDING_REASON = "not_breastfeeding_reason";
+            String VIT_A = "vit_a";
+            String VIT_A_NOT_GIVING_REASON = "vit_a_not_given_reason";
+            String FP_COUNSEL = "fp_counsel";
+            String FP_METHOD = "fp_method";
+            String FP_METHOD_OTHER = "fp_method_other";
+            String BABY_AGE = "baby_age";
+            String BABY_STATUS = "baby_status";
+            String DATE_OF_DEATH_BABY = "date_of_death_baby";
+            String PLACE_OF_DEATH_BABY = "place_of_death_baby";
+            String CAUSE_OF_DEATH_BABY = "cause_of_death_baby";
+            String DEATH_FOLLOW_UP_BABY = "death_follow_up_baby";
+            String BABY_BREAST_FEEDING = "breastfeeding";
+            String BABY_NOT_BREAST_FEEDING_REASON = "not_breastfeeding_reason";
+            String BABY_DANGER_SIGNS = "baby_danger_signs";
+            String BABY_DANGER_SIGNS_OTHER = "baby_danger_signs_other";
+            String BABY_REFERRED_OUT = "baby_referred_out";
+            String BABY_HIV_EXPOSED = "baby_hiv_exposed";
+            String MOTHER_BABY_PAIRING = "mother_baby_pairing";
+            String BABY_HIV_TREATMENT = "baby_hiv_treatment";
+            String NOT_ART_PAIRING_REASON = "not_art_pairing_reason";
+            String NOT_ART_PAIRING_REASON_OTHER = "not_art_pairing_reason_other";
+            String BABY_DBS = "baby_dbs";
+            String BABY_CARE_MGMT = "baby_care_mgt";
+        }
+
         interface PncStillBorn {
             String STILL_BIRTH_CONDITION = "still_birth_condition";
         }
@@ -90,5 +137,7 @@ public interface PncDbConstants {
         String PNC_OUTCOME_FORM = "pnc_outcome_form";
         String PNC_BABY = "pnc_baby";
         String PNC_STILL_BORN = "pnc_still_born";
+        String PNC_VISIT_INFO = "pnc_visit_info";
+        String PNC_VISIT_CHILD_STATUS = "pnc_visit_child_status";
     }
 }

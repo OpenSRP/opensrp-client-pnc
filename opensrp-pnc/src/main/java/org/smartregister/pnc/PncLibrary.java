@@ -25,6 +25,8 @@ import org.smartregister.pnc.repository.PncChildRepository;
 import org.smartregister.pnc.repository.PncOtherDetailsRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
+import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
+import org.smartregister.pnc.repository.PncVisitInfoRepository;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -67,6 +69,8 @@ public class PncLibrary {
     private UniqueIdRepository uniqueIdRepository;
     private PncChildRepository pncChildRepository;
     private PncStillBornRepository pncStillBornRepository;
+    private PncVisitInfoRepository pncVisitInfoRepository;
+    private PncVisitChildStatusRepository pncVisitChildStatusRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
     private PncOtherDetailsRepository pncOtherDetailsRepository;
     private AppExecutors appExecutors;
@@ -152,6 +156,20 @@ public class PncLibrary {
         return pncStillBornRepository;
     }
 
+    public PncVisitInfoRepository getPncVisitInfoRepository() {
+        if (pncVisitInfoRepository == null) {
+            pncVisitInfoRepository = new PncVisitInfoRepository();
+        }
+        return pncVisitInfoRepository;
+    }
+
+    public PncVisitChildStatusRepository getPncVisitChildStatusRepository() {
+        if (pncVisitChildStatusRepository == null) {
+            pncVisitChildStatusRepository = new PncVisitChildStatusRepository();
+        }
+        return pncVisitChildStatusRepository;
+    }
+
     @NonNull
     public PncOtherDetailsRepository getPncOtherDetailsRepository() {
         if (pncOtherDetailsRepository == null) {
@@ -227,7 +245,7 @@ public class PncLibrary {
     }
 
     @NonNull
-    public List<Event> processPncOutcomeForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
+    public List<Event> processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
         HashMap<String, Class<? extends PncFormProcessingTask>> pncFormProcessingTasks = getPncConfiguration().getPncFormProcessingTasks();
         List<Event> eventList = new ArrayList<>();
         if (pncFormProcessingTasks.get(eventType) != null) {
