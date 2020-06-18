@@ -72,7 +72,7 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
         contentValues.put(PncDbConstants.Column.PncVisit.BABY_DBS, data.get(PncDbConstants.Column.PncVisit.BABY_DBS));
         contentValues.put(PncDbConstants.Column.PncVisit.BABY_CARE_MGMT, data.get(PncDbConstants.Column.PncVisit.BABY_CARE_MGMT));
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_BABY, null, contentValues);
+        long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_VISIT_CHILD_STATUS, null, contentValues);
         return rows != -1;
     }
 

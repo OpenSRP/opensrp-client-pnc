@@ -17,7 +17,6 @@ import java.util.Map;
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_VISIT_INFO + "("
-            + PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisit.BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisit.PERIOD + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisit.FIRST_VISIT_CHECK + " VARCHAR NULL, "
@@ -46,8 +45,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
 
     private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
-            + "_" + PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
-            "(" + PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID + " COLLATE NOCASE);";
+            + "_" + PncDbConstants.Column.PncVisit.BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
+            "(" + PncDbConstants.Column.PncVisit.BASE_ENTITY_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
@@ -57,7 +56,6 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
     @Override
     public boolean saveOrUpdate(Map<String, String> data) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisit.PERIOD, data.get(PncDbConstants.Column.PncVisit.PERIOD));
         contentValues.put(PncDbConstants.Column.PncVisit.FIRST_VISIT_CHECK, data.get(PncDbConstants.Column.PncVisit.FIRST_VISIT_CHECK));
@@ -84,7 +82,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
         contentValues.put(PncDbConstants.Column.PncVisit.FP_METHOD, data.get(PncDbConstants.Column.PncVisit.FP_METHOD));
         contentValues.put(PncDbConstants.Column.PncVisit.FP_METHOD_OTHER, data.get(PncDbConstants.Column.PncVisit.FP_METHOD_OTHER));
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_BABY, null, contentValues);
+        long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_VISIT_INFO, null, contentValues);
         return rows != -1;
     }
 

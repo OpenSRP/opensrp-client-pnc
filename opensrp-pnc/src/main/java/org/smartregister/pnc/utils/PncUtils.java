@@ -314,6 +314,7 @@ public class PncUtils extends org.smartregister.util.Utils {
                 JSONObject valueField = jsonArray.optJSONObject(i);
                 String fieldKey = valueField.optString(JsonFormConstants.KEY);
                 keysArrayList.add(fieldKey);
+                jsonObject.remove(JsonFormConstants.VALUE);
             }
 
             for (int k = 0; k < fields.length(); k++) {

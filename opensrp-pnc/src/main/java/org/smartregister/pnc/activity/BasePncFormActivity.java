@@ -1,6 +1,7 @@
 package org.smartregister.pnc.activity;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,10 +10,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.vijay.jsonwizard.activities.JsonWizardFormActivity;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.fragment.BasePncFormFragment;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.util.LangUtils;
 
@@ -103,5 +107,28 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     @NonNull
     public HashMap<String, String> getParcelableData() {
         return parcelableData;
+    }
+
+    @Override
+    protected void toggleViewVisibility(View view, boolean visible, boolean popup) {
+
+        try {
+            String addressString = (String) view.getTag(R.id.address);
+            String[] address = addressString.split(":");
+            JSONObject object = getObjectUsingAddress(address, popup);
+            JSONArray values = null;
+            if(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE.equals(object.get("key"))) {
+                values = object.getJSONArray("value");
+                super.toggleViewVisibility(view, visible, popup);
+                object.put("value", values);
+            }
+            else {
+                super.toggleViewVisibility(view, visible, popup);
+            }
+        }
+        catch (JSONException ex) {
+            super.toggleViewVisibility(view, visible, popup);
+            Timber.e(ex);
+        }
     }
 }

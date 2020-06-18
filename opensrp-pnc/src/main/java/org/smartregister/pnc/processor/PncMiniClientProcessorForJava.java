@@ -56,6 +56,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             eventTypes.add(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_OUTCOME);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
+            eventTypes.add(PncConstants.EventTypeConstants.PNC_VISIT);
         }
 
         return eventTypes;
@@ -147,6 +148,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         Event event = eventClient.getEvent();
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
+        keyValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, event.getBaseEntityId());
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
         keyValues.put(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE, strOtherVisit);
@@ -154,8 +156,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         String strChildStatus = keyValues.get(PncConstants.JsonFormKeyConstants.CHILD_STATUS_MAP);
         processVisitChildStatus(strChildStatus, event);
 
-
-        //PncLibrary.getInstance().getPncVisitInfoRepository().saveOrUpdate(keyValues);
+        PncLibrary.getInstance().getPncVisitInfoRepository().saveOrUpdate(keyValues);
     }
 
     private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event) {
@@ -220,11 +221,13 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             try {
                 JSONObject jsonObject = new JSONObject(strChildStatus);
                 Iterator<String> repeatingGroupKeys = jsonObject.keys();
+
                 while (repeatingGroupKeys.hasNext()) {
-                    JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
+                    String key = repeatingGroupKeys.next();
+                    JSONObject jsonChildObject = jsonObject.optJSONObject(key);
                     Map<String, String> data = new HashMap<>();
-                    data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, jsonChildObject.optString(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID));
-                    data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID));
+                    data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, event.getBaseEntityId());
+                    data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, key);
                     data.put(PncDbConstants.Column.PncVisit.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_AGE));
                     data.put(PncDbConstants.Column.PncVisit.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_STATUS));
                     data.put(PncDbConstants.Column.PncVisit.DATE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisit.DATE_OF_DEATH_BABY));
@@ -243,8 +246,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     data.put(PncDbConstants.Column.PncVisit.NOT_ART_PAIRING_REASON_OTHER, jsonChildObject.optString(PncDbConstants.Column.PncVisit.NOT_ART_PAIRING_REASON_OTHER));
                     data.put(PncDbConstants.Column.PncVisit.BABY_DBS, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_DBS));
                     data.put(PncDbConstants.Column.PncVisit.BABY_CARE_MGMT, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_CARE_MGMT));
-                    int j = 0;
-                    //PncLibrary.getInstance().getPncVisitChildStatusRepository().saveOrUpdate(data);
+                    PncLibrary.getInstance().getPncVisitChildStatusRepository().saveOrUpdate(data);
                 }
             } catch (JSONException e) {
                 Timber.e(e);
