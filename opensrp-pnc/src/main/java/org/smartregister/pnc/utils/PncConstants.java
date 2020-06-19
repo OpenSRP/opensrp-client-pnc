@@ -86,6 +86,27 @@ public class PncConstants extends AllConstants {
         public static final String CHILD_STATUS_MAP = "child_status_map";
         public static final String OUTCOME_SUBMITTED = "outcome_submitted";
         public static final String BABY_COUNT_ALIVE = "baby_count_alive";
+
+
+        public static final String CHILD_REGISTERED = "child_registered";
+        public static final String BIRTH_RECORD = "birth_record_date";
+        public static final String BABY_FIRST_NAME = "baby_first_name";
+        public static final String BABY_LAST_NAME = "baby_last_name";
+        public static final String BABY_DOB = "baby_dob";
+        public static final String BABY_GENDER = "baby_gender";
+        public static final String BIRTH_WEIGHT_ENTERED = "birth_weight_entered";
+        public static final String BIRTH_WEIGHT = "birth_weight";
+        public static final String BIRTH_HEIGHT_ENTERED = "birth_height_entered";
+        public static final String APGAR = "apgar";
+        public static final String BABY_FIRST_CRY = "baby_first_cry";
+        public static final String BABY_COMPLICATIONS = "baby_complications";
+        public static final String BABY_COMPLICATIONS_OTHER = "baby_complications_other";
+        public static final String BABY_CARE_MGMT = "baby_care_mgt";
+        public static final String BABY_CARE_MGMT_SPECIFY = "baby_care_mgt_specify";
+        public static final String BABY_REF_LOCATION = "baby_referral_location";
+        public static final String BF_FIRST_HOUR = "bf_first_hour";
+        public static final String CHILD_HIV_STATUS = "child_hiv_status";
+        public static final String NVP_ADMINISTRATION = "nvp_administration";
     }
 
     public static class JsonFormExtraConstants {

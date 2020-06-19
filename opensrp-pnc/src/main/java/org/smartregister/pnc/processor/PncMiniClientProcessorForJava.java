@@ -42,7 +42,6 @@ import timber.log.Timber;
 public class PncMiniClientProcessorForJava extends ClientProcessorForJava implements MiniClientProcessorForJava {
 
     private HashSet<String> eventTypes = null;
-
     public PncMiniClientProcessorForJava(Context context) {
         super(context);
     }
@@ -70,61 +69,45 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     @Override
     public void processEventClient(@NonNull EventClient eventClient, @NonNull List<Event> unsyncEvents, @Nullable ClientClassification clientClassification) throws Exception {
 
-        /*if (eventType.equals(PncConstants.EventTypeConstants.PNC_REGISTRATION)
-                || eventType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
-            if (eventClient.getClient() == null) {
-                throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.PNC_CLOSE));
-            }
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-            unsyncEvents.add(event);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            processPncOutcome(event);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-        }*/
-
-
         Event event = eventClient.getEvent();
-
         String eventType = event.getEventType();
 
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_REGISTRATION)
-                || eventType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
-            ArrayList<EventClient> eventClients = new ArrayList<>();
-            eventClients.add(eventClient);
-            processClient(eventClients);
+        switch (eventType) {
+            case PncConstants.EventTypeConstants.PNC_REGISTRATION:
+            case PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION:
+                ArrayList<EventClient> eventClients = new ArrayList<>();
+                eventClients.add(eventClient);
+                processClient(eventClients);
 
-            //updateRegisterTypeColumn(event, "maternity");
+                HashMap<String, String> keyValues = new HashMap<>();
+                generateKeyValuesFromEvent(event, keyValues, true);
 
-            HashMap<String, String> keyValues = new HashMap<>();
-            generateKeyValuesFromEvent(event, keyValues, true);
+                PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
+                pncDetails.setCreatedAt(new Date());
 
-            PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-            pncDetails.setCreatedAt(new Date());
+                PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
 
-            PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
-
-//            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-//            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
-            if (eventClient.getClient() == null) {
-                throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.PNC_CLOSE));
-            }
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-            unsyncEvents.add(event);
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            processPncOutcome(eventClient);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
-        } else if (eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
-            processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-            processPncVisit(eventClient);
-            CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                break;
+            case PncConstants.EventTypeConstants.PNC_CLOSE:
+                if (eventClient.getClient() == null) {
+                    throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.PNC_CLOSE));
+                }
+                processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                unsyncEvents.add(event);
+                break;
+            case PncConstants.EventTypeConstants.PNC_OUTCOME:
+                processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+                processPncOutcome(eventClient);
+                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                break;
+            case PncConstants.EventTypeConstants.PNC_VISIT:
+                processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+                processPncVisit(eventClient);
+                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                break;
         }
     }
 
@@ -168,26 +151,26 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncChild pncChild = new PncChild();
                     pncChild.setMotherBaseEntityId(event.getBaseEntityId());
-                    pncChild.setDischargedAlive(jsonChildObject.optString("discharged_alive"));
-                    pncChild.setChildRegistered(jsonChildObject.optString("child_registered"));
-                    pncChild.setBirthRecordDate(jsonChildObject.optString("birth_record_date"));
-                    pncChild.setFirstName(jsonChildObject.optString("baby_first_name"));
-                    pncChild.setLastName(jsonChildObject.optString("baby_last_name"));
-                    pncChild.setDob(jsonChildObject.optString("baby_dob"));
-                    pncChild.setGender(jsonChildObject.optString("baby_gender"));
-                    pncChild.setWeightEntered(jsonChildObject.optString("birth_weight_entered"));
-                    pncChild.setWeight(jsonChildObject.optString("birth_weight"));
-                    pncChild.setHeightEntered(jsonChildObject.optString("birth_height_entered"));
-                    pncChild.setApgar(jsonChildObject.optString("apgar"));
-                    pncChild.setFirstCry(jsonChildObject.optString("baby_first_cry"));
-                    pncChild.setComplications(jsonChildObject.optString("baby_complications"));
-                    pncChild.setComplicationsOther(jsonChildObject.optString("baby_complications_other"));
-                    pncChild.setCareMgt(jsonChildObject.optString("baby_care_mgt"));
-                    pncChild.setCareMgtSpecify(jsonChildObject.optString("baby_care_mgt_specify"));
-                    pncChild.setRefLocation(jsonChildObject.optString("baby_referral_location"));
-                    pncChild.setBfFirstHour(jsonChildObject.optString("bf_first_hour"));
-                    pncChild.setChildHivStatus(jsonChildObject.optString("child_hiv_status"));
-                    pncChild.setNvpAdministration(jsonChildObject.optString("nvp_administration"));
+                    pncChild.setDischargedAlive(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE));
+                    pncChild.setChildRegistered(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED));
+                    pncChild.setBirthRecordDate(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BIRTH_RECORD));
+                    pncChild.setFirstName(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_FIRST_NAME));
+                    pncChild.setLastName(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_LAST_NAME));
+                    pncChild.setDob(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_DOB));
+                    pncChild.setGender(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_GENDER));
+                    pncChild.setWeightEntered(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BIRTH_WEIGHT_ENTERED));
+                    pncChild.setWeight(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BIRTH_WEIGHT));
+                    pncChild.setHeightEntered(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BIRTH_HEIGHT_ENTERED));
+                    pncChild.setApgar(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.APGAR));
+                    pncChild.setFirstCry(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_FIRST_CRY));
+                    pncChild.setComplications(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_COMPLICATIONS));
+                    pncChild.setComplicationsOther(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_COMPLICATIONS_OTHER));
+                    pncChild.setCareMgt(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_CARE_MGMT));
+                    pncChild.setCareMgtSpecify(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_CARE_MGMT_SPECIFY));
+                    pncChild.setRefLocation(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BABY_REF_LOCATION));
+                    pncChild.setBfFirstHour(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BF_FIRST_HOUR));
+                    pncChild.setChildHivStatus(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_HIV_STATUS));
+                    pncChild.setNvpAdministration(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.NVP_ADMINISTRATION));
                     pncChild.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
                     PncLibrary.getInstance().getPncChildRepository().saveOrUpdate(pncChild);
                 }
@@ -299,18 +282,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
     @Override
     public boolean unSync(@Nullable List<Event> events) {
-        // Do nothing for now
-        /*if (events != null) {
-            for (Event event : events) {
-                if (PncConstants.EventType.PNC_CLOSE.equals(event.getEventType())) {
-                    // Delete the pnc details
-                    // PncLibrary.getInstance().getPncOtherDetailsRepository().delete(event.getBaseEntityId());
-
-                    // Delete the actual client in the pnc table OR REMOVE THE Pnc register type
-                    //updateRegisterTypeColumn(event, null);
-                }
-            }
-        }*/
         return true;
     }
 }
