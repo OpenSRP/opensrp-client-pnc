@@ -8,6 +8,10 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.smartregister.pnc.dao.PncGenericDao;
 import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.utils.PncDbConstants;
@@ -94,9 +98,21 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         throw new NotImplementedException("");
     }
 
-    public int countNumberOfChild(String baseEntityId) {
+    public int countBaby28DaysOld(String baseEntityId) {
+        int count = 0;
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null);
-        return cursor.getCount();
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null)) {
+            while (cursor.moveToNext()) {
+                String rawDate = cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DOB));
+                if (StringUtils.isNotBlank(rawDate)) {
+                    LocalDate deliveryDate = LocalDate.parse(rawDate, DateTimeFormat.forPattern("dd-MM-yyyy"));
+                    int howBabyOldInDays = Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
+                    if (howBabyOldInDays <= 28) {
+                        ++count;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }

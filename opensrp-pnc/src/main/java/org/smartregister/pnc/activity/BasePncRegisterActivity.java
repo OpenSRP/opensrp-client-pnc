@@ -180,7 +180,7 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
             String step = "step3";
             if (form.has(step)) {
                 JSONObject childStatusObject = form.getJSONObject(step).getJSONArray("fields").getJSONObject(0);
-                int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countNumberOfChild(baseEntityId);
+                int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId);
                 childStatusObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
             }
         }
