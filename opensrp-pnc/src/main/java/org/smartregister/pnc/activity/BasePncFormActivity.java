@@ -77,7 +77,7 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
 
     protected void initializeFormFragmentCore() {
         BasePncFormFragment pncFormFragment = (BasePncFormFragment) BasePncFormFragment.getFormFragment(JsonFormConstants.FIRST_STEP_NAME);
-        getSupportFragmentManager().beginTransaction().add(com.vijay.jsonwizard.R.id.container, pncFormFragment).addToBackStack(pncFormFragment.getArguments().getString(JsonFormConstants.STEPNAME)).commit();
+        getSupportFragmentManager().beginTransaction().add(com.vijay.jsonwizard.R.id.container, pncFormFragment).commit();
     }
 
     @Override

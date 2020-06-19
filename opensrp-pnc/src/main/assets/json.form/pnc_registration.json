@@ -387,18 +387,18 @@
           "label_text_style": "bold",
           "options": [
             {
-              "key": "married_living_together",
-              "text": "Married & living together",
+              "key": "married",
+              "text": "Married",
+              "openmrs_entity_parent": "",
+              "openmrs_entity": "concept",
+              "openmrs_entity_id": "5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            },
+            {
+              "key": "living_together",
+              "text": "Living together",
               "openmrs_entity_parent": "",
               "openmrs_entity": "concept",
               "openmrs_entity_id": "1055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-            },
-            {
-              "key": "previously_married",
-              "text": "Married & not living together",
-              "openmrs_entity_parent": "",
-              "openmrs_entity": "concept",
-              "openmrs_entity_id": "163007AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             },
             {
               "key": "divorced",
@@ -406,6 +406,13 @@
               "openmrs_entity_parent": "",
               "openmrs_entity": "concept",
               "openmrs_entity_id": "1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            },
+            {
+              "key": "Married_and_not_living_together",
+              "text": "Married & Not Living Together",
+              "openmrs_entity_parent": "",
+              "openmrs_entity": "concept",
+              "openmrs_entity_id": "163007AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             },
             {
               "key": "single",

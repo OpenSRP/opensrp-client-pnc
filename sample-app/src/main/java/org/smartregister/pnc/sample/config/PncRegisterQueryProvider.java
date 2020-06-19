@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.cursoradapter.SmartRegisterQueryBuilder;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.utils.PncUtils;
 
@@ -36,7 +35,7 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     public String[] countExecuteQueries(@Nullable String filters, @Nullable String mainCondition) {
         SmartRegisterQueryBuilder sqb = new SmartRegisterQueryBuilder();
         return new String[] {
-                sqb.countQueryFts(PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getTableName(), null, null, filters)
+                sqb.countQueryFts(PncUtils.metadata().getTableName(), null, null, filters)
         };
     }
 
