@@ -189,7 +189,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     JSONObject jsonTestObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncStillBorn pncStillBorn = new PncStillBorn();
                     pncStillBorn.setMotherBaseEntityId(event.getBaseEntityId());
-                    pncStillBorn.setStillBirthCondition(jsonTestObject.optString("stillbirth_condition"));
+                    pncStillBorn.setStillBirthCondition(jsonTestObject.optString(PncConstants.JsonFormKeyConstants.STILL_BIRTH_CONDITION));
                     pncStillBorn.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
                     PncLibrary.getInstance().getPncStillBornRepository().saveOrUpdate(pncStillBorn);
                 }

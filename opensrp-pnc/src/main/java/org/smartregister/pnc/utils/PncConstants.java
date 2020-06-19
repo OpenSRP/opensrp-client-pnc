@@ -107,6 +107,8 @@ public class PncConstants extends AllConstants {
         public static final String BF_FIRST_HOUR = "bf_first_hour";
         public static final String CHILD_HIV_STATUS = "child_hiv_status";
         public static final String NVP_ADMINISTRATION = "nvp_administration";
+
+        public static final String STILL_BIRTH_CONDITION = "stillbirth_condition";
     }
 
     public static class JsonFormExtraConstants {
