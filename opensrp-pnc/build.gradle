@@ -4,13 +4,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidToolsBuildGradle"
+        classpath "com.android.tools.build:gradle:4.0.0"
         classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:$coverallsVersion"
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
+apply plugin: "com.hiya.jacoco-android"
 apply plugin: 'com.github.kt3k.coveralls'
 
 jacoco {
@@ -160,26 +161,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    getReports().getXml().setDestination(file("${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"))
-    getReports().getHtml().setDestination(file("${buildDir}/reports/jacoco/jacocoRootReport.html"))
-
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$ViewBinder*.*']
-    def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes/", excludes: fileFilter)
-    def mainSrc = "$project.projectDir/src/main/java"
-
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
-}
 
 coveralls {
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
