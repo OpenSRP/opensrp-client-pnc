@@ -57,6 +57,7 @@ public class PncConstants extends AllConstants {
         public static final String DOB_ENTERED = "dob_entered";
         public static final String HOME_ADDRESS_WIDGET_KEY = "home_address";
         public static final String VILLAGE_ADDRESS_WIDGET_KEY = "village";
+        public static final String REMINDERS = "reminders";
 
         public static final String SERVICE_FEE = "service_fee";
         public static final String VISIT_ID = "visitId";
