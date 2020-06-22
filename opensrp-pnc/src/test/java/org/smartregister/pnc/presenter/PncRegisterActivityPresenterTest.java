@@ -1,7 +1,6 @@
 package org.smartregister.pnc.presenter;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -24,8 +23,9 @@ public class PncRegisterActivityPresenterTest extends BaseTest {
     private PncLibrary maternityLibrary;
 
 
-    @Before
+    @Override
     public void setUp() {
+        super.setUp();
         ReflectionHelpers.setStaticField(PncLibrary.class, "instance", maternityLibrary);
         presenter = new TestPncRegisterActivityPresenter(view, model);
     }

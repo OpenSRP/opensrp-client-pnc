@@ -1,7 +1,6 @@
 package org.smartregister.pnc.presenter;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +29,9 @@ public class PncProfileOverviewFragmentPresenterTest extends BaseTest {
 
     private PncProfileOverviewFragmentContract.Model model;
 
-    @Before
-    public void setUp() throws Exception {
+    @Override
+    public void setUp() {
+        super.setUp();
         ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
         presenter = Mockito.spy(new PncProfileOverviewFragmentPresenter(view));
         PncProfileOverviewFragmentContract.Model model = ReflectionHelpers.getField(presenter, "model");

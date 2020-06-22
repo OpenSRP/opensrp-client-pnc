@@ -22,7 +22,7 @@ public class ShadowDate {
     }
 
     @Implementation
-    public void __constructor__() {
+    public void Constructor() {
         if (isTimeSetExplicitly) {
             realDate.setTime(currentTime);
         } else {

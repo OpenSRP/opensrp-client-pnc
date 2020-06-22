@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,8 +43,9 @@ public class PncProfileActivityPresenterTest extends BaseTest {
     @Mock
     private PncLibrary pncLibrary;
 
-    @Before
-    public void setUp() throws Exception {
+    @Override
+    public void setUp() {
+        super.setUp();
         ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
 
         presenter = Mockito.spy(new PncProfileActivityPresenter(view));

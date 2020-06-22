@@ -39,8 +39,8 @@ public class PncChildRepositoryTest extends BaseTest {
     private PncChild pncChild;
 
     @Override
-    public void setup() {
-        super.setup();
+    public void setUp() {
+        super.setUp();
         pncChildRepository = PowerMockito.spy(new PncChildRepository());
         pncChild = PowerMockito.spy(new PncChild());
     }

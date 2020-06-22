@@ -23,7 +23,7 @@ public abstract class BaseTest {
     protected DrishtiApplication drishtiApplication = Mockito.mock(DrishtiApplication.class);
 
     @Before
-    public void setup() {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         ReflectionHelpers.setStaticField(DrishtiApplication.class, "mInstance", drishtiApplication);
     }

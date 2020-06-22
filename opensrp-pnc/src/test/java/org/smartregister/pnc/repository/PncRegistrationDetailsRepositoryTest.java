@@ -12,7 +12,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.view.activity.DrishtiApplication;
 
@@ -28,13 +27,11 @@ public class PncRegistrationDetailsRepositoryTest extends BaseTest {
     private SQLiteDatabase sqLiteDatabase;
 
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
-    private PncChild pncChild;
 
     @Override
-    public void setup() {
-        super.setup();
+    public void setUp() {
+        super.setUp();
         pncRegistrationDetailsRepository = PowerMockito.spy(new PncRegistrationDetailsRepository());
-        pncChild = PowerMockito.spy(new PncChild());
     }
 
     @Test
