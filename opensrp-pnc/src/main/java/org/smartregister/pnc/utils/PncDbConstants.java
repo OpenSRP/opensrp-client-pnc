@@ -81,6 +81,7 @@ public interface PncDbConstants {
         interface PncVisit {
             String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
+            String CREATED_AT = "created_at";
             String PERIOD = "pnc_visit_period";
             String FIRST_VISIT_CHECK = "pnc_first_visit_check";
             String OUTSIDE_FACILITY = "visits_outside_facility";

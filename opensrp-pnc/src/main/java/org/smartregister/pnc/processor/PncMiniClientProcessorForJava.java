@@ -21,6 +21,7 @@ import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.PncStillBorn;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
@@ -129,15 +130,20 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
     private void processPncVisit(@NonNull EventClient eventClient) {
         Event event = eventClient.getEvent();
+
+        String parentBaseEntityId = event.getBaseEntityId();
+        String baseEntityId = PncJsonFormUtils.generateRandomUUIDString();
+
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
-        keyValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, event.getBaseEntityId());
+        keyValues.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
+        keyValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, baseEntityId);
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
         keyValues.put(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE, strOtherVisit);
 
         String strChildStatus = keyValues.get(PncConstants.JsonFormKeyConstants.CHILD_STATUS_MAP);
-        processVisitChildStatus(strChildStatus, event);
+        processVisitChildStatus(strChildStatus, baseEntityId);
 
         PncLibrary.getInstance().getPncVisitInfoRepository().saveOrUpdate(keyValues);
     }
@@ -199,7 +205,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processVisitChildStatus(@Nullable String strChildStatus, @NonNull Event event) {
+    private void processVisitChildStatus(@Nullable String strChildStatus, String parentBaseEntityId) {
         if (StringUtils.isNotBlank(strChildStatus)) {
             try {
                 JSONObject jsonObject = new JSONObject(strChildStatus);
@@ -209,7 +215,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     String key = repeatingGroupKeys.next();
                     JSONObject jsonChildObject = jsonObject.optJSONObject(key);
                     Map<String, String> data = new HashMap<>();
-                    data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, event.getBaseEntityId());
+                    data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
                     data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, key);
                     data.put(PncDbConstants.Column.PncVisit.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_AGE));
                     data.put(PncDbConstants.Column.PncVisit.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisit.BABY_STATUS));
