@@ -57,15 +57,15 @@ public class PncLookUpUtilsTest {
     @Test
     public void testClientLookUpWhenContextIsNull() throws Exception {
         Map<String, String> entityLookUp = new HashMap<>();
-        List<CommonPersonObject> result = Whitebox.invokeMethod(PncLookUpUtils.class, "clientLookUp", (Object) null, entityLookUp);
+        List<CommonPersonObject> result = PncLookUpUtils.clientLookUp(null, entityLookUp);;
         List<CommonPersonObject> expectedResult = new ArrayList<>();
         Assert.assertEquals(expectedResult, result);
     }
 
     @Test
-    public void testClientLookUpWhenMapIsEmpty() throws Exception {
+    public void testClientLookUpWhenMapIsEmpty() {
         Map<String, String> entityLookUp = new HashMap<>();
-        List<CommonPersonObject> result = Whitebox.invokeMethod(PncLookUpUtils.class, "clientLookUp", PowerMockito.mock(Context.class), entityLookUp);
+        List<CommonPersonObject> result = PncLookUpUtils.clientLookUp(PowerMockito.mock(Context.class), entityLookUp);
         List<CommonPersonObject> expectedResult = new ArrayList<>();
         Assert.assertEquals(expectedResult, result);
     }
@@ -76,7 +76,7 @@ public class PncLookUpUtilsTest {
                 BuildConfig.VERSION_CODE, 1);
         Map<String, String> entityLookUp = new HashMap<>();
         entityLookUp.put("first_name", "");
-        List<CommonPersonObject> result = Whitebox.invokeMethod(PncLookUpUtils.class, "clientLookUp", PowerMockito.mock(Context.class), entityLookUp);
+        List<CommonPersonObject> result = PncLookUpUtils.clientLookUp(PowerMockito.mock(Context.class), entityLookUp);
         List<CommonPersonObject> expectedResult = new ArrayList<>();
         Assert.assertEquals(expectedResult, result);
     }

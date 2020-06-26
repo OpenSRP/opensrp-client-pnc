@@ -19,7 +19,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.powermock.reflect.internal.WhiteboxImpl;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
@@ -151,8 +150,8 @@ public class PncJsonFormUtilsTest {
         ReflectionHelpers.setStaticField(LocationHelper.class, "instance", locationHelper);
 
         Mockito.doReturn(entireTree).when(locationHelper).generateLocationHierarchyTree(ArgumentMatchers.anyBoolean(), ArgumentMatchers.eq(healthFacilities));
-
-        WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
+        PncJsonFormUtils.updateLocationTree(jsonArray, entireTreeString, entireTreeString);
+        //WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
         Assert.assertTrue(jsonObject.has(JsonFormConstants.TREE));
         Assert.assertTrue(jsonObject.has(JsonFormConstants.DEFAULT));
         //Assert.assertEquals(hierarchyString, jsonObject.optString(JsonFormConstants.DEFAULT));

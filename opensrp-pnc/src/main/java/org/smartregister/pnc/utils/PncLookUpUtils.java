@@ -40,7 +40,7 @@ public class PncLookUpUtils {
         return mainConditionString;
     }
 
-    private static List<CommonPersonObject> clientLookUp(@Nullable Context context, @NonNull Map<String, String> entityLookUp) {
+    public static List<CommonPersonObject> clientLookUp(@Nullable Context context, @NonNull Map<String, String> entityLookUp) {
         List<CommonPersonObject> results = new ArrayList<>();
         if (context == null) {
             return results;

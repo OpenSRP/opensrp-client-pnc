@@ -226,7 +226,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
-    private static void updateLocationTree(@NonNull JSONArray questions, @Nullable String defaultLocationString, @Nullable String defaultFacilityString, @Nullable String entireTreeString) throws JSONException {
+    public static void updateLocationTree(@NonNull JSONArray questions, @Nullable String defaultFacilityString, @Nullable String entireTreeString) throws JSONException {
         PncMetadata pncMetadata = PncUtils.metadata();
         if (pncMetadata != null && pncMetadata.getFieldsWithLocationHierarchy() != null && !pncMetadata.getFieldsWithLocationHierarchy().isEmpty()) {
             for (int i = 0; i < questions.length(); i++) {
