@@ -7,14 +7,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PncProfileOverviewFragmentPresenterTest extends BaseTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

@@ -11,8 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.AllConstants;
 import org.smartregister.Context;
@@ -27,7 +27,7 @@ import org.smartregister.repository.AllSharedPreferences;
 
 import java.util.HashMap;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PncProfileActivityPresenterTest extends BaseTest {
 
     private PncProfileActivityPresenter presenter;
@@ -170,7 +170,6 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         Context context = Mockito.mock(Context.class);
         AllSharedPreferences allSharedPreferences = Mockito.mock(AllSharedPreferences.class);
         Mockito.doReturn(context).when(pncLibrary).context();
-        Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
         Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
 
         // Mock call to PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID)

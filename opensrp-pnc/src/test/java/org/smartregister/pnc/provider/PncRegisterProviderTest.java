@@ -17,8 +17,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.BuildConfig;
@@ -31,13 +31,13 @@ import org.smartregister.pnc.holder.PncRegisterViewHolder;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.contract.SmartRegisterClient;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PncRegisterProviderTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private PncRegisterProvider pncyRegisterProvider;
+    private PncRegisterProvider pncRegisterProvider;
 
     @Mock
     private Context context;
@@ -56,18 +56,18 @@ public class PncRegisterProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        BasePncRegisterProviderMetadata pncyRegisterProviderMetadata = Mockito.spy(new BasePncRegisterProviderMetadata());
+        BasePncRegisterProviderMetadata pncRegisterProviderMetadata = Mockito.spy(new BasePncRegisterProviderMetadata());
         Mockito.doReturn(mockedView).when(inflator).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.anyBoolean());
         Mockito.doReturn(inflator).when(context).getSystemService(Mockito.eq(Context.LAYOUT_INFLATER_SERVICE));
 
-        PncConfiguration pncyConfiguration = new PncConfiguration.Builder(PncRegisterQueryProvider.class)
+        PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProvider.class)
                 .setPncRegisterProviderMetadata(BasePncRegisterProviderMetadata.class)
                 .build();
 
-        PncLibrary.init(Mockito.mock(org.smartregister.Context.class), Mockito.mock(Repository.class), pncyConfiguration, BuildConfig.VERSION_CODE, 1);
+        PncLibrary.init(Mockito.mock(org.smartregister.Context.class), Mockito.mock(Repository.class), pncConfiguration, BuildConfig.VERSION_CODE, 1);
 
-        pncyRegisterProvider = new PncRegisterProvider(context, onClickListener, paginationClickListener);
-        ReflectionHelpers.setField(pncyRegisterProvider, "pncyRegisterProviderMetadata", pncyRegisterProviderMetadata);
+        pncRegisterProvider = new PncRegisterProvider(context, onClickListener, paginationClickListener);
+        ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterProviderMetadata", pncRegisterProviderMetadata);
     }
 
     @After
@@ -82,7 +82,7 @@ public class PncRegisterProviderTest {
         //PowerMockito.mockStatic(Utils.class);
         CommonPersonObjectClient client = Mockito.mock(CommonPersonObjectClient.class);
         Mockito.doReturn("2016-07-24T03:00:00.000+03:00")
-                .when(pncyRegisterProviderMetadata)
+                .when(pncRegisterProviderMetadata)
                 .getDob(Mockito.any(Map.class));
         //PowerMockito.when(Utils.getDuration("2016-07-24T03:00:00.000+03:00")).thenReturn("3y 4m");
         Resources resources = Mockito.mock(Resources.class);
@@ -93,28 +93,28 @@ public class PncRegisterProviderTest {
         PncRegisterViewHolder viewHolder = Mockito.mock(PncRegisterViewHolder.class);
         viewHolder.patientColumn = Mockito.mock(View.class);
         viewHolder.dueButton = Mockito.mock(Button.class);
-        pncyRegisterProvider.populatePatientColumn(client, viewHolder);
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        pncRegisterProvider.populatePatientColumn(client, viewHolder);
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getClientFirstName(Mockito.eq(client.getColumnmaps()));
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getClientMiddleName(Mockito.eq(client.getColumnmaps()));
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getClientLastName(Mockito.eq(client.getColumnmaps()));
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getDob(Mockito.eq(client.getColumnmaps()));
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getGA(Mockito.eq(client.getColumnmaps()));
-        Mockito.verify(pncyRegisterProviderMetadata, Mockito.times(1))
+        Mockito.verify(pncRegisterProviderMetadata, Mockito.times(1))
                 .getPatientID(Mockito.eq(client.getColumnmaps()));
     }*/
 
     @Test
     public void createViewHolderShouldUseCustomViewHolderinRowOptions() {
         PncRegisterRowOptions rowOptions = Mockito.mock(PncRegisterRowOptions.class);
-        ReflectionHelpers.setField(pncyRegisterProvider, "pncyRegisterRowOptions", rowOptions);
+        ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterRowOptions", rowOptions);
         Mockito.doReturn(true).when(rowOptions).isCustomViewHolder();
 
-        pncyRegisterProvider.createViewHolder(Mockito.mock(ViewGroup.class));
+        pncRegisterProvider.createViewHolder(Mockito.mock(ViewGroup.class));
 
         Mockito.verify(rowOptions, Mockito.times(1)).createCustomViewHolder(Mockito.any(View.class));
     }
@@ -124,11 +124,11 @@ public class PncRegisterProviderTest {
         int layoutId = 49834;
 
         PncRegisterRowOptions rowOptions = Mockito.mock(PncRegisterRowOptions.class);
-        ReflectionHelpers.setField(pncyRegisterProvider, "pncyRegisterRowOptions", rowOptions);
+        ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterRowOptions", rowOptions);
         Mockito.doReturn(true).when(rowOptions).useCustomViewLayout();
         Mockito.doReturn(layoutId).when(rowOptions).getCustomViewLayoutId();
 
-        pncyRegisterProvider.createViewHolder(Mockito.mock(ViewGroup.class));
+        pncRegisterProvider.createViewHolder(Mockito.mock(ViewGroup.class));
 
         Mockito.verify(rowOptions, Mockito.times(2)).getCustomViewLayoutId();
         Mockito.verify(inflator, Mockito.times(1)).inflate(Mockito.eq(layoutId), Mockito.any(ViewGroup.class), Mockito.anyBoolean());
@@ -137,11 +137,11 @@ public class PncRegisterProviderTest {
     @Test
     public void getViewShouldCallRowOptionsPopulateClientRowWhenDefaultCustomImplementationIsProvided() {
         PncRegisterRowOptions rowOptions = Mockito.mock(PncRegisterRowOptions.class);
-        ReflectionHelpers.setField(pncyRegisterProvider, "pncyRegisterRowOptions", rowOptions);
+        ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterRowOptions", rowOptions);
 
         Mockito.doReturn(true).when(rowOptions).isDefaultPopulatePatientColumn();
 
-        pncyRegisterProvider.getView(Mockito.mock(Cursor.class)
+        pncRegisterProvider.getView(Mockito.mock(Cursor.class)
                 , Mockito.mock(CommonPersonObjectClient.class)
                 , Mockito.mock(PncRegisterViewHolder.class));
 

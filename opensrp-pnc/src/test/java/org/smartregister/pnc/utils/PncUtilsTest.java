@@ -1,14 +1,8 @@
 package org.smartregister.pnc.utils;
 
-import android.content.Context;
 import android.content.Intent;
 
-import com.vijay.jsonwizard.constants.JsonFormConstants;
-import com.vijay.jsonwizard.domain.Form;
-
 import org.jeasy.rules.api.Facts;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,23 +11,21 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.activity.BasePncFormActivity;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.pojo.PncMetadata;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PncUtilsTest {
 
     @Rule
@@ -125,30 +117,4 @@ public class PncUtilsTest {
         assertTrue(PncUtils.isTemplate("Project Name: {project_name}"));
     }
 
-    @Test
-    public void buildActivityFormIntentShouldCreateIntentWithWizardEnabledWhenFormHasMoreThanOneStep() throws JSONException {
-        // Mock calls to PncLibrary
-        ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
-        Mockito.doReturn(pncConfiguration).when(pncLibrary).getPncConfiguration();
-        Mockito.doReturn(pncMetadata).when(pncConfiguration).getPncMetadata();
-        Mockito.doReturn(BasePncFormActivity.class).when(pncMetadata).getPncFormActivity();
-
-        JSONObject jsonForm = new JSONObject();
-        jsonForm.put("step1", new JSONObject());
-        jsonForm.put("step2", new JSONObject());
-        jsonForm.put("step3", new JSONObject());
-
-        jsonForm.put(PncJsonFormUtils.ENCOUNTER_TYPE, PncConstants.EventTypeConstants.PNC_OUTCOME);
-
-        HashMap<String, String> parcelableData = new HashMap<>();
-        String baseEntityId = "89283-23dsd-23sdf";
-        parcelableData.put(PncConstants.IntentKey.BASE_ENTITY_ID, baseEntityId);
-
-        Intent actualResult = PncUtils.buildFormActivityIntent(jsonForm, parcelableData, Mockito.mock(Context.class));
-        Form form = (Form) actualResult.getSerializableExtra(JsonFormConstants.JSON_FORM_KEY.FORM);
-
-        assertTrue(form.isWizard());
-        assertEquals(PncConstants.EventTypeConstants.PNC_OUTCOME, form.getName());
-        assertEquals(baseEntityId, actualResult.getStringExtra(PncConstants.IntentKey.BASE_ENTITY_ID));
-    }
 }
