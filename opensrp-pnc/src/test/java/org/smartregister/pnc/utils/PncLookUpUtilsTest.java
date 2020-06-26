@@ -57,7 +57,7 @@ public class PncLookUpUtilsTest {
     @Test
     public void testClientLookUpWhenContextIsNull() throws Exception {
         Map<String, String> entityLookUp = new HashMap<>();
-        List<CommonPersonObject> result = PncLookUpUtils.clientLookUp(null, entityLookUp);;
+        List<CommonPersonObject> result = PncLookUpUtils.clientLookUp(null, entityLookUp);
         List<CommonPersonObject> expectedResult = new ArrayList<>();
         Assert.assertEquals(expectedResult, result);
     }

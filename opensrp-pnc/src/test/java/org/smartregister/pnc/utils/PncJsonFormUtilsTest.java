@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
@@ -126,7 +125,7 @@ public class PncJsonFormUtilsTest {
         jsonObject.put(JsonFormConstants.KEY, "village");
         jsonObject.put(JsonFormConstants.TYPE, JsonFormConstants.TREE);
         jsonArray.put(jsonObject);
-        String hierarchyString = "[\"Kenya\",\"Central\"]";
+        //String hierarchyString = "[\"Kenya\",\"Central\"]";
         String entireTreeString = "[{\"nodes\":[{\"level\":\"Province\",\"name\":\"Central\",\"key\":\"1\"}],\"level\":\"Country\",\"name\":\"Kenya\",\"key\":\"0\"}]";
         ArrayList<String> healthFacilities = new ArrayList<>();
         healthFacilities.add("Country");
@@ -393,7 +392,7 @@ public class PncJsonFormUtilsTest {
         jsonObject.put(PncConstants.JsonFormKeyConstants.OPTIONS, jsonArrayOptions);
         jsonArrayFields.put(jsonObject);
 
-        Whitebox.invokeMethod(PncJsonFormUtils.class, "processReminder", jsonArrayFields);
+        PncJsonFormUtils.processReminder(jsonArrayFields);
 
         String expected = "[{\"options\":[{\"value\":\"true\"}],\"value\":1,\"key\":\"reminders\"}]";
         Assert.assertEquals(expected, jsonArrayFields.toString());
@@ -414,7 +413,7 @@ public class PncJsonFormUtilsTest {
         jsonObject.put(PncConstants.JsonFormKeyConstants.OPTIONS, jsonArrayOptions);
         jsonArrayFields.put(jsonObject);
 
-        Whitebox.invokeMethod(PncJsonFormUtils.class, "processReminder", jsonArrayFields);
+        PncJsonFormUtils.processReminder(jsonArrayFields);
 
         String expected = "[{\"options\":[{\"value\":\"false\"}],\"value\":0,\"key\":\"reminders\"}]";
         Assert.assertEquals(expected, jsonArrayFields.toString());

@@ -564,7 +564,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
-    private static void processReminder(@NonNull JSONArray fields) {
+    public static void processReminder(@NonNull JSONArray fields) {
         try {
             JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JsonFormKeyConstants.REMINDERS);
             if (reminderObject != null) {
