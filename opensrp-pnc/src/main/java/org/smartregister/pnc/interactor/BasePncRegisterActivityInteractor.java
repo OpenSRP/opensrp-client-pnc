@@ -36,7 +36,7 @@ public class BasePncRegisterActivityInteractor implements PncRegisterActivityCon
     protected AppExecutors appExecutors;
 
     public BasePncRegisterActivityInteractor() {
-        this(new AppExecutors());
+        this(PncLibrary.getInstance().getAppExecutors());
     }
 
     @VisibleForTesting

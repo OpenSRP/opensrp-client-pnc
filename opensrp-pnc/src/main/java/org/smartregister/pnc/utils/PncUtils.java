@@ -20,9 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.CoreLibrary;
+import org.smartregister.clientandeventmodel.Client;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
+import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
 
@@ -240,7 +245,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
 
     @Nullable
-    private static FormUtils getFormUtils() {
+    public static FormUtils getFormUtils() {
         if (formUtils == null) {
             try {
                 formUtils = FormUtils.getInstance(PncLibrary.getInstance().context().applicationContext());
@@ -298,4 +303,76 @@ public class PncUtils extends org.smartregister.util.Utils {
         return jsonArray;
     }
 
+    public static HashMap<String, HashMap<String, String>> buildRepeatingGroup(@NonNull JSONObject stepJsonObject, String fieldName) throws JSONException {
+        ArrayList<String> keysArrayList = new ArrayList<>();
+        JSONArray fields = stepJsonObject.optJSONArray(JsonFormConstants.FIELDS);
+        JSONObject jsonObject = JsonFormUtils.getFieldJSONObject(fields, fieldName);
+        HashMap<String, HashMap<String, String>> repeatingGroupMap = new HashMap<>();
+        if (jsonObject != null) {
+            JSONArray jsonArray = jsonObject.optJSONArray(JsonFormConstants.VALUE);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject valueField = jsonArray.optJSONObject(i);
+                String fieldKey = valueField.optString(JsonFormConstants.KEY);
+                keysArrayList.add(fieldKey);
+            }
+
+            for (int k = 0; k < fields.length(); k++) {
+                JSONObject valueField = fields.optJSONObject(k);
+                String fieldKey = valueField.optString(JsonFormConstants.KEY);
+                String fieldValue = valueField.optString(JsonFormConstants.VALUE);
+
+                if (fieldKey.contains("_")) {
+                    fieldKey = fieldKey.substring(0, fieldKey.lastIndexOf("_"));
+                    if (keysArrayList.contains(fieldKey) && StringUtils.isNotBlank(fieldValue)) {
+                        String fieldKeyId = valueField.optString(JsonFormConstants.KEY).substring(fieldKey.length() + 1);
+                        valueField.put(JsonFormConstants.KEY, fieldKey);
+                        HashMap<String, String> hashMap = repeatingGroupMap.get(fieldKeyId) == null ? new HashMap<>() : repeatingGroupMap.get(fieldKeyId);
+                        hashMap.put(fieldKey, fieldValue);
+                        repeatingGroupMap.put(fieldKeyId, hashMap);
+                    }
+                }
+            }
+        }
+        return repeatingGroupMap;
+    }
+
+    public static HashMap<String, String> getPncClient(String baseEntityId) {
+        ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance().context().getEventClientRepository().rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
+                "select * from " + metadata().getTableName() +
+                        " where " + metadata().getTableName() + ".id = '" + baseEntityId + "' limit 1");
+        if (!hashMap.isEmpty()) {
+            return hashMap.get(0);
+        }
+        return null;
+    }
+
+    public static String getNextUniqueId() {
+        UniqueIdRepository uniqueIdRepo = PncLibrary.getInstance().getUniqueIdRepository();
+        return uniqueIdRepo.getNextUniqueId() != null ? uniqueIdRepo.getNextUniqueId().getOpenmrsId() : "";
+    }
+
+    public static void savePncChild(@NonNull List<PncEventClient> pncEventClients) {
+        try {
+            List<String> currentFormSubmissionIds = new ArrayList<>();
+            for (PncEventClient eventClient : pncEventClients) {
+                try {
+                    Client baseClient = eventClient.getClient();
+                    Event baseEvent = eventClient.getEvent();
+                    JSONObject clientJson = new JSONObject(PncJsonFormUtils.gson.toJson(baseClient));
+                    PncLibrary.getInstance().getEcSyncHelper().addClient(baseClient.getBaseEntityId(), clientJson);
+                    JSONObject eventJson = new JSONObject(PncJsonFormUtils.gson.toJson(baseEvent));
+                    PncLibrary.getInstance().getEcSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson);
+                    currentFormSubmissionIds.add(baseEvent.getFormSubmissionId());
+                } catch (Exception e) {
+                    Timber.e(e);
+                }
+            }
+            long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
+            Date lastSyncDate = new Date(lastSyncTimeStamp);
+            PncLibrary.getInstance().getClientProcessorForJava().processClient(PncLibrary.getInstance().getEcSyncHelper().getEvents(currentFormSubmissionIds));
+            getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
 }

@@ -226,6 +226,22 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
+    public static void updateLocationTree(@NonNull JSONArray questions, @Nullable String defaultFacilityString, @Nullable String entireTreeString) throws JSONException {
+        PncMetadata pncMetadata = PncUtils.metadata();
+        if (pncMetadata != null && pncMetadata.getFieldsWithLocationHierarchy() != null && !pncMetadata.getFieldsWithLocationHierarchy().isEmpty()) {
+            for (int i = 0; i < questions.length(); i++) {
+                JSONObject widget = questions.getJSONObject(i);
+                String key = widget.optString(JsonFormConstants.KEY);
+                if (StringUtils.isNotBlank(key) && pncMetadata.getFieldsWithLocationHierarchy().contains(widget.optString(JsonFormConstants.KEY))) {
+                    addLocationTree(key, widget, entireTreeString);
+                }
+                if (StringUtils.isNotBlank(defaultFacilityString)) {
+                    addLocationDefault(key, widget, defaultFacilityString);
+                }
+            }
+        }
+    }
+
     private static void addLocationTree(@NonNull String widgetKey, @NonNull JSONObject widget, @NonNull String updateString) {
         try {
             if (widget.getString(PncJsonFormUtils.KEY).equals(widgetKey)) {
@@ -349,7 +365,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
-    protected static void lastInteractedWith(@NonNull JSONArray fields) {
+    public static void lastInteractedWith(@NonNull JSONArray fields) {
         try {
             JSONObject lastInteractedWith = new JSONObject();
             lastInteractedWith.put(PncConstants.KeyConstants.KEY, PncConstants.JsonFormKeyConstants.LAST_INTERACTED_WITH);
@@ -528,8 +544,6 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
             dobUnknownUpdateFromAge(fields);
 
-            processReminder(fields);
-
             Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
 
             Event baseEvent = JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA),
@@ -550,7 +564,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
-    private static void processReminder(@NonNull JSONArray fields) {
+    public static void processReminder(@NonNull JSONArray fields) {
         try {
             JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JsonFormKeyConstants.REMINDERS);
             if (reminderObject != null) {
@@ -560,8 +574,9 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 int result = value.equals(Boolean.toString(false)) ? 0 : 1;
                 reminderObject.put(PncConstants.KeyConstants.VALUE, result);
             }
-        } catch (JSONException e) {
-            Timber.e(e);
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
         }
     }
 }

@@ -23,6 +23,7 @@ import org.smartregister.pnc.sample.fragment.PncRegisterFragment;
 import org.smartregister.pnc.sample.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.sample.utils.SampleConstants;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.fragment.BaseRegisterFragment;
@@ -84,7 +85,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
     public void startFormActivity(@NonNull String formName, @Nullable String entityId, @Nullable String metaData) {
         if (mBaseFragment instanceof BasePncRegisterFragment) {
             String locationId = PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-            presenter().startForm(formName, entityId, metaData, locationId, null, "ec_client");
+            presenter().startForm(formName, entityId, metaData, locationId, null, PncDbConstants.KEY.TABLE);
         }
     }
 

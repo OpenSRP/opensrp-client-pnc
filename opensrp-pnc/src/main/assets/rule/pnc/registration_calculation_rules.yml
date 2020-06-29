@@ -27,23 +27,30 @@ condition: "true"
 actions:
   - 'calculation = (step1_dob_entered == "" ? step1_age_entered : step1_age_calculated)'
 ---
-name: step2_conception_date
+name: step3_conception_date
 description: The mothers conception date
 priority: 1
-condition: "(step2_lmp != null && step2_lmp != '') || (step2_ga_weeks_entered != null && step2_ga_weeks_entered != '') || (step2_ga_days_entered != null && step2_ga_days_entered != '')"
+condition: "(step3_lmp != null && step3_lmp != '') || (step3_ga_weeks_entered != null && step3_ga_weeks_entered != '') || (step3_ga_days_entered != null && step3_ga_days_entered != '')"
 actions:
-  - "calculation = (step2_lmp != null && step2_lmp != '') ? step2_lmp : (step2_ga_weeks_entered != null && step2_ga_weeks_entered != '') ? helper.subtractDuration(helper.getDateToday(), ((new Integer(step2_ga_weeks_entered) * 7) + ((step2_ga_days_entered != null && step2_ga_days_entered != '') ? new Integer(step2_ga_days_entered) : 0) +'d')) : helper.getDateToday()"
+  - "calculation = (step3_lmp != null && step3_lmp != '') ? step3_lmp : (step3_ga_weeks_entered != null && step3_ga_weeks_entered != '') ? helper.subtractDuration(helper.getDateToday(), ((new Integer(step3_ga_weeks_entered) * 7) + ((step3_ga_days_entered != null && step3_ga_days_entered != '') ? new Integer(step3_ga_days_entered) : 0) +'d')) : helper.getDateToday()"
 ---
-name: step2_gest_age
+name: step3_gest_age
 description: The mothers gestation age
 priority: 1
-condition: "step2_lmp != ''"
+condition: "step3_lmp != ''"
 actions:
-  - "calculation = helper.getWeeksAndDaysFromDays(helper.getDifferenceDays(helper.getSecondaryValue(step2_lmp)))"
+  - "calculation = helper.getWeeksAndDaysFromDays(helper.getDifferenceDays(helper.getSecondaryValue(step3_lmp)))"
 ---
-name: step2_ga_weeks_entered
+name: step3_ga_weeks_entered
 description: The mothers gestation age
 priority: 1
-condition: "step2_lmp != ''"
+condition: "step3_lmp != ''"
 actions:
-  - "calculation = helper.getWeeks(helper.getDifferenceDays(helper.getSecondaryValue(step2_lmp)))"
+  - "calculation = helper.getWeeks(helper.getDifferenceDays(helper.getSecondaryValue(step3_lmp)))"
+---
+name: step3_birth_record_date
+description: Birth record registration date is the same as the delivery date
+priority: 1
+condition: "true"
+actions:
+  - "calculation = step3_delivery_date"

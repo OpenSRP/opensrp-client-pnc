@@ -6,6 +6,7 @@ public class PncConstants extends AllConstants {
 
     public static final String SEX = "Sex";
     public static final String CONFIG = "pnc_register";
+    public static final String MOTHER = "mother";
 
     public interface IntentKey {
         String BASE_ENTITY_ID = "base-entity-id";
@@ -73,12 +74,23 @@ public class PncConstants extends AllConstants {
         public static final String PNC_EDIT_FORM_TITLE = "Update Pnc Registration";
         public static final String FORM_TITLE = "title";
         public static final String OPENSRP_ID = "opensrp_id";
+        public static final String BABIES_BORN = "babies_born";
+        public static final String BABIES_STILLBORN = "babies_stillborn";
+        public static final String DISCHARGED_ALIVE = "discharged_alive";
+        public static final String ZEIR_ID = "zeir_id";
+        public static final String BABIES_BORN_MAP = "BabiesBornMap";
+        public static final String BABIES_STILL_BORN_MAP = "BabiesStillBornMap";
     }
 
     public static class JsonFormExtraConstants {
         public static final String NEXT = "next";
         public static final String JSON = "json";
         public static final String ID = "id";
+    }
+
+    public static class JsonFormStepNameConstants {
+        public static final String BABIES_BORN = "Babies born";
+        public static final String STILL_BORN_BABIES = "Still born babies";
     }
 
     public static class OpenMrsConstants {
@@ -113,15 +125,15 @@ public class PncConstants extends AllConstants {
     }
 
     public static final class EventTypeConstants {
-        public static final String PNC_REGISTRATION = "Pnc Registration";
+        public static final String PNC_REGISTRATION = "PNC Registration";
         public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
         public static final String PNC_OUTCOME = "Pnc Outcome";
         public static final String PNC_CLOSE = "Pnc Close";
+        public static final String BIRTH_REGISTRATION = "Birth Registration";
     }
 
     public interface ColumnMapKey {
         String REGISTER_ID = "register_id";
-        String REGISTER_TYPE = "register_type";
         String PENDING_OUTCOME = "pending_outcome";
     }
 
