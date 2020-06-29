@@ -14,8 +14,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.util.ReflectionHelpers;
-import org.smartregister.AllConstants;
-import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
@@ -23,7 +21,6 @@ import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.pojo.PncOutcomeForm;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
-import org.smartregister.repository.AllSharedPreferences;
 
 import java.util.HashMap;
 
@@ -155,31 +152,6 @@ public class PncProfileActivityPresenterTest extends BaseTest {
 
         Assert.assertEquals("Positive", hashMapArgumentCaptor.getValue().get(PncConstants.JsonFormField.MOTHER_HIV_STATUS));
     }
-
-    @Test
-    public void startFormActivityShouldCallProfileInteractorAndFetchSavedDiagnosisAndTreatmentForm() {
-        String formName = PncConstants.Form.PNC_OUTCOME;
-        String caseId = "90932-dsdf23-2342";
-        String entityTable = "ec_client";
-        String locationId = "location-id";
-
-        HashMap<String, String> injectedValues = new HashMap<>();
-
-        PncLibrary pncLibrary = Mockito.mock(PncLibrary.class);
-        ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
-        Context context = Mockito.mock(Context.class);
-        AllSharedPreferences allSharedPreferences = Mockito.mock(AllSharedPreferences.class);
-        Mockito.doReturn(context).when(pncLibrary).context();
-        Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
-
-        // Mock call to PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID)
-        Mockito.doReturn(locationId).when(allSharedPreferences).getPreference(Mockito.eq(AllConstants.CURRENT_LOCATION_ID));
-        Mockito.doNothing().when(interactor).fetchSavedDiagnosisAndTreatmentForm(Mockito.eq(caseId), Mockito.eq(entityTable));
-
-        presenter.startFormActivity(formName, caseId, entityTable, injectedValues);
-        Mockito.verify(interactor, Mockito.times(1)).fetchSavedDiagnosisAndTreatmentForm(Mockito.eq(caseId), Mockito.eq(entityTable));
-    }
-
 
     @After
     public void tearDown() throws Exception {
