@@ -46,6 +46,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -285,4 +286,44 @@ public class PncLibrary {
         }
         return appExecutors;
     }
+
+    /**
+     * This method enables us to configure how-long ago we should consider a valid check-in so that
+     * we enable the next step which is DIAGNOSE & TREAT. This method returns the latest date that a check-in
+     * should be so that it can be considered for moving to DIAGNOSE & TREAT
+     *
+     * @return Date
+     */
+    @NonNull
+    public Date getLatestValidCheckInDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        return calendar.getTime();
+    }
+
+    public boolean isPatientInTreatedState(@NonNull String strVisitEndDate) {
+        Date visitEndDate = PncUtils.convertStringToDate(PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS, strVisitEndDate);
+        if (visitEndDate != null) {
+            return isPatientInTreatedState(visitEndDate);
+        }
+
+        return false;
+    }
+
+    public boolean isPatientInTreatedState(@NonNull Date visitEndDate) {
+        // Get the midnight of that day when the visit happened
+        Calendar date = Calendar.getInstance();
+        date.setTime(visitEndDate);
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // next day
+        date.add(Calendar.DAY_OF_MONTH, 1);
+        return getDateNow().before(date.getTime());
+    }
+
 }
