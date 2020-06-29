@@ -108,6 +108,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 processPncVisit(eventClient);
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
                 break;
+            default:
+                break;
         }
     }
 
