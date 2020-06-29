@@ -7,8 +7,8 @@ import androidx.annotation.StringRes;
 import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,9 +31,9 @@ public interface PncProfileOverviewFragmentContract {
 
         void loadOverviewFacts(@NonNull String baseEntityId, @NonNull OnFinishedCallback onFinishedCallback);
 
-        void loadOverviewDataAndDisplay(@NonNull PncBaseDetails pncDetails, @NonNull final OnFinishedCallback onFinishedCallback);
+        void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncDetails, @NonNull final OnFinishedCallback onFinishedCallback);
 
-        void setDataFromRegistration(@NonNull PncBaseDetails pncDetails, @NonNull Facts facts);
+        void setDataFromRegistration(@NonNull HashMap<String, String> pncDetails, @NonNull Facts facts);
 
         void setClient(@NonNull CommonPersonObjectClient client);
 
@@ -55,7 +55,7 @@ public interface PncProfileOverviewFragmentContract {
 
         interface OnFetchedCallback {
 
-            void onFetched(@NonNull PncBaseDetails pncDetails);
+            void onFetched(@NonNull HashMap<String, String> maternityDetails);
         }
     }
 }

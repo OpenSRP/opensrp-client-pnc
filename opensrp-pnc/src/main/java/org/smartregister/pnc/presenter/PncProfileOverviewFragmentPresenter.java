@@ -3,16 +3,15 @@ package org.smartregister.pnc.presenter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.model.PncProfileOverviewFragmentModel;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -21,6 +20,7 @@ import org.smartregister.pnc.utils.PncFactsUtil;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -41,23 +41,20 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     @Override
     public void loadOverviewFacts(@NonNull String baseEntityId, @NonNull final OnFinishedCallback onFinishedCallback) {
-        model.fetchPncOverviewDetails(baseEntityId, new PncProfileOverviewFragmentContract.Model.OnFetchedCallback() {
-            @Override
-            public void onFetched(@NonNull PncBaseDetails pncDetails) {
-                loadOverviewDataAndDisplay(pncDetails, onFinishedCallback);
+        model.fetchPncOverviewDetails(baseEntityId, pncDetails -> {
+            loadOverviewDataAndDisplay(pncDetails, onFinishedCallback);
 
-                // Update the client map
-                CommonPersonObjectClient commonPersonObjectClient = getProfileView().getActivityClientMap();
-                if (commonPersonObjectClient != null) {
-                    commonPersonObjectClient.getColumnmaps().putAll(pncDetails.getProperties());
-                    commonPersonObjectClient.getDetails().putAll(pncDetails.getProperties());
-                }
+            // Update the client map
+            CommonPersonObjectClient commonPersonObjectClient = getProfileView().getActivityClientMap();
+            if (commonPersonObjectClient != null) {
+                commonPersonObjectClient.getColumnmaps().putAll(pncDetails);
+                commonPersonObjectClient.getDetails().putAll(pncDetails);
             }
         });
     }
 
     @Override
-    public void loadOverviewDataAndDisplay(@NonNull PncBaseDetails pncDetails, @NonNull final OnFinishedCallback onFinishedCallback) {
+    public void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncDetails, @NonNull final OnFinishedCallback onFinishedCallback) {
         List<YamlConfigWrapper> yamlConfigListGlobal = new ArrayList<>();
         Facts facts = new Facts();
         setDataFromRegistration(pncDetails, facts);
@@ -73,7 +70,6 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     private void generateYamlConfigList(@NonNull Facts facts, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal) throws IOException {
 
-        // FIXME pnc overview file not found
         Iterable<Object> ruleObjects = loadFile(FilePath.FILE.PNC_PROFILE_OVERVIEW);
 
         for (Object ruleObject : ruleObjects) {
@@ -110,8 +106,8 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
     }
 
     @Override
-    public void setDataFromRegistration(@NonNull PncBaseDetails pncDetails, @NonNull Facts facts) {
-        for (String property: pncDetails.getProperties().keySet()) {
+    public void setDataFromRegistration(@NonNull HashMap<String, String> pncDetails, @NonNull Facts facts) {
+        for (String property: pncDetails.keySet()) {
             PncFactsUtil.putNonNullFact(facts, property, pncDetails.get(property));
         }
 
@@ -130,8 +126,9 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.GESTATION_WEEK, "" + pncWeeks);*/
 
+        String prevHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_previous.name());
         String currentHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
-        String hivStatus = currentHivStatus == null ? getString(R.string.unknown) : currentHivStatus;
+        String hivStatus = StringUtils.isNotBlank(currentHivStatus) ? currentHivStatus : prevHivStatus;
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.HIV_STATUS, hivStatus);
     }
 

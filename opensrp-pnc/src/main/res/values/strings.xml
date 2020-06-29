@@ -29,6 +29,7 @@
     <string name="visits">VISITS</string>
     <string name="anc_history">ANC HISTORY</string>
     <string name="pnc">PNC</string>
+    <string name="pnc_overview">PNC Overview</string>
 
     <string name="all_results">All results</string>
     <string name="age_details">Age: %s</string>
