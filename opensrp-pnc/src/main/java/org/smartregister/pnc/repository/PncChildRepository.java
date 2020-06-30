@@ -17,6 +17,7 @@ import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.repository.BaseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PncChildRepository extends BaseRepository implements PncGenericDao<PncChild> {
@@ -98,6 +99,18 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         throw new NotImplementedException("");
     }
 
+    public List<PncChild> findAll(@NonNull String baseEntityId) {
+        List<PncChild> data = new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null)) {
+            while (cursor.moveToNext()) {
+                data.add(fillUp(cursor));
+            }
+        }
+
+        return data;
+    }
+
     public int countBaby28DaysOld(String baseEntityId) {
         int count = 0;
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
@@ -114,5 +127,33 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             }
         }
         return count;
+    }
+
+    private PncChild fillUp(Cursor cursor) {
+        PncChild pncChild = new PncChild();
+
+        pncChild.setMotherBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID)));
+        pncChild.setDischargedAlive(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE)));
+        pncChild.setChildRegistered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_REGISTERED)));
+        pncChild.setBirthRecordDate(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_RECORD)));
+        pncChild.setFirstName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.FIRST_NAME)));
+        pncChild.setLastName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.LAST_NAME)));
+        pncChild.setDob(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DOB)));
+        pncChild.setGender(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.GENDER)));
+        pncChild.setWeightEntered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_WEIGTH_ENTERED)));
+        pncChild.setWeight(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_WEIGHT)));
+        pncChild.setHeightEntered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_HEIGHT_ENTERED)));
+        pncChild.setApgar(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.APGAR)));
+        pncChild.setFirstCry(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.FIRST_CRY)));
+        pncChild.setComplications(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.COMPLICATIONS)));
+        pncChild.setComplicationsOther(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.COMPLICATIONS_OTHER)));
+        pncChild.setCareMgt(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CARE_MGT)));
+        pncChild.setCareMgtSpecify(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CARE_MGT_SPECIFY)));
+        pncChild.setRefLocation(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.REF_LOCATION)));
+        pncChild.setBfFirstHour(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BF_FIRST_HOUR)));
+        pncChild.setNvpAdministration(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.NVP_ADMINISTRATION)));
+        pncChild.setChildHivStatus(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS)));
+
+        return pncChild;
     }
 }

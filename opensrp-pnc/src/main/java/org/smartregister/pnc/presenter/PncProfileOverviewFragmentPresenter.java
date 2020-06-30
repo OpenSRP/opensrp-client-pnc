@@ -12,6 +12,7 @@ import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.model.PncProfileOverviewFragmentModel;
+import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -102,6 +103,10 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
             if (valueCount > 0) {
                 yamlConfigListGlobal.addAll(yamlConfigList);
             }
+
+            if ("live_births".equals(yamlConfig.getSubGroup())) {
+                addLiveBirths(facts.get("base_entity_id"), yamlConfigListGlobal);
+            }
         }
     }
 
@@ -130,6 +135,12 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         String currentHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
         String hivStatus = StringUtils.isNotBlank(currentHivStatus) ? currentHivStatus : prevHivStatus;
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.HIV_STATUS, hivStatus);
+    }
+
+    private void addLiveBirths(@NonNull String baseEntityId, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal) {
+        List<PncChild> childs = PncLibrary.getInstance().getPncChildRepository().findAll(baseEntityId);
+
+
     }
 
     private Iterable<Object> loadFile(@NonNull String filename) throws IOException {
