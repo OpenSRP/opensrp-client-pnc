@@ -18,14 +18,14 @@ import org.smartregister.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.BasePncRegisterActivityPresenter;
+import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.sample.R;
 import org.smartregister.pnc.sample.fragment.PncRegisterFragment;
-import org.smartregister.pnc.sample.presenter.PncRegisterActivityPresenter;
-import org.smartregister.pnc.sample.utils.SampleConstants;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
+import org.smartregister.pnc.utils.SampleConstants;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
 import timber.log.Timber;

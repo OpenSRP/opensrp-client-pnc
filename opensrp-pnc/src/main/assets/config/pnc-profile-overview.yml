@@ -79,10 +79,9 @@ fields:
 subGroup: live_births
 fields:
 
-  - template: "Number of babies born alive: {baby_count_alive}"
-    relevance: "baby_count_alive != ''"
-
-
+---
+subGroup: stillbirths
+fields:
 
 
 

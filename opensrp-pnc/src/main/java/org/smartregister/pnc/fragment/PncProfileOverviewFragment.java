@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +20,7 @@ import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.presenter.PncProfileOverviewFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.fragment.BaseProfileFragment;
 
 
@@ -31,6 +31,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     private String baseEntityId;
     private PncProfileOverviewFragmentContract.Presenter presenter;
+    private CommonPersonObjectClient commonPersonObjectClient;
 
     private LinearLayout pncOutcomeSectionLayout;
     private Button recordOutcomeBtn;
@@ -50,7 +51,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
         presenter = new PncProfileOverviewFragmentPresenter(this);
 
         if (getArguments() != null) {
-            CommonPersonObjectClient commonPersonObjectClient = (CommonPersonObjectClient) getArguments()
+            commonPersonObjectClient = (CommonPersonObjectClient) getArguments()
                     .getSerializable(PncConstants.IntentKey.CLIENT_OBJECT);
 
             if (commonPersonObjectClient != null) {
@@ -81,15 +82,21 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     private void showOutcomeBtn() {
         if (getActivity() != null) {
+            PncUtils.setVisitButtonStatus(recordOutcomeBtn, baseEntityId);
             pncOutcomeSectionLayout.setVisibility(View.VISIBLE);
-            recordOutcomeBtn.setText(R.string.record_pnc);
-            recordOutcomeBtn.setBackgroundResource(R.drawable.pnc_outcome_bg);
-            recordOutcomeBtn.setTextColor(getActivity().getResources().getColorStateList(R.color.check_in_btn_overview_text_color));
             recordOutcomeBtn.setOnClickListener(v -> {
-                FragmentActivity activity = getActivity();
-
-                if (activity instanceof BasePncProfileActivity) {
-                    //((BasePncProfileActivity) activity).openPncOutcomeForm();
+                Object buttonType = v.getTag(R.id.BUTTON_TYPE);
+                if (buttonType != null) {
+                    BasePncProfileActivity profileActivity = (BasePncProfileActivity) getActivity();
+                    if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
+                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_VISIT);
+                    }
+                    else if(buttonType.equals(R.string.pnc_close)) {
+                        //profileActivity.performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_CLOSE);
+                    }
+                    else if (buttonType.equals(R.string.start_pnc)){
+                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
+                    }
                 }
             });
         }

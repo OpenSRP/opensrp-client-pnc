@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
@@ -17,6 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jeasy.rules.api.Facts;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +31,12 @@ import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
+import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.scheduler.PncVisitScheduler;
+import org.smartregister.pnc.scheduler.VisitScheduler;
+import org.smartregister.pnc.scheduler.VisitStatus;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
@@ -40,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -375,5 +386,99 @@ public class PncUtils extends org.smartregister.util.Utils {
         } catch (Exception e) {
             Timber.e(e);
         }
+    }
+
+    public static void setVisitButtonStatus(Button button, String baseEntityId) {
+        button.setTag(R.id.BUTTON_TYPE, R.string.start_pnc);
+        button.setText(R.string.start_pnc);
+        button.setBackgroundResource(R.drawable.pnc_outcome_bg);
+
+        PncBaseDetails pncBaseDetails = new PncBaseDetails();
+        pncBaseDetails.setBaseEntityId(baseEntityId);
+        pncBaseDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(pncBaseDetails);
+        if (pncBaseDetails != null && pncBaseDetails.getProperties() != null) {
+            HashMap<String, String> data = pncBaseDetails.getProperties();
+
+            if ("1".equals(data.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED))) {
+
+                String deliveryDateStr = data.get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
+                LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
+                VisitScheduler pncVisitScheduler = new PncVisitScheduler(deliveryDate, baseEntityId);
+
+                if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
+                    button.setText(R.string.pnc_due);
+                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
+                }
+                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
+                    button.setText(R.string.pnc_due);
+                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
+                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.pnc_circle_red));
+                    button.setBackgroundResource(R.drawable.pnc_overdue_bg);
+                }
+                else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
+                    button.setText(R.string.record_pnc);
+                    button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
+                }
+                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
+                    button.setText(R.string.pnc_done_today);
+                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
+                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
+                    button.setBackground(null);
+                }
+                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
+                    button.setText(R.string.pnc_close);
+                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
+                }
+            }
+        }
+    }
+
+    public static void addGlobals(String baseEntityId, JSONObject form) {
+
+        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
+
+        try {
+            JSONObject defaultGlobal = new JSONObject();
+
+            for (Map.Entry<String, String> entry: detailMap.entrySet()) {
+                defaultGlobal.put(entry.getKey(), entry.getValue());
+            }
+
+            LocalDate todayDate = LocalDate.now();
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.DELIVERY_DATE)) {
+                LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
+                defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_DOB)) {
+                LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                int numberOfYears = new Period(babyDob, todayDate).getYears();
+                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS));
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT));
+            }
+
+            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
+                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
+            }
+
+            form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
+        }
+    }
+
+    public static int getDeliveryDays(String baseEntityId) {
+        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
+        LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
+        return Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
     }
 }

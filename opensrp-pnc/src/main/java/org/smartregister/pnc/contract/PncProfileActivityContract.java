@@ -67,7 +67,7 @@ public interface PncProfileActivityContract {
 
         void setProfileAge(@NonNull String age);
 
-        void setProfileGender(@NonNull String gender);
+        void setDeliveryDays(@NonNull String gender);
 
         void setProfileImage(@NonNull String baseEntityId);
 

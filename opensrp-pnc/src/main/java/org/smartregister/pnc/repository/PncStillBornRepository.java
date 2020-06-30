@@ -4,6 +4,7 @@ import android.content.ContentValues;
 
 import androidx.annotation.NonNull;
 
+import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -55,4 +56,12 @@ public class PncStillBornRepository extends BaseRepository implements PncGeneric
         throw new NotImplementedException("");
     }
 
+    public int count(String baseEntityId) {
+        int count = 0;
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_STILL_BORN + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null)) {
+            count = cursor.getCount();
+        }
+        return count;
+    }
 }

@@ -132,7 +132,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         PncProfileActivityContract.View profileView = getProfileView();
         if (profileView != null) {
             profileView.setProfileName(client.get(PncDbConstants.KEY.FIRST_NAME) + " " + client.get(PncDbConstants.KEY.LAST_NAME));
-                String translatedYearInitial = profileView.getString(R.string.abbrv_years);
+            String translatedYearInitial = profileView.getString(R.string.abbrv_years);
             String dobString = client.get(PncConstants.KeyConstants.DOB);
 
             if (dobString != null) {
@@ -142,11 +142,8 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
 
             profileView.setProfileID(Utils.getValue(client, PncDbConstants.KEY.REGISTER_ID, false));
             profileView.setProfileImage(Utils.getValue(client, PncDbConstants.KEY.ID, false));
-            String gender = client.get(PncConstants.ClientMapKey.GENDER);
 
-            if (gender != null) {
-                profileView.setProfileGender(gender);
-            }
+            profileView.setDeliveryDays("Day P" + PncUtils.getDeliveryDays(client.get("_id")));
         }
     }
 
