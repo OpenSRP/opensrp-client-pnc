@@ -105,6 +105,9 @@ public interface PncDbConstants {
             String FP_COUNSEL = "fp_counsel";
             String FP_METHOD = "fp_method";
             String FP_METHOD_OTHER = "fp_method_other";
+        }
+
+        interface PncVisitChildStatus {
             String BABY_AGE = "baby_age";
             String BABY_STATUS = "baby_status";
             String DATE_OF_DEATH_BABY = "date_of_death_baby";
