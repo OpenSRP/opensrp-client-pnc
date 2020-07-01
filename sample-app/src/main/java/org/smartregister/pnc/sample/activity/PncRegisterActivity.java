@@ -1,9 +1,8 @@
 package org.smartregister.pnc.sample.activity;
 
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;

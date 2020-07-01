@@ -1,9 +1,8 @@
 package org.smartregister.pnc.utils;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
 
 import com.google.common.reflect.TypeToken;
 import com.vijay.jsonwizard.constants.JsonFormConstants;

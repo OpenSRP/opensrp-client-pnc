@@ -2,10 +2,9 @@ package org.smartregister.pnc.contract;
 
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import org.json.JSONObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;

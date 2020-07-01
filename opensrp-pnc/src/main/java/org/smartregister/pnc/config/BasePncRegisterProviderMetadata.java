@@ -1,10 +1,9 @@
 package org.smartregister.pnc.config;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;

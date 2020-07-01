@@ -1,8 +1,8 @@
 package org.smartregister.pnc.interactor;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONException;
@@ -13,12 +13,12 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.RegisterParams;
+import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
-import org.smartregister.util.AppExecutors;
 import org.smartregister.util.JsonFormUtils;
 import org.smartregister.view.activity.DrishtiApplication;
 

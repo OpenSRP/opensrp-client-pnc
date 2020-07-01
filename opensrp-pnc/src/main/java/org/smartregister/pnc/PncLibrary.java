@@ -1,10 +1,9 @@
 package org.smartregister.pnc;
 
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Weeks;
@@ -27,6 +26,7 @@ import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
 import org.smartregister.pnc.repository.PncVisitInfoRepository;
+import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
@@ -36,7 +36,6 @@ import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
-import org.smartregister.util.AppExecutors;
 import org.smartregister.util.JsonFormUtils;
 import org.smartregister.view.activity.DrishtiApplication;
 import org.yaml.snakeyaml.TypeDescription;

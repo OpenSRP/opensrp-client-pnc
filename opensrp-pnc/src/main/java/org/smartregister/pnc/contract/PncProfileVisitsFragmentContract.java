@@ -1,10 +1,9 @@
 package org.smartregister.pnc.contract;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Pair;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 
 import org.jeasy.rules.api.Facts;
 import org.smartregister.pnc.domain.YamlConfigWrapper;

@@ -1,7 +1,7 @@
 package org.smartregister.pnc.pojo;
 
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 public class PncOutcomeForm {
     private int id;

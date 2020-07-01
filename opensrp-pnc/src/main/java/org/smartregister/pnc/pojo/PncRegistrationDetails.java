@@ -1,6 +1,6 @@
 package org.smartregister.pnc.pojo;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 import java.util.HashMap;

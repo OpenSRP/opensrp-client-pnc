@@ -1,7 +1,7 @@
 package org.smartregister.pnc.domain;
 
 
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29

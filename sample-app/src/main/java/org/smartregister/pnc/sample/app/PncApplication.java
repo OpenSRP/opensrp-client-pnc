@@ -1,6 +1,6 @@
 package org.smartregister.pnc.sample.app;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.evernote.android.job.JobManager;
 

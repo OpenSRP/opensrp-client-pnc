@@ -1,7 +1,7 @@
 package org.smartregister.pnc.pojo;
 
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;

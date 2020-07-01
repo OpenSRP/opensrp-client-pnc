@@ -1,9 +1,8 @@
 package org.smartregister.pnc.interactor;
 
 import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -18,12 +17,12 @@ import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.RegisterParams;
+import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.repository.EventClientRepository;
-import org.smartregister.util.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.Date;

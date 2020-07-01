@@ -1,6 +1,6 @@
 package org.smartregister.pnc.scheduler;
 
-import androidx.annotation.VisibleForTesting;
+import android.support.annotation.VisibleForTesting;
 
 import org.jetbrains.annotations.TestOnly;
 import org.joda.time.LocalDate;

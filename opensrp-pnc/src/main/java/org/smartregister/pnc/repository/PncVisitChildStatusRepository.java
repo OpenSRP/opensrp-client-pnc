@@ -1,8 +1,7 @@
 package org.smartregister.pnc.repository;
 
 import android.content.ContentValues;
-
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 

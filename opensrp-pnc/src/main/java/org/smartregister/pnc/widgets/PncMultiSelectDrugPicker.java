@@ -1,10 +1,9 @@
 package org.smartregister.pnc.widgets;
 
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
-
-import androidx.annotation.NonNull;
 
 import com.vijay.jsonwizard.domain.MultiSelectItem;
 import com.vijay.jsonwizard.widgets.MultiSelectListFactory;
