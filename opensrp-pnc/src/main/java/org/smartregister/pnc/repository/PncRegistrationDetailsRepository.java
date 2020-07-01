@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncDbConstants;
+
+import java.util.HashMap;
+
+import timber.log.Timber;
 
 
 /**
@@ -56,5 +61,18 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
         }
 
         return propertyNames;
+    }
+
+    public HashMap<String, String> findByBaseEntityId(@NonNull String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "select * from " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS +
+                                " where " + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "' limit 1").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
     }
 }
