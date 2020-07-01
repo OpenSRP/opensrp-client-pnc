@@ -477,7 +477,12 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static int getDeliveryDays(String baseEntityId) {
         Map<String, String> detailMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
-        LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
-        return Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
+        if (StringUtils.isNotBlank(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE))) {
+            LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
+            return Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
+        }
+        else {
+            return -1;
+        }
     }
 }
