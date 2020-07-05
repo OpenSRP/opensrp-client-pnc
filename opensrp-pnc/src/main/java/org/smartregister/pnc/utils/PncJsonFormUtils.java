@@ -225,6 +225,22 @@ public class PncJsonFormUtils extends JsonFormUtils {
         }
     }
 
+    public static void updateLocationTree(@NonNull JSONArray questions, @Nullable String defaultFacilityString, @Nullable String entireTreeString) throws JSONException {
+        PncMetadata pncMetadata = PncUtils.metadata();
+        if (pncMetadata != null && pncMetadata.getFieldsWithLocationHierarchy() != null && !pncMetadata.getFieldsWithLocationHierarchy().isEmpty()) {
+            for (int i = 0; i < questions.length(); i++) {
+                JSONObject widget = questions.getJSONObject(i);
+                String key = widget.optString(JsonFormConstants.KEY);
+                if (StringUtils.isNotBlank(key) && pncMetadata.getFieldsWithLocationHierarchy().contains(widget.optString(JsonFormConstants.KEY))) {
+                    addLocationTree(key, widget, entireTreeString);
+                }
+                if (StringUtils.isNotBlank(defaultFacilityString)) {
+                    addLocationDefault(key, widget, defaultFacilityString);
+                }
+            }
+        }
+    }
+
     private static void addLocationTree(@NonNull String widgetKey, @NonNull JSONObject widget, @NonNull String updateString) {
         try {
             if (widget.getString(PncJsonFormUtils.KEY).equals(widgetKey)) {
@@ -544,6 +560,22 @@ public class PncJsonFormUtils extends JsonFormUtils {
         } catch (IllegalArgumentException e) {
             Timber.e(e);
             return null;
+        }
+    }
+
+    public static void processReminder(@NonNull JSONArray fields) {
+        try {
+            JSONObject reminderObject = getFieldJSONObject(fields, PncConstants.JsonFormKeyConstants.REMINDERS);
+            if (reminderObject != null) {
+                JSONArray options = getJSONArray(reminderObject, PncConstants.JsonFormKeyConstants.OPTIONS);
+                JSONObject option = getJSONObject(options, 0);
+                String value = option.optString(JsonFormConstants.VALUE);
+                int result = value.equals(Boolean.toString(false)) ? 0 : 1;
+                reminderObject.put(PncConstants.KeyConstants.VALUE, result);
+            }
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
         }
     }
 }

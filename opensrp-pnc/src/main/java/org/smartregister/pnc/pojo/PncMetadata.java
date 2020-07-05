@@ -7,8 +7,9 @@ import android.support.annotation.Nullable;
 import org.smartregister.pnc.utils.DefaultPncLocationUtils;
 
 import java.util.ArrayList;
+import java.util.Set;
 
-public class PncMetadata {
+public class    PncMetadata {
 
     private String pncRegistrationFormName;
 
@@ -29,6 +30,8 @@ public class PncMetadata {
     private ArrayList<String> locationLevels;
 
     private ArrayList<String> healthFacilityLevels;
+
+    private Set<String> fieldsWithLocationHierarchy;
 
     public PncMetadata(@NonNull String pncRegistrationFormName, @NonNull String tableName, @NonNull String registerEventType, @NonNull String updateEventType,
                        @NonNull String config, @NonNull Class pncFormActivity, @Nullable Class profileActivity, boolean formWizardValidateRequiredFieldsBefore) {
@@ -130,5 +133,13 @@ public class PncMetadata {
 
     public void setHealthFacilityLevels(ArrayList<String> healthFacilityLevels) {
         this.healthFacilityLevels = healthFacilityLevels;
+    }
+
+    public Set<String> getFieldsWithLocationHierarchy() {
+        return fieldsWithLocationHierarchy;
+    }
+
+    public void setFieldsWithLocationHierarchy(Set<String> fieldsWithLocationHierarchy) {
+        this.fieldsWithLocationHierarchy = fieldsWithLocationHierarchy;
     }
 }
