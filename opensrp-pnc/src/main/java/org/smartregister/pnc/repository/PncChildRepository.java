@@ -94,6 +94,18 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         throw new NotImplementedException("");
     }
 
+    public List<PncChild> findAll(@NonNull String baseEntityId) {
+        List<PncChild> data = new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null)) {
+            while (cursor.moveToNext()) {
+                data.add(fillUp(cursor));
+            }
+        }
+
+        return data;
+    }
+
     public int countBaby28DaysOld(String baseEntityId, int howBabyOldInDays) {
         int count;
         String deliveryDays = "delivery_date";

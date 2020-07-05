@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
@@ -50,6 +51,7 @@ import org.smartregister.util.Utils;
 import org.smartregister.view.activity.BaseProfileActivity;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -391,11 +393,21 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     private void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
         try {
-            String step = "step3";
-            if (form.has(step)) {
-                JSONObject childStatusObject = form.getJSONObject(step).getJSONArray("fields").getJSONObject(0);
-                int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId);
-                childStatusObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
+            Iterator<String> formKeys = form.keys();
+
+            while (formKeys.hasNext()) {
+                String formKey = formKeys.next();
+                if (formKey != null && formKey.startsWith("step")) {
+                    JSONObject stepJSONObject = form.getJSONObject(formKey);
+                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
+                    for (int i = 0; i < fieldsArray.length(); i++) {
+                        JSONObject comObject = fieldsArray.getJSONObject(i);
+                        if ("child_status".equals(comObject.getString(PncJsonFormUtils.KEY))) {
+                            int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+                            comObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
+                        }
+                    }
+                }
             }
         }
         catch (JSONException ex) {
