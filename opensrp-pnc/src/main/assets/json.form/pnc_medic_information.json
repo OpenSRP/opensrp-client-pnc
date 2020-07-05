@@ -1641,12 +1641,6 @@
                         "v_required": {
                             "value": "true",
                             "err": "Field required"
-                        },
-                        "relevance": {
-                            "step4:child_registered": {
-                                "type": "string",
-                                "ex": "equalTo(., \"no\")"
-                            }
                         }
                     },
                     {
@@ -1660,12 +1654,6 @@
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
-                        },
-                        "relevance": {
-                            "step4:child_registered": {
-                                "type": "string",
-                                "ex": "equalTo(., \"no\")"
-                            }
                         },
                         "options": [
                             {
@@ -1698,13 +1686,7 @@
                           "v_required": {
                             "value": "true",
                             "err": "Enter valid birth weight"
-                          },
-                        "relevance": {
-                            "step4:child_registered": {
-                                "type": "string",
-                                "ex": "equalTo(., \"no\")"
-                            }
-                        }
+                          }
                     },
                     {
                       "key": "birth_weight",
@@ -1734,13 +1716,7 @@
                       "v_required": {
                         "value": "true",
                         "err": "Enter valid birth height"
-                      },
-                        "relevance": {
-                            "step4:child_registered": {
-                                "type": "string",
-                                "ex": "equalTo(., \"no\")"
-                            }
-                        }
+                      }
                     },
                     {
                       "key": "apgar",

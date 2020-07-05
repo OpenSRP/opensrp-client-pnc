@@ -16,10 +16,10 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
-import org.smartregister.CoreLibrary;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
@@ -32,6 +32,7 @@ import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.activity.BaseRegisterActivity;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -134,7 +135,7 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
 
     private void addGlobals(String baseEntityId, JSONObject form) {
 
-        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
+        Map<String, String> detailMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
@@ -177,11 +178,22 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
 
     private void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
         try {
-            String step = "step3";
-            if (form.has(step)) {
-                JSONObject childStatusObject = form.getJSONObject(step).getJSONArray("fields").getJSONObject(0);
-                int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId);
-                childStatusObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
+
+            Iterator<String> formKeys = form.keys();
+
+            while (formKeys.hasNext()) {
+                String formKey = formKeys.next();
+                if (formKey != null && formKey.startsWith("step")) {
+                    JSONObject stepJSONObject = form.getJSONObject(formKey);
+                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
+                    for (int i = 0; i < fieldsArray.length(); i++) {
+                        JSONObject comObject = fieldsArray.getJSONObject(i);
+                        if ("child_status".equals(comObject.getString(PncJsonFormUtils.KEY))) {
+                            int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+                            comObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
+                        }
+                    }
+                }
             }
         }
         catch (JSONException ex) {
