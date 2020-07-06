@@ -13,6 +13,20 @@ condition: "step1_lmp != ''"
 actions:
   - "calculation = helper.getWeeks(helper.getDifferenceDays(helper.getSecondaryValue(step1_lmp)))"
 ---
+name: step4_child_not_registered
+description: Calculate the number of babies not registered in child health and give toaster message
+priority: 1
+condition: "true"
+actions:
+  - "calculation = step4_baby_count_alive - step4_child_registered_count"
+---
+name: step4_child_registered_count
+description: How many of the babies are registered
+priority: 1
+condition: "true"
+actions:
+  - "calculation = global_child_registered_count"
+---
 name: step4_birth_record_date
 description: Birth record registration date is the same as the delivery date
 priority: 1

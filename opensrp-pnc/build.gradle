@@ -27,7 +27,10 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-
+        buildConfigField "String[]", "LOCATION_LEVELS", '{"Country", "Province", "District", "Facility", "Village"}'
+        buildConfigField "String[]", "HEALTH_FACILITY_LEVELS", '{"Country", "Province", "District", "Health Facility", "Village"}'
+        buildConfigField "String[]", "ALLOWED_LEVELS", '{"Health Facility"}'
+        buildConfigField "String", "DEFAULT_LEVEL", '"Health Facility"'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //consumerProguardFiles 'consumer-rules.pro'
     }

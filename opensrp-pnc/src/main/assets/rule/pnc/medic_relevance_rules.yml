@@ -103,4 +103,12 @@ priority: 1
 condition: "step3_not_art_reason == 'other'"
 actions:
   - "isRelevant = true"
+---
+name: step4_baby_alive_group
+description: baby_alive_group
+priority: 1
+condition: "step4_baby_count_alive > 0 && step4_baby_count_alive == step4_child_registered_count"
+actions:
+  - "isRelevant = true"
+
 

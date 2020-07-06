@@ -110,6 +110,7 @@ public class PncConstants extends AllConstants {
         public static final String NVP_ADMINISTRATION = "nvp_administration";
 
         public static final String STILL_BIRTH_CONDITION = "stillbirth_condition";
+        public static final String VILLAGE = "village";
     }
 
     public static class JsonFormExtraConstants {
