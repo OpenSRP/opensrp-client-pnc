@@ -9,8 +9,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.pnc.PncLibrary;
@@ -19,13 +17,11 @@ import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.presenter.BasePncRegisterActivityPresenter;
-import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.activity.BaseRegisterActivity;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import timber.log.Timber;
@@ -113,40 +109,12 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
 
     @Override
     public void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
-        PncUtils.addGlobals(entityId, jsonForm);
-        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString("encounter_type"))){
-            addNumberOfBabyCount(entityId, jsonForm);
-        }
+        PncUtils.processPreChecks(entityId, jsonForm, intentData);
         Intent intent = PncUtils.buildFormActivityIntent(jsonForm, intentData, this);
         if (intent != null) {
             startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
         } else {
             Timber.e(new Exception(), "FormActivityConstants cannot be started because PncMetadata is NULL");
-        }
-    }
-
-    private void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        try {
-
-            Iterator<String> formKeys = form.keys();
-
-            while (formKeys.hasNext()) {
-                String formKey = formKeys.next();
-                if (formKey != null && formKey.startsWith("step")) {
-                    JSONObject stepJSONObject = form.getJSONObject(formKey);
-                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
-                    for (int i = 0; i < fieldsArray.length(); i++) {
-                        JSONObject comObject = fieldsArray.getJSONObject(i);
-                        if ("child_status".equals(comObject.getString(PncJsonFormUtils.KEY))) {
-                            int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
-                            comObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
-                        }
-                    }
-                }
-            }
-        }
-        catch (JSONException ex) {
-            Timber.e(ex);
         }
     }
 }

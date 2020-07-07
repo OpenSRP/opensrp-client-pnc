@@ -87,6 +87,7 @@ public class PncConstants extends AllConstants {
         public static final String CHILD_STATUS_MAP = "child_status_map";
         public static final String OUTCOME_SUBMITTED = "outcome_submitted";
         public static final String BABY_COUNT_ALIVE = "baby_count_alive";
+        public static final String CHILD_REGISTERED_COUNT = "child_registered_count";
 
 
         public static final String CHILD_REGISTERED = "child_registered";

@@ -23,20 +23,33 @@ public class PncRepeatingGroupFactory extends RepeatingGroupFactory {
     public List<View> getViewsFromJson(String stepName, Context context, JsonFormFragment formFragment, JSONObject jsonObject, CommonListener listener, boolean popup) throws Exception {
         List<View> views = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener, popup);
         try {
-            if (jsonObject.optString("key").equals("child_status") && jsonObject.has(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE) && views.size() > 0) {
-                int numberOfBaby = jsonObject.getInt(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE);
+            if (views.size() > 0) {
                 MaterialEditText referenceEditText = views.get(0).findViewById(R.id.reference_edit_text);
-                if (numberOfBaby > 0) {
-                    referenceEditText.setText(String.valueOf(numberOfBaby));
-                    addOnDoneAction(referenceEditText);
+                View actionView = views.get(0).findViewById(R.id.btn_repeating_group_done);
+
+                if (PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP.equals(jsonObject.optString("key")) && jsonObject.has(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE)) {
+                    int numberOfBaby = jsonObject.getInt(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE);
+                    if (numberOfBaby > 0) {
+                        referenceEditText.setText(String.valueOf(numberOfBaby));
+                    }
+                    trigger(referenceEditText, actionView);
                 }
-                referenceEditText.setEnabled(false);
-                views.get(0).findViewById(R.id.btn_repeating_group_done).setEnabled(false);
+                else if (PncConstants.JsonFormKeyConstants.LIVE_BIRTHS.equals(jsonObject.optString("key")) && jsonObject.has(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT)) {
+                    //int numberOfChildRegisteredCount = jsonObject.getInt(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT);
+                    //referenceEditText.setText(String.valueOf(numberOfChildRegisteredCount));
+                    //trigger(referenceEditText, actionView);
+                }
             }
         }
         catch (JSONException ex) {
             Timber.e(ex);
         }
         return views;
+    }
+
+    private void trigger(MaterialEditText referenceEditText, View actionView) {
+        addOnDoneAction(referenceEditText);
+        referenceEditText.setEnabled(false);
+        actionView.setEnabled(false);
     }
 }

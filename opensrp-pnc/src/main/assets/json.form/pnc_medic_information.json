@@ -1501,159 +1501,13 @@
         "next": "step5",
         "fields": [
           {
-            "key": "baby_count_alive",
-            "type": "edit_text",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "hint": "How many children were born alive?",
-            "v_numeric": {
-              "value": "true",
-              "err": "Enter valid baby count alive"
-            }
-          },
-          {
-            "key": "baby_not_discharged_alive",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "type": "native_radio",
-            "label": "Was there any neonatal death?",
-            "label_text_style": "bold",
-            "options": [
-              {
-                "key": "yes",
-                "text": "Yes",
-                "openmrs_entity_parent": "",
-                "openmrs_entity": "Concept-Discharged",
-                "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-              },
-              {
-                "key": "no",
-                "text": "No",
-                "openmrs_entity_parent": "",
-                "openmrs_entity": "Concept-Deceased",
-                "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-              }
-            ]
-          },
-          {
-            "key": "baby_not_discharged_alive_count",
-            "type": "edit_text",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "Concept-Number of children alive",
-            "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "hint": "Number of neonatal deaths",
-            "v_numeric": {
-              "value": "true",
-              "err": "Enter valid value"
-            },
-            "constraints": [
-              {
-                "type": "numeric",
-                "ex": "greaterThanEqualTo(., \"0\")",
-                "err": "count must be greater than or equal to 0"
-              }
-            ],
-            "relevance": {
-              "step4:baby_not_discharged_alive": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
-              }
-            }
-          },
-          {
-            "key": "child_registered",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "type": "native_radio",
-            "label": "Are any of the babies registered in the Child health register?",
-            "label_text_style": "bold",
-            "options": [
-              {
-                "key": "yes",
-                "text": "Yes",
-                "openmrs_entity_parent": "",
-                "openmrs_entity": "Concept-Discharged",
-                "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-              },
-              {
-                "key": "no",
-                "text": "No",
-                "openmrs_entity_parent": "",
-                "openmrs_entity": "Concept-Deceased",
-                "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-              }
-            ],
-            "relevance": {
-              "step4:baby_count_alive": {
-                "type": "numeric",
-                "ex": "greaterThan(., \"0\")"
-              }
-            }
-          },
-          {
-            "key": "child_registered_count",
-            "type": "edit_text",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "hint": "How many children are registered?",
-            "v_numeric": {
-              "value": "true",
-              "err": "Enter valid value"
-            },
-            "constraints": [
-              {
-                "type": "numeric",
-                "ex": "greaterThanEqualTo(., \"0\")",
-                "err": "count must be greater than or equal to 0"
-              }
-            ],
-            "read_only": "true",
-            "relevance": {
-              "step4:child_registered": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
-              }
-            },
-            "calculation": {
-              "rules-engine": {
-                "ex-rules": {
-                  "rules-file": "pnc/medic_calculation_rules.yml"
-                }
-              }
-            }
-          },
-          {
-            "key": "child_not_registered",
-            "type": "hidden",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "calculation": {
-              "rules-engine": {
-                "ex-rules": {
-                  "rules-file": "pnc/medic_calculation_rules.yml"
-                }
-              }
-            }
-          },
-          {
             "key": "unregistered_child_note",
             "openmrs_entity_parent": "",
             "openmrs_entity": "",
             "openmrs_entity_id": "",
             "type": "toaster_notes",
             "text": "Register the unregistered children in child health register and come back to add them to the PNC record",
-            "toaster_type": "problem",
-            "relevance": {
-              "step4:child_not_registered": {
-                "type": "numeric",
-                "ex": "greaterThan(., \"0\")"
-              }
-            }
+            "toaster_type": "info"
           },
             {
                 "key": "baby_alive_group",
@@ -1663,14 +1517,6 @@
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "reference_edit_text_hint": "#Total baby born alive",
                 "repeating_group_label": "Baby born alive",
-                "reference_edit_text": "Number of babies born alive",
-                "relevance": {
-                  "rules-engine": {
-                    "ex-rules": {
-                      "rules-file": "pnc/medic_relevance_rules.yml"
-                    }
-                  }
-                },
                 "value": [
                     {
                         "key": "discharged_alive",

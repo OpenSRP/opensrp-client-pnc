@@ -472,6 +472,8 @@ public class PncUtils extends org.smartregister.util.Utils {
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
             }
 
+            defaultGlobal.put("child_registered_count", 2);
+
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
         }
         catch (JSONException ex) {
@@ -518,5 +520,43 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     }
 
+    public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
+        intentData.put(PncDbConstants.KEY.BASE_ENTITY_ID, entityId);
+        PncUtils.addGlobals(entityId, jsonForm);
+        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))){
+            PncUtils.addNumberOfBabyCount(entityId, jsonForm);
+        }
 
+        if (PncConstants.EventTypeConstants.PNC_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            PncUtils.putDataOnField(jsonForm, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS, PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT, intentData.get(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT));
+        }
+    }
+
+    public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
+        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+        PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
+    }
+
+    public static void putDataOnField(JSONObject form, String fieldKey, String key, String value) {
+        try {
+            Iterator<String> formKeys = form.keys();
+
+            while (formKeys.hasNext()) {
+                String formKey = formKeys.next();
+                if (formKey != null && formKey.startsWith("step")) {
+                    JSONObject stepJSONObject = form.getJSONObject(formKey);
+                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
+                    for (int i = 0; i < fieldsArray.length(); i++) {
+                        JSONObject comObject = fieldsArray.getJSONObject(i);
+                        if (fieldKey.equals(comObject.getString(PncJsonFormUtils.KEY))) {
+                            comObject.put(key, value);
+                        }
+                    }
+                }
+            }
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
+        }
+    }
 }
