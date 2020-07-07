@@ -40,6 +40,7 @@ import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
+import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
@@ -438,7 +439,11 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
+        String q1 = "SELECT * FROM ec_client WHERE base_entity_id = '" + baseEntityId + "'";
+        String q2 = "SELECT * FROM pnc_registration_details WHERE base_entity_id = '" + baseEntityId + "'";
+        String q3 = "SELECT dob AS baby_dob FROM pnc_baby WHERE mother_base_entity_id = '" + baseEntityId + "'";
+
+        Map<String, String> detailMap = getMergedData(q1, q2, q3);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
@@ -448,13 +453,13 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
 
             LocalDate todayDate = LocalDate.now();
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.DELIVERY_DATE)) {
+            if (detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE) != null) {
                 LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
                 int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
             }
 
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_DOB)) {
+            if (detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB) != null) {
                 LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
                 int numberOfYears = new Period(babyDob, todayDate).getYears();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
@@ -558,5 +563,22 @@ public class PncUtils extends org.smartregister.util.Utils {
         catch (JSONException ex) {
             Timber.e(ex);
         }
+    }
+
+    public static HashMap<String, String> getMergedData(String... queries) {
+        HashMap<String, String> mergedData = new HashMap<>();
+
+        BaseRepository repo = new BaseRepository();
+        for (String query : queries) {
+
+            ArrayList<HashMap<String, String>> dataList = repo.rawQuery(repo.getReadableDatabase(), query);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+                mergedData.putAll(data);
+            }
+        }
+
+        return mergedData;
     }
 }

@@ -1500,15 +1500,64 @@
         "title": "Live Births",
         "next": "step5",
         "fields": [
-          {
-            "key": "unregistered_child_note",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "type": "toaster_notes",
-            "text": "Register the unregistered children in child health register and come back to add them to the PNC record",
-            "toaster_type": "info"
-          },
+            {
+                "key": "baby_not_discharged_alive",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "concept",
+                "openmrs_entity_id": "",
+                "type": "native_radio",
+                "label": "Was there any neonatal death?",
+                "label_text_style": "bold",
+                "v_required": {
+                  "value": "true",
+                  "err": "Field required"
+                },
+                "options": [
+                  {
+                    "key": "yes",
+                    "text": "Yes",
+                    "openmrs_entity_parent": "",
+                    "openmrs_entity": "concept",
+                    "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                  },
+                  {
+                    "key": "no",
+                    "text": "No",
+                    "openmrs_entity_parent": "",
+                    "openmrs_entity": "concept",
+                    "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                  }
+                ]
+            },
+            {
+                "key": "baby_not_discharged_alive_count",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "type": "edit_text",
+                "hint": "Number of neonatal deaths",
+                "v_numeric": {
+                    "value": "true",
+                    "err": "Enter valid number"
+                },
+                "v_required": {
+                    "value": "true",
+                    "err": "Enter valid birth weight"
+                },
+                "constraints": [
+                    {
+                        "type": "numeric",
+                        "ex": "greaterThanEqualTo(., \"0\")",
+                        "err": "count must be greater than or equal to 0"
+                    }
+                ],
+                "relevance": {
+                    "step4:baby_not_discharged_alive": {
+                        "type": "string",
+                        "ex": "equalTo(., \"yes\")"
+                    }
+                }
+            },
             {
                 "key": "baby_alive_group",
                 "type": "repeating_group",
@@ -1958,16 +2007,6 @@
                         "value": "true",
                         "err": "Select at least one medical condition OR None"
                       },
-                        "relevance": {
-                            "step3:hiv_status_previous": {
-                                "type": "string",
-                                "ex": "equalTo(., \"[\"positive\",\"unknown\"]\")"
-                            },
-                            "step3:hiv_status_current": {
-                                "type": "string",
-                                "ex": "equalTo(., \"[\"positive\",\"unknown\"]\")"
-                            }
-                        },
                       "options": [
                         {
                           "key": "positive",

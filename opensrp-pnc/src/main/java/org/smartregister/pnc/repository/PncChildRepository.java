@@ -21,6 +21,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_RECORD + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.FIRST_NAME + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.LAST_NAME + " VARCHAR NULL, "
