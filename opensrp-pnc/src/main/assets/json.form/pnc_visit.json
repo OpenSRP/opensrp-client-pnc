@@ -128,19 +128,7 @@
         "openmrs_entity_parent": "",
         "openmrs_entity": "",
         "openmrs_entity_id": "",
-        "type": "edit_text",
-        "hint": "How many visits?",
-        "v_numeric_integer": {
-          "value": "true",
-          "err": "Enter a number"
-        },
-        "relevance": {
-          "rules-engine": {
-            "ex-rules": {
-              "rules-file": "pnc/pnc_visit_relevance_rules.yml"
-            }
-          }
-        }
+        "type": "hidden"
       },
       {
         "key": "other_pnc_visit_date_group",
