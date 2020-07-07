@@ -17,6 +17,7 @@ import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.JsonFormUtils;
@@ -63,7 +64,12 @@ public class PncVisitFormProcessing implements PncFormProcessingTask {
             String title = step.optString(JsonFormConstants.STEP_TITLE);
 
             if (PncConstants.JsonFormStepNameConstants.PNC_VISIT_INFO.equals(title)) {
+
+
                 HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.OTHER_VISIT_GROUP);
+
+                JSONObject object = FormUtils.getFieldJSONObject(step.optJSONArray("fields"), PncDbConstants.Column.PncVisit.OUTSIDE_FACILITY_NUMBER);
+                object.put(JsonFormConstants.VALUE , buildRepeatingGroupBorn.size());
 
                 //buildChildRegEvent
                 PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
