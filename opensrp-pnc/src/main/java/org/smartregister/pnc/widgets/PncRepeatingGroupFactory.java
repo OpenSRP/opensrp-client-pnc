@@ -27,8 +27,13 @@ public class PncRepeatingGroupFactory extends RepeatingGroupFactory {
                 int numberOfBaby = jsonObject.getInt(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE);
                 MaterialEditText referenceEditText = views.get(0).findViewById(R.id.reference_edit_text);
                 if (numberOfBaby > 0) {
-                    referenceEditText.setText(String.valueOf(numberOfBaby));
-                    addOnDoneAction(referenceEditText);
+                    formFragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            referenceEditText.setText(String.valueOf(numberOfBaby));
+                            addOnDoneAction(referenceEditText);
+                        }
+                    });
                 }
                 referenceEditText.setEnabled(false);
                 views.get(0).findViewById(R.id.btn_repeating_group_done).setEnabled(false);
