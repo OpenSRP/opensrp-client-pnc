@@ -27,13 +27,6 @@ condition: "!step1_lmp_unknown.isEmpty() && step1_lmp_unknown.contains('lmp_unkn
 actions:
   - "isRelevant = true"
 ---
-name: step1_protected_at_birth
-description: Whether the child's mother received 2 or more doses of Td, which transfers protection against Td to the child when they're born.
-priority: 1
-condition: "global_age < 2"
-actions:
-  - "isRelevant = true"
----
 name: step2_delivery_person_other
 description: Provide details of other delivery person
 priority: 1
