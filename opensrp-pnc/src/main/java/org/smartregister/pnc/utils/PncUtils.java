@@ -40,6 +40,7 @@ import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
+import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
@@ -438,7 +439,11 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        Map<String, String> detailMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(baseEntityId);
+        String q1 = "SELECT * FROM ec_client WHERE base_entity_id = '" + baseEntityId + "'";
+        String q2 = "SELECT * FROM pnc_registration_details WHERE base_entity_id = '" + baseEntityId + "'";
+        String q3 = "SELECT dob AS baby_dob FROM pnc_baby WHERE mother_base_entity_id = '" + baseEntityId + "'";
+
+        Map<String, String> detailMap = getMergedData(q1, q2, q3);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
@@ -448,13 +453,13 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
 
             LocalDate todayDate = LocalDate.now();
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.DELIVERY_DATE)) {
+            if (detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE) != null) {
                 LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
                 int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
             }
 
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_DOB)) {
+            if (detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB) != null) {
                 LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
                 int numberOfYears = new Period(babyDob, todayDate).getYears();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
@@ -471,6 +476,8 @@ public class PncUtils extends org.smartregister.util.Utils {
             if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
             }
+
+            defaultGlobal.put("child_registered_count", 2);
 
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
         }
@@ -518,5 +525,60 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     }
 
+    public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
+        intentData.put(PncDbConstants.KEY.BASE_ENTITY_ID, entityId);
+        PncUtils.addGlobals(entityId, jsonForm);
+        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))){
+            PncUtils.addNumberOfBabyCount(entityId, jsonForm);
+        }
 
+        if (PncConstants.EventTypeConstants.PNC_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            PncUtils.putDataOnField(jsonForm, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS, PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT, intentData.get(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT));
+        }
+    }
+
+    public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
+        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+        PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
+    }
+
+    public static void putDataOnField(JSONObject form, String fieldKey, String key, String value) {
+        try {
+            Iterator<String> formKeys = form.keys();
+
+            while (formKeys.hasNext()) {
+                String formKey = formKeys.next();
+                if (formKey != null && formKey.startsWith("step")) {
+                    JSONObject stepJSONObject = form.getJSONObject(formKey);
+                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
+                    for (int i = 0; i < fieldsArray.length(); i++) {
+                        JSONObject comObject = fieldsArray.getJSONObject(i);
+                        if (fieldKey.equals(comObject.getString(PncJsonFormUtils.KEY))) {
+                            comObject.put(key, value);
+                        }
+                    }
+                }
+            }
+        }
+        catch (JSONException ex) {
+            Timber.e(ex);
+        }
+    }
+
+    public static HashMap<String, String> getMergedData(String... queries) {
+        HashMap<String, String> mergedData = new HashMap<>();
+
+        BaseRepository repo = new BaseRepository();
+        for (String query : queries) {
+
+            ArrayList<HashMap<String, String>> dataList = repo.rawQuery(repo.getReadableDatabase(), query);
+
+            if (!dataList.isEmpty()) {
+                HashMap<String, String> data = dataList.get(0);
+                mergedData.putAll(data);
+            }
+        }
+
+        return mergedData;
+    }
 }
