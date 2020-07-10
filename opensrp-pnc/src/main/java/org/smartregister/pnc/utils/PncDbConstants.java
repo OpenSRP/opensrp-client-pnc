@@ -56,6 +56,7 @@ public interface PncDbConstants {
 
         interface PncBaby {
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String BASE_ENTITY_ID = "base_entity_id";
             String DISCHARGED_ALIVE = "discharged_alive";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
@@ -79,7 +80,7 @@ public interface PncDbConstants {
         }
 
         interface PncVisit {
-            String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
             String CREATED_AT = "created_at";
             String PERIOD = "pnc_visit_period";
@@ -109,7 +110,11 @@ public interface PncDbConstants {
         }
 
         interface PncVisitChildStatus {
+            String PARENT_RELATION_ID = "parent_relation_id";
+            String CHILD_RELATION_ID = "child_relation_id";
             String BABY_AGE = "baby_age";
+            String BABY_FIRST_NAME = "baby_first_name";
+            String BABY_LAST_NAME = "baby_last_name";
             String BABY_STATUS = "baby_status";
             String DATE_OF_DEATH_BABY = "date_of_death_baby";
             String PLACE_OF_DEATH_BABY = "place_of_death_baby";

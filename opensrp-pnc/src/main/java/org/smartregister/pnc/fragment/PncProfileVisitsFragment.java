@@ -72,12 +72,7 @@ public class PncProfileVisitsFragment extends BaseProfileFragment implements Pnc
     @Override
     protected void onResumption() {
         presenter.loadPageCounter(baseEntityId);
-        presenter.loadVisits(baseEntityId, new PncProfileVisitsFragmentContract.Presenter.OnFinishedCallback() {
-            @Override
-            public void onFinished(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
-                displayVisits(ancVisitSummaries, items);
-            }
-        });
+        presenter.loadVisits(baseEntityId, (ancVisitSummaries, items) -> displayVisits(ancVisitSummaries, items));
     }
 
     @Override

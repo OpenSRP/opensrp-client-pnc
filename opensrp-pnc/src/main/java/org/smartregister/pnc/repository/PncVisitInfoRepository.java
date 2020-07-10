@@ -18,7 +18,7 @@ import java.util.Map;
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_VISIT_INFO + "("
-            + PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisit.BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisit.CREATED_AT + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisit.PERIOD + " VARCHAR NULL, "
@@ -59,7 +59,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
     @Override
     public boolean saveOrUpdate(Map<String, String> data) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID));
+        contentValues.put(PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisit.CREATED_AT, System.currentTimeMillis());
         contentValues.put(PncDbConstants.Column.PncVisit.PERIOD, data.get(PncDbConstants.Column.PncVisit.PERIOD));
@@ -111,7 +111,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_VISIT_INFO + " WHERE " + PncDbConstants.Column.PncVisit.CREATED_AT + " = (SELECT MAX(" + PncDbConstants.Column.PncVisit.CREATED_AT +") FROM " + PncDbConstants.Table.PNC_VISIT_INFO + ") AND " + PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID + " = '" + parentBaseEntityId + "'", null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_VISIT_INFO + " WHERE " + PncDbConstants.Column.PncVisit.CREATED_AT + " = (SELECT MAX(" + PncDbConstants.Column.PncVisit.CREATED_AT +") FROM " + PncDbConstants.Table.PNC_VISIT_INFO + ") AND " + PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID + " = '" + parentBaseEntityId + "'", null);
 
         if (cursor.getCount() > 0 && cursor.moveToNext()) {
             data = convert(cursor);
@@ -122,7 +122,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
     private Map<String, String> convert(Cursor cursor) {
         Map<String, String> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID)));
+        data.put(PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisit.MOTHER_BASE_ENTITY_ID)));
         data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID)));
         data.put(PncDbConstants.Column.PncVisit.CREATED_AT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisit.CREATED_AT)));
         data.put(PncDbConstants.Column.PncVisit.PERIOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisit.PERIOD)));

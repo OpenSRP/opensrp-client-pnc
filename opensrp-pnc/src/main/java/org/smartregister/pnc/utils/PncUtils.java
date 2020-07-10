@@ -543,7 +543,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, PncConstants.HOW_BABY_OLD_IN_DAYS);
         PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
     }
 

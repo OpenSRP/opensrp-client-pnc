@@ -48,7 +48,7 @@ public class PncRepeatingGroupFactory extends RepeatingGroupFactory {
     }
 
     private void trigger(MaterialEditText referenceEditText, View actionView) {
-        addOnDoneAction(referenceEditText);
+        //addOnDoneAction(referenceEditText);
         referenceEditText.setEnabled(false);
         actionView.setEnabled(false);
     }

@@ -49,16 +49,12 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     @Override
     public void loadVisits(@NonNull String baseEntityId, @NonNull final OnFinishedCallback onFinishedCallback) {
         if (mProfileInteractor != null) {
-            mProfileInteractor.fetchVisits(baseEntityId, currentPageNo, new OnVisitsLoadedCallback() {
+            mProfileInteractor.fetchVisits(baseEntityId, currentPageNo, ancVisitSummaries -> {
+                updatePageCounter();
 
-                @Override
-                public void onVisitsLoaded(@NonNull List<Object> ancVisitSummaries) {
-                    updatePageCounter();
-
-                    ArrayList<Pair<YamlConfigWrapper, Facts>> items = new ArrayList<>();
-                    populateWrapperDataAndFacts(ancVisitSummaries, items);
-                    onFinishedCallback.onFinished(ancVisitSummaries, items);
-                }
+                ArrayList<Pair<YamlConfigWrapper, Facts>> items = new ArrayList<>();
+                populateWrapperDataAndFacts(ancVisitSummaries, items);
+                onFinishedCallback.onFinished(ancVisitSummaries, items);
             });
 
         }
