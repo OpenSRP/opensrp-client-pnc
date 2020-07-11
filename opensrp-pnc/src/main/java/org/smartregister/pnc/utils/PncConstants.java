@@ -8,6 +8,7 @@ public class PncConstants extends AllConstants {
     public static final String CONFIG = "pnc_register";
     public static final String MOTHER = "mother";
     public static final String GLOBAL = "global";
+    public static final String CHILD_RECORDS = "child_records";
     public static final int HOW_BABY_OLD_IN_DAYS = 28;
 
     public interface IntentKey {

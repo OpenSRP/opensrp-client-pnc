@@ -13,6 +13,6 @@ public interface FilePath {
     interface FILE {
 
         String PNC_PROFILE_OVERVIEW = "pnc-profile-overview.yml";
-        String PNC_VISIT_ROW = "pnc-visit-row.yml";
+        String PNC_PROFILE_VISIT = "pnc-profile-visits.yml";
     }
 }

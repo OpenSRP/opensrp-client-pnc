@@ -19,7 +19,7 @@ public class PncVisitScheduler extends VisitScheduler {
     private String parentBaseEntityId;
     private List<VisitBlock> visitBlocks;
     private LocalDate currentDate;
-    private Map<String, String> latestVisit;
+    private Map<String, Object> latestVisit;
 
     public PncVisitScheduler(LocalDate deliveryDate, String parentBaseEntityId) {
         this.deliveryDate = deliveryDate;
@@ -124,20 +124,20 @@ public class PncVisitScheduler extends VisitScheduler {
         return parentBaseEntityId;
     }
 
-    public void setLatestVisit(Map<String, String> latestVisit) {
+    public void setLatestVisit(Map<String, Object> latestVisit) {
         this.latestVisit = latestVisit;
     }
 
-    public Map<String, String> getLatestVisit() {
+    public Map<String, Object> getLatestVisit() {
         return latestVisit;
     }
 
     @VisibleForTesting
-    public boolean isVisitDoneToday(Map<String, String> data) {
+    public boolean isVisitDoneToday(Map<String, Object> data) {
 
         if (data == null) return false;
 
-        long createdAtMillis = Long.parseLong(data.get(PncDbConstants.Column.PncVisit.CREATED_AT));
+        long createdAtMillis = Long.parseLong((String)data.get(PncDbConstants.Column.PncVisit.CREATED_AT));
 
         long diffInMills = System.currentTimeMillis() - createdAtMillis;
         return diffInMills <= TimeUnit.DAYS.toMillis(1);
