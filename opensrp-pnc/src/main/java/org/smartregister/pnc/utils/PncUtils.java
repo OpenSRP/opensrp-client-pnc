@@ -35,6 +35,7 @@ import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
@@ -397,13 +398,18 @@ public class PncUtils extends org.smartregister.util.Utils {
         button.setText(R.string.start_pnc);
         button.setBackgroundResource(R.drawable.pnc_outcome_bg);
 
+        String formType = null;
         PncBaseDetails pncBaseDetails = new PncBaseDetails();
         pncBaseDetails.setBaseEntityId(baseEntityId);
         pncBaseDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(pncBaseDetails);
         if (pncBaseDetails != null && pncBaseDetails.getProperties() != null) {
             HashMap<String, String> data = pncBaseDetails.getProperties();
 
+            formType = PncConstants.EventTypeConstants.PNC_OUTCOME;
+
             if ("1".equals(data.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED))) {
+
+                formType = PncConstants.EventTypeConstants.PNC_VISIT;
 
                 String deliveryDateStr = data.get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
                 LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
@@ -438,6 +444,13 @@ public class PncUtils extends org.smartregister.util.Utils {
                     button.setText(R.string.pnc_close);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
                 }
+            }
+        }
+
+        if (formType != null) {
+            PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(baseEntityId, formType));
+            if (pncPartialForm != null) {
+                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
             }
         }
     }
