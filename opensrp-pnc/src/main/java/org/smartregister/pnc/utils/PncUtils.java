@@ -179,19 +179,6 @@ public class PncUtils extends org.smartregister.util.Utils {
         return date;
     }
 
-    @NonNull
-    public static String generateNIds(int n) {
-        StringBuilder strIds = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            if ((i + 1) == n) {
-                strIds.append(JsonFormUtils.generateRandomUUIDString());
-            } else {
-                strIds.append(JsonFormUtils.generateRandomUUIDString()).append(",");
-            }
-        }
-        return strIds.toString();
-    }
-
     @NotNull
     public static String getClientAge(String dobString, String translatedYearInitial) {
         String age = dobString;
@@ -578,5 +565,14 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
 
         return mergedData;
+    }
+
+    @NonNull
+    public static String[] generateNIds(int n) {
+        String[] strIds = new String[n];
+        for (int i = 0; i < n; i++) {
+            strIds[i] = JsonFormUtils.generateRandomUUIDString();
+        }
+        return strIds;
     }
 }

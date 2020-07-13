@@ -112,8 +112,8 @@ public class RepeatingGroupGenerator {
     }
 
     public void updateField(JSONObject repeatingGrpField) throws JSONException {
-        String key = repeatingGrpField.optString(JsonFormConstants.KEY);
-        if (key.equals("baby_gender")) {
+        String type = repeatingGrpField.optString(JsonFormConstants.TYPE);
+        if (type.equals(JsonFormConstants.CHECK_BOX) || type.equals(JsonFormConstants.NATIVE_RADIO_BUTTON) || type.equals(JsonFormConstants.SPINNER)) {
             repeatingGrpField.put(JsonFormConstants.VALUE, repeatingGrpField.optString(JsonFormConstants.VALUE).toLowerCase());
         }
     }
