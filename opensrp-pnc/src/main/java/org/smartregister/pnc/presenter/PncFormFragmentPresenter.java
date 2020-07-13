@@ -17,13 +17,6 @@ public class PncFormFragmentPresenter extends JsonWizardFormFragmentPresenter {
         super(formFragment, jsonFormInteractor);
     }
 
-
-    @Override
-    public void addFormElements() {
-        super.addFormElements();
-
-    }
-
     @Override
     protected boolean moveToNextWizardStep() {
         if (!TextUtils.isEmpty(mStepDetails.optString(JsonFormConstants.NEXT))) {
@@ -34,5 +27,4 @@ public class PncFormFragmentPresenter extends JsonWizardFormFragmentPresenter {
         }
         return false;
     }
-
 }

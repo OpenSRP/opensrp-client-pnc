@@ -29,6 +29,7 @@ public class RepeatingGroupGenerator {
     private Set<String> fieldsWithoutSpecialViewValidation;
     private Set<String> hiddenFields;
     private Set<String> readOnlyFields;
+    private String baseEntityId;
 
     public RepeatingGroupGenerator(JSONObject step, String repeatingGroupKey,
                                    @NonNull Map<String, String> columnMap,
@@ -43,11 +44,6 @@ public class RepeatingGroupGenerator {
 
     public JSONObject getStep() {
         return step;
-    }
-
-    public RepeatingGroupGenerator setStep(JSONObject step) {
-        this.step = step;
-        return this;
     }
 
     public void init() throws JSONException {
@@ -65,7 +61,8 @@ public class RepeatingGroupGenerator {
         }
 
         for (Map<String, String> entryMap : storedValues) {
-            String baseEntityId = entryMap.get(uniqueKeyField).replaceAll("-", "");
+            baseEntityId = entryMap.get(uniqueKeyField);
+            String baseEntityIdModified = baseEntityId.replaceAll("-", "");
             for (int i = 0; i < repeatingGrpValues.length(); i++) {
                 JSONObject object = repeatingGrpValues.optJSONObject(i);
                 JSONObject repeatingGrpField = new JSONObject(object.toString());
@@ -104,7 +101,7 @@ public class RepeatingGroupGenerator {
                 }
 
                 updateField(repeatingGrpField);
-                repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityId);
+                repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
                 stepFields.put(++pos, repeatingGrpField);
             }
         }
@@ -177,4 +174,7 @@ public class RepeatingGroupGenerator {
         return hiddenFields;
     }
 
+    public String getBaseEntityId() {
+        return baseEntityId;
+    }
 }
