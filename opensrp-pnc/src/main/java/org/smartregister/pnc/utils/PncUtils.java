@@ -44,25 +44,19 @@ import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
-import org.smartregister.util.Utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import timber.log.Timber;
-
-import static com.vijay.jsonwizard.widgets.DatePickerFactory.DATE_FORMAT;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -183,6 +177,19 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
         }
         return date;
+    }
+
+    @NonNull
+    public static String generateNIds(int n) {
+        StringBuilder strIds = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            if ((i + 1) == n) {
+                strIds.append(JsonFormUtils.generateRandomUUIDString());
+            } else {
+                strIds.append(JsonFormUtils.generateRandomUUIDString()).append(",");
+            }
+        }
+        return strIds.toString();
     }
 
     @NotNull
@@ -405,19 +412,24 @@ public class PncUtils extends org.smartregister.util.Utils {
                 if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
+                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
+                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
                 } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
-                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.pnc_circle_red));
-                    button.setBackgroundResource(R.drawable.pnc_overdue_bg);
+                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.white));
+                    button.setBackgroundColor(ContextCompat.getColor(button.getContext(), R.color.overdue_color));
                 } else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
                     button.setText(R.string.record_pnc);
                     button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
+                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
+                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
+
                 } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
                     button.setText(R.string.pnc_done_today);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
-                    button.setBackground(null);
+                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_done_today));
                 } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
                     button.setText(R.string.pnc_close);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
@@ -566,14 +578,5 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
 
         return mergedData;
-    }
-
-    @NonNull
-    public static String[] generateNIds(int n) {
-        String[] strIds = new String[n];
-        for (int i = 0; i < n; i++) {
-            strIds[i] = JsonFormUtils.generateRandomUUIDString();
-        }
-        return strIds;
     }
 }

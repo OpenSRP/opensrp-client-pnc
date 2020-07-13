@@ -409,7 +409,7 @@
             "relevance": {
               "step1:parity": {
                 "type": "numeric",
-                "ex": "greaterThan(., \"1\")"
+                "ex": "greaterThan(., \"0\")"
               }
             },
             "v_required": {
@@ -463,7 +463,7 @@
             "type": "check_box",
             "label": "Outcomes of previous pregnancies",
             "relevance": {
-              "step1:parity": {
+              "step1:gravidity": {
                 "type": "numeric",
                 "ex": "greaterThan(., \"1\")"
               }
@@ -691,14 +691,7 @@
                 "openmrs_entity": "concept",
                 "openmrs_entity_id": "1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
               }
-            ],
-            "relevance": {
-              "rules-engine": {
-                "ex-rules": {
-                  "rules-file": "pnc/medic_relevance_rules.yml"
-                }
-              }
-            }
+            ]
             }
         ]
     },

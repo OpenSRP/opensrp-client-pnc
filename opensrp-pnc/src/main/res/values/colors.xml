@@ -25,5 +25,7 @@
     <color name="register_switch_btn_bg_color">#191919</color>
 
     <color name="pnc_check_in_bg_grey">#f4f4f4</color>
+    <color name="due_color">#389cc8</color>
+    <color name="overdue_color">#cd2c2c</color>
 
 </resources>
