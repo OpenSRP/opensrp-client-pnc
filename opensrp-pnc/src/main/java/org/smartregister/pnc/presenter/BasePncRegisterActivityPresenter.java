@@ -14,7 +14,7 @@ import org.smartregister.domain.FetchStatus;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.utils.PncConstants;
 
 import java.lang.ref.WeakReference;
@@ -136,14 +136,18 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        form = null;
+
         try {
-            form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
-            // Todo: Enquire if we have to save a session of the outcome form to be continued later
-            /*if (formName.equals(PncConstants.Form.PNC_RECURRING_VISIT)) {
-                interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
+            String formPath = formName;
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) formPath = PncConstants.Form.PNC_OUTCOME;
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) formPath = PncConstants.Form.PNC_VISIT;
+
+            form = model.getFormAsJson(formPath, entityId, locationId, injectedFieldValues);
+
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+                interactor.fetchSavedForm(formName, entityId, entityTable, this);
                 return;
-            }*/
+            }
 
         } catch (JSONException e) {
             Timber.e(e);
@@ -154,10 +158,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void onFetchedSavedDiagnosisAndTreatmentForm(@Nullable PncOutcomeForm diagnosisAndTreatmentForm, @NonNull String caseId, @Nullable String entityTable) {
+    public void onFetchedSavedForm(@Nullable PncPartialForm pncPartialForm, @NonNull String caseId, @NonNull String formType, @Nullable String entityTable) {
         try {
-            if (diagnosisAndTreatmentForm != null) {
-                form = new JSONObject(diagnosisAndTreatmentForm.getForm());
+            if (pncPartialForm != null) {
+                form = new JSONObject(pncPartialForm.getForm());
             }
 
             startFormActivity(caseId, entityTable, form);

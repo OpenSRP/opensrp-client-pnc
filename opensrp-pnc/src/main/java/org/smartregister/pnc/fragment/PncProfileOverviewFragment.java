@@ -94,7 +94,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
                         //profileActivity.performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_CLOSE);
                     }
                     else if (buttonType.equals(R.string.start_pnc)){
-                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
+                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_OUTCOME);
                     }
                 }
             });

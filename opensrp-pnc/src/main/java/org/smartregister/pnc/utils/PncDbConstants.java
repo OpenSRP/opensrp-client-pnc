@@ -137,16 +137,24 @@ public interface PncDbConstants {
         interface PncStillBorn {
             String STILL_BIRTH_CONDITION = "still_birth_condition";
         }
+
+        interface PncPartialForm {
+            String ID = "id";
+            String BASE_ENTITY_ID = "base_entity_id";
+            String FORM_TYPE = "form_type";
+            String FORM = "form";
+            String CREATED_AT = "created_at";
+        }
     }
 
     interface Table {
         String EC_CLIENT = "ec_client";
         String PNC_DETAILS = "pnc_details";
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
-        String PNC_OUTCOME_FORM = "pnc_outcome_form";
         String PNC_BABY = "pnc_baby";
         String PNC_STILL_BORN = "pnc_still_born";
         String PNC_VISIT_INFO = "pnc_visit_info";
         String PNC_VISIT_CHILD_STATUS = "pnc_visit_child_status";
+        String PNC_PARTIAL_FORM = "pnc_partial_form";
     }
 }
