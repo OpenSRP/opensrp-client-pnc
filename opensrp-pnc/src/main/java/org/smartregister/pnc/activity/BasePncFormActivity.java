@@ -116,18 +116,26 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
             String[] address = addressString.split(":");
             JSONObject object = getObjectUsingAddress(address, popup);
             JSONArray values = null;
-            if(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE.equals(object.get("key"))) {
+            if (PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE.equals(object.get("key"))) {
                 values = object.getJSONArray("value");
                 super.toggleViewVisibility(view, visible, popup);
                 object.put("value", values);
-            }
-            else {
+            } else {
                 super.toggleViewVisibility(view, visible, popup);
             }
-        }
-        catch (JSONException ex) {
+        } catch (JSONException ex) {
             super.toggleViewVisibility(view, visible, popup);
             Timber.e(ex);
         }
     }
+
+    @Override
+    protected void initiateFormUpdate(JSONObject json) {
+        super.initiateFormUpdate(json);
+        generateRepeatingGrpFields(json);
+    }
+
+    public void generateRepeatingGrpFields(JSONObject json) {
+    }
+
 }

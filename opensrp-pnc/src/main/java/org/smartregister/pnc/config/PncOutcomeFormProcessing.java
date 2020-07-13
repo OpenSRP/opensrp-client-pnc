@@ -17,6 +17,7 @@ import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.JsonFormUtils;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -65,18 +67,17 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
             if (PncConstants.JsonFormStepNameConstants.LIVE_BIRTHS.equals(title)) {
                 HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS);
 
-                //buildChildRegEvent
-                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
-
-                    List<PncEventClient> childEvents = buildChildRegistrationEvents(buildRepeatingGroupBorn, baseEntityId, jsonFormObject);
-                    if (!childEvents.isEmpty()) {
-                        PncUtils.processEvents(childEvents);
-                    }
-                });
-
                 if (!buildRepeatingGroupBorn.isEmpty()) {
-                    String strGroup = gson.toJson(buildRepeatingGroupBorn);
+                    String[] ids = PncUtils.generateNIds(buildRepeatingGroupBorn.size());
+                    int count = 0;
+                    for (Map.Entry<String, HashMap<String, String>> entrySet : buildRepeatingGroupBorn.entrySet()) {
+                        entrySet.getValue().put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, ids[count]);
+                        count++;
+                    }
 
+                    createChild(jsonFormObject, baseEntityId, buildRepeatingGroupBorn);
+
+                    String strGroup = gson.toJson(buildRepeatingGroupBorn);
                     JSONObject repeatingGroupObj = new JSONObject();
                     repeatingGroupObj.put(JsonFormConstants.KEY, PncConstants.JsonFormKeyConstants.BABIES_BORN_MAP);
                     repeatingGroupObj.put(JsonFormConstants.VALUE, strGroup);
@@ -115,6 +116,16 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
 
     }
 
+    private void createChild(JSONObject jsonFormObject, String baseEntityId, HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn) {
+        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
+
+            List<PncEventClient> childEvents = buildChildRegistrationEvents(buildRepeatingGroupBorn, baseEntityId, jsonFormObject);
+            if (!childEvents.isEmpty()) {
+                PncUtils.processEvents(childEvents);
+            }
+        });
+    }
+
     @NonNull
     private List<PncEventClient> buildChildRegistrationEvents(HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn, String baseEntityId, JSONObject jsonFormObject) {
         FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
@@ -135,20 +146,21 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     String dischargedAlive = jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE);
-                    if (StringUtils.isNotBlank(dischargedAlive) && dischargedAlive.equalsIgnoreCase("yes")) {
-                        String entityId = PncJsonFormUtils.generateRandomUUIDString();
-                        JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);
-                        if (fields != null) {
-                            Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
-                            baseClient.addRelationship(PncConstants.MOTHER, baseEntityId);
-                            baseClient.setRelationalBaseEntityId(baseEntityId);
-                            Event childRegEvent = PncJsonFormUtils.createEvent(fields, jsonFormObject.optJSONObject(METADATA)
-                                    , formTag, entityId, childRegistrationEvent(), "");
-                            PncJsonFormUtils.tagSyncMetadata(childRegEvent);
-                            childRegEventList.add(new PncEventClient(baseClient, childRegEvent));
+                    if (!jsonChildObject.optBoolean("generated_grp", false)) {
+                        if (StringUtils.isNotBlank(dischargedAlive) && dischargedAlive.equalsIgnoreCase("yes")) {
+                            String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID);
+                            JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);
+                            if (fields != null) {
+                                Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
+                                baseClient.addRelationship(PncConstants.MOTHER, baseEntityId);
+                                baseClient.setRelationalBaseEntityId(baseEntityId);
+                                Event childRegEvent = PncJsonFormUtils.createEvent(fields, jsonFormObject.optJSONObject(METADATA)
+                                        , formTag, entityId, childRegistrationEvent(), "");
+                                PncJsonFormUtils.tagSyncMetadata(childRegEvent);
+                                childRegEventList.add(new PncEventClient(baseClient, childRegEvent));
+                            }
                         }
                     }
-
                 }
             } catch (JSONException e) {
                 Timber.e(e);
@@ -169,7 +181,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
     }
 
     @NonNull
-    private String childRegistrationEvent() {
+    public String childRegistrationEvent() {
         return PncConstants.EventTypeConstants.BIRTH_REGISTRATION;
     }
 

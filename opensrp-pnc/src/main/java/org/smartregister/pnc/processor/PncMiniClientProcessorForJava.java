@@ -42,6 +42,7 @@ import timber.log.Timber;
 public class PncMiniClientProcessorForJava extends ClientProcessorForJava implements MiniClientProcessorForJava {
 
     private HashSet<String> eventTypes = null;
+
     public PncMiniClientProcessorForJava(Context context) {
         super(context);
     }
@@ -178,8 +179,10 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     pncChild.setBfFirstHour(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BF_FIRST_HOUR));
                     pncChild.setChildHivStatus(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_HIV_STATUS));
                     pncChild.setNvpAdministration(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.NVP_ADMINISTRATION));
+                    pncChild.setBaseEntityId(jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID));
                     pncChild.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
-                    PncLibrary.getInstance().getPncChildRepository().saveOrUpdate(pncChild);
+                    if (StringUtils.isNotBlank(pncChild.getBaseEntityId()) && StringUtils.isNotBlank(pncChild.getMotherBaseEntityId()))
+                        PncLibrary.getInstance().getPncChildRepository().saveOrUpdate(pncChild);
                 }
             } catch (JSONException e) {
                 Timber.e(e);

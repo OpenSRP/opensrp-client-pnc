@@ -6,7 +6,6 @@ import com.vijay.jsonwizard.interactors.JsonFormInteractor;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.widgets.PncBarcodeFactory;
 import org.smartregister.pnc.widgets.PncEditTextFactory;
-import org.smartregister.pnc.widgets.PncMultiSelectDrugPicker;
 import org.smartregister.pnc.widgets.PncMultiSelectList;
 import org.smartregister.pnc.widgets.PncRepeatingGroupFactory;
 
@@ -26,8 +25,6 @@ public class PncFormInteractor extends JsonFormInteractor {
         super.registerWidgets();
         map.put(JsonFormConstants.EDIT_TEXT, new PncEditTextFactory());
         map.put(JsonFormConstants.BARCODE, new PncBarcodeFactory());
-        map.put(PncConstants.JsonFormWidget.MULTI_SELECT_DRUG_PICKER, new PncMultiSelectDrugPicker());
-        map.put(JsonFormConstants.MULTI_SELECT_LIST, new PncMultiSelectList());
         map.put(JsonFormConstants.REPEATING_GROUP, new PncRepeatingGroupFactory());
     }
 }

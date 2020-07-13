@@ -76,6 +76,7 @@ public interface PncDbConstants {
             String BF_FIRST_HOUR = "bf_first_hour";
             String NVP_ADMINISTRATION = "nvp_administration";
             String CHILD_HIV_STATUS = "child_hiv_status";
+            String BASE_ENTITY_ID = "base_entity_id";
         }
 
         interface PncVisit {

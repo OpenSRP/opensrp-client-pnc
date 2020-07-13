@@ -18,9 +18,9 @@ import java.util.List;
 public class PncChildRepository extends BaseRepository implements PncGenericDao<PncChild> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_BABY + "("
+            + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " VARCHAR NOT NULL PRIMARY KEY, "
             + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_RECORD + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.FIRST_NAME + " VARCHAR NULL, "
@@ -42,18 +42,24 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS + " VARCHAR NULL )";
 
 
-    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
+    private static final String INDEX_MOTHER_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
             + "_" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
             "(" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
+
+    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
+            + "_" + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
+            "(" + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
         database.execSQL(INDEX_BASE_ENTITY_ID);
+        database.execSQL(INDEX_MOTHER_BASE_ENTITY_ID);
     }
 
     @Override
     public boolean saveOrUpdate(PncChild pncChild) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, pncChild.getBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID, pncChild.getMotherBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE, pncChild.getDischargedAlive());
         contentValues.put(PncDbConstants.Column.PncBaby.CHILD_REGISTERED, pncChild.getChildRegistered());

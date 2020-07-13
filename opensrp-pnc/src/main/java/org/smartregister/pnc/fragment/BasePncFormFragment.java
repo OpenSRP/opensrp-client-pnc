@@ -59,13 +59,6 @@ public class BasePncFormFragment extends JsonWizardFormFragment implements Clien
         return jsonFormFragment;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Toolbar toolbar = view.findViewById(R.id.navigation_toolbar);
-        toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.button_navy_blue));
-    }
-
     @Nullable
     private Form getForm() {
         return this.getActivity() != null && this.getActivity() instanceof JsonFormActivity ?
