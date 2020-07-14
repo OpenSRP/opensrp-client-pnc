@@ -31,10 +31,11 @@ public class RepeatingGroupGenerator {
     private Set<String> readOnlyFields;
     private String baseEntityId;
 
-    public RepeatingGroupGenerator(JSONObject step, String repeatingGroupKey,
+    public RepeatingGroupGenerator(@NonNull JSONObject step,
+                                   @NonNull String repeatingGroupKey,
                                    @NonNull Map<String, String> columnMap,
-                                   String uniqueKeyField,
-                                   List<HashMap<String, String>> storedValues) {
+                                   @NonNull String uniqueKeyField,
+                                   @NonNull List<HashMap<String, String>> storedValues) {
         this.repeatingGroupKey = repeatingGroupKey;
         this.uniqueKeyField = uniqueKeyField;
         this.storedValues = storedValues;
@@ -68,11 +69,11 @@ public class RepeatingGroupGenerator {
                 JSONObject repeatingGrpField = new JSONObject(object.toString());
                 String repeatingGrpFieldKey = repeatingGrpField.optString(JsonFormConstants.KEY);
 
-                if (entryMap.containsKey(repeatingGroupKey)) {
+                if (entryMap.containsKey(repeatingGrpFieldKey)) {
                     if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
-                        repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(repeatingGroupKey, entryMap.get(repeatingGroupKey)));
+                        repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
                     else
-                        repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(repeatingGroupKey, entryMap.get(repeatingGroupKey)));
+                        repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
                 } else if (columnMap.get(repeatingGrpFieldKey) != null && entryMap.containsKey(columnMap.get(repeatingGrpFieldKey))) {
                     if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
                         repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
