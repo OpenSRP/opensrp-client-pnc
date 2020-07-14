@@ -16,6 +16,7 @@ import org.smartregister.domain.jsonmapping.ClientClassification;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.exception.PncCloseEventProcessException;
 import org.smartregister.pnc.pojo.PncChild;
+import org.smartregister.pnc.pojo.PncOtherVisit;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.PncStillBorn;
 import org.smartregister.pnc.utils.PncConstants;
@@ -142,12 +143,31 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         keyValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, baseEntityId);
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
+        processOtherVisits(strOtherVisit, baseEntityId);
         keyValues.put(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE, strOtherVisit);
 
         String strChildStatus = keyValues.get(PncConstants.JsonFormKeyConstants.CHILD_STATUS_MAP);
         processVisitChildStatus(strChildStatus, baseEntityId);
 
         PncLibrary.getInstance().getPncVisitInfoRepository().saveOrUpdate(keyValues);
+    }
+
+    private void processOtherVisits(@Nullable String strOtherVisit, @NonNull String baseEntityId) {
+        if (StringUtils.isNotBlank(strOtherVisit)) {
+            try {
+                JSONObject jsonObject = new JSONObject(strOtherVisit);
+                Iterator<String> repeatingGroupKeys = jsonObject.keys();
+                while (repeatingGroupKeys.hasNext()) {
+                    JSONObject jsonOtherObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
+                    PncOtherVisit pncOtherVisit = new PncOtherVisit();
+                    pncOtherVisit.setVisitDate(jsonOtherObject.optString(PncConstants.JsonFormField.OTHER_PNC_VISIT_DATE));
+                    pncOtherVisit.setMotherBaseEntityId(baseEntityId);
+                    PncLibrary.getInstance().getPncOtherVisitRepository().saveOrUpdate(pncOtherVisit);
+                }
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
     }
 
     private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event) {

@@ -101,7 +101,7 @@ public class RepeatingGroupGenerator {
                     repeatingGrpField.remove(JsonFormConstants.V_NUMERIC);
                 }
 
-                updateField(repeatingGrpField);
+                updateField(repeatingGrpField, entryMap);
                 repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
                 stepFields.put(++pos, repeatingGrpField);
             }
@@ -109,7 +109,7 @@ public class RepeatingGroupGenerator {
 
     }
 
-    public void updateField(JSONObject repeatingGrpField) throws JSONException {
+    public void updateField(JSONObject repeatingGrpField, Map<String, String> entryMap) throws JSONException {
         String type = repeatingGrpField.optString(JsonFormConstants.TYPE);
         if (type.equals(JsonFormConstants.CHECK_BOX) || type.equals(JsonFormConstants.NATIVE_RADIO_BUTTON) || type.equals(JsonFormConstants.SPINNER)) {
             repeatingGrpField.put(JsonFormConstants.VALUE, repeatingGrpField.optString(JsonFormConstants.VALUE).toLowerCase());

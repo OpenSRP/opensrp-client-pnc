@@ -146,7 +146,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     String dischargedAlive = jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE);
-                    if (!jsonChildObject.optBoolean("generated_grp", false)) {
+                    if (!jsonChildObject.optBoolean(PncConstants.JsonFormField.GENERATED_GRP, false)) {
                         if (StringUtils.isNotBlank(dischargedAlive) && dischargedAlive.equalsIgnoreCase("yes")) {
                             String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID);
                             JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);

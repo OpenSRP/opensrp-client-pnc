@@ -130,6 +130,11 @@ public interface PncDbConstants {
             String BABY_CARE_MGMT = "baby_care_mgt";
         }
 
+        interface PncOtherVisit {
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String VISIT_DATE = "visit_date";
+        }
+
         interface PncStillBorn {
             String STILL_BIRTH_CONDITION = "still_birth_condition";
         }
@@ -144,5 +149,6 @@ public interface PncDbConstants {
         String PNC_STILL_BORN = "pnc_still_born";
         String PNC_VISIT_INFO = "pnc_visit_info";
         String PNC_VISIT_CHILD_STATUS = "pnc_visit_child_status";
+        String PNC_OTHER_VISIT = "pnc_other_visit";
     }
 }
