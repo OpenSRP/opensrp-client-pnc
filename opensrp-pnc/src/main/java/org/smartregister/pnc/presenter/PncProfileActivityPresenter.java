@@ -11,8 +11,10 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.domain.tag.FormTag;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.interactor.PncProfileInteractor;
@@ -28,6 +30,7 @@ import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.tasks.FetchRegistrationDataTask;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncEventUtils;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.Utils;
@@ -35,6 +38,7 @@ import org.smartregister.util.Utils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -127,6 +131,29 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     }
 
     @Override
+    public void savePncCloseForm(@NonNull String eventType, @Nullable Intent data) {
+        String jsonString = null;
+        PncEventUtils maternityEventUtils = new PncEventUtils();
+        if (data != null) {
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+        }
+
+        if (jsonString == null) {
+            Timber.e(new Exception("PNC Close form JSON is null"));
+            return;
+        }
+
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            try {
+                List<Event> maternityCloseEvents = PncLibrary.getInstance().processPncCloseForm(eventType, jsonString, data);
+                maternityEventUtils.saveEvents(maternityCloseEvents, this);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
+    }
+
+    @Override
     public void refreshProfileTopSection(@NonNull Map<String, String> client) {
         PncProfileActivityContract.View profileView = getProfileView();
         if (profileView != null) {
@@ -163,13 +190,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             try {
                 String locationId = PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
-
-                // Fetch saved form & continue editing
-                if (formName.equals(PncConstants.Form.PNC_VISIT)) {
-                    mProfileInteractor.fetchSavedDiagnosisAndTreatmentForm(caseId, entityTable);
-                } else {
-                    startFormActivity(form, caseId, entityTable);
-                }
+                startFormActivity(form, caseId, entityTable);
             } catch (JSONException e) {
                 Timber.e(e);
             }

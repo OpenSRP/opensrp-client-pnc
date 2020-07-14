@@ -38,6 +38,8 @@ public interface PncProfileActivityContract {
 
         void startFormActivity(@Nullable JSONObject form, @NonNull String caseId, @NonNull String entityTable);
 
+        void savePncCloseForm(@NonNull String eventType, @Nullable Intent data);
+
         void saveUpdateRegistrationForm(@NonNull String jsonString, @NonNull RegisterParams registerParams);
 
         @Nullable
@@ -69,8 +71,6 @@ public interface PncProfileActivityContract {
         void setDeliveryDays(@NonNull String gender);
 
         void setProfileImage(@NonNull String baseEntityId);
-
-        void openPncOutcomeForm();
 
         void openPncCloseForm();
 
