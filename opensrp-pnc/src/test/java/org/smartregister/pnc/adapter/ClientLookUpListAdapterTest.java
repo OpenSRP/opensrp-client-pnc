@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.pnc.utils.PncDbConstants;
 
@@ -26,9 +24,17 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.robolectric.util.ReflectionHelpers.setField;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"org.mockito.*"})
@@ -51,40 +57,40 @@ public class ClientLookUpListAdapterTest {
         MockitoAnnotations.initMocks(this);
 
         adapter = new ClientLookUpListAdapter(data, context);
-        ReflectionHelpers.setField(adapter, "clickListener", clickListener);
+        setField(adapter, "clickListener", clickListener);
     }
 
     @Test
     public void onCreateViewHolderShouldReturnMyViewHolder() throws Exception {
 
-        PowerMockito.mockStatic(LayoutInflater.class);
+        mockStatic(LayoutInflater.class);
 
-        LayoutInflater inflater = PowerMockito.mock(LayoutInflater.class);
-        View itemView = PowerMockito.mock(View.class);
-        ViewGroup parent = PowerMockito.mock(ViewGroup.class);
-        ClientLookUpListAdapter.MyViewHolder viewHolder = PowerMockito.mock(ClientLookUpListAdapter.MyViewHolder.class);
+        LayoutInflater inflater = mock(LayoutInflater.class);
+        View itemView = mock(View.class);
+        ViewGroup parent = mock(ViewGroup.class);
+        ClientLookUpListAdapter.MyViewHolder viewHolder = mock(ClientLookUpListAdapter.MyViewHolder.class);
 
-        PowerMockito.doReturn(context).when(parent).getContext();
-        PowerMockito.when(LayoutInflater.from(any(Context.class))).thenReturn(inflater);
-        PowerMockito.doReturn(itemView).when(inflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
+        doReturn(context).when(parent).getContext();
+        when(LayoutInflater.from(any(Context.class))).thenReturn(inflater);
+        doReturn(itemView).when(inflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
         PowerMockito.whenNew(ClientLookUpListAdapter.MyViewHolder.class).withArguments(itemView).thenReturn(viewHolder);
 
         int viewType = -1;
 
-        Assert.assertThat(viewHolder, instanceOf(adapter.onCreateViewHolder(parent, viewType).getClass()));
+        assertThat(viewHolder, instanceOf(adapter.onCreateViewHolder(parent, viewType).getClass()));
     }
 
     @Test
     public void onBindViewHolderShouldVerifyImplementation() {
 
-        TextView txtName = PowerMockito.mock(TextView.class);
-        View itemView = PowerMockito.mock(View.class);
-        TextView txtDetails = PowerMockito.mock(TextView.class);
+        TextView txtName = mock(TextView.class);
+        View itemView = mock(View.class);
+        TextView txtDetails = mock(TextView.class);
 
-        ClientLookUpListAdapter.MyViewHolder viewHolder = PowerMockito.mock(ClientLookUpListAdapter.MyViewHolder.class);
-        ReflectionHelpers.setField(viewHolder, "txtName", txtName);
-        ReflectionHelpers.setField(viewHolder, "itemView", itemView);
-        ReflectionHelpers.setField(viewHolder, "txtDetails", txtDetails);
+        ClientLookUpListAdapter.MyViewHolder viewHolder = mock(ClientLookUpListAdapter.MyViewHolder.class);
+        setField(viewHolder, "txtName", txtName);
+        setField(viewHolder, "itemView", itemView);
+        setField(viewHolder, "txtDetails", txtDetails);
 
         String firstName = "First Name";
         String lastName = "Last Name";
@@ -101,38 +107,34 @@ public class ClientLookUpListAdapterTest {
         CommonPersonObject commonPersonObject = PowerMockito.spy(new CommonPersonObject(caseId, relationalId, columnsMap, type));
         commonPersonObject.setColumnmaps(columnsMap);
 
-        PowerMockito.when(data.get(anyInt())).thenReturn(commonPersonObject);
-        PowerMockito.doReturn("Opensrp Id").when(context).getString(anyInt());
+        when(data.get(anyInt())).thenReturn(commonPersonObject);
+        doReturn("Opensrp Id").when(context).getString(anyInt());
 
         int position = 0;
         adapter.onBindViewHolder(viewHolder, position);
 
         String fullName = firstName + " " + lastName;
         String details = "Opensrp Id - " + openSrpId;
-        Mockito.verify(txtName, Mockito.times(1)).setText(fullName);
-        Mockito.verify(txtDetails, Mockito.times(1)).setText(details);
+        verify(txtName, Mockito.times(1)).setText(fullName);
+        verify(txtDetails, Mockito.times(1)).setText(details);
     }
 
     @Test
     public void getItemCountShouldReturnValidSize() {
 
         int size = 1;
-        PowerMockito.when(data.size()).thenReturn(size);
-        Assert.assertEquals(size, adapter.getItemCount());
+        when(data.size()).thenReturn(size);
+        assertEquals(size, adapter.getItemCount());
     }
 
     @Test
     public void onClickShouldVerifyListener() {
 
-        View view = PowerMockito.mock(View.class);
+        View view = mock(View.class);
         ClientLookUpListAdapter.MyViewHolder viewHolder = new ClientLookUpListAdapter.MyViewHolder(view);
         viewHolder.onClick(view);
 
-        Mockito.verify(clickListener, Mockito.times(1)).onItemClick(view);
+        verify(clickListener, Mockito.times(1)).onItemClick(view);
     }
 
-    @Test
-    public void setOnClickListenerShouldVerifyValidClickListener() {
-        adapter.setOnClickListener(clickListener);
-    }
 }

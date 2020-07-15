@@ -16,11 +16,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
@@ -29,14 +27,19 @@ import org.smartregister.pnc.helper.PncRulesEngineHelper;
 import java.util.List;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.robolectric.util.ReflectionHelpers.setField;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"org.mockito.*"})
@@ -67,11 +70,11 @@ public class PncProfileOverviewAdapterTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        PowerMockito.mockStatic(LayoutInflater.class);
-        PowerMockito.mockStatic(PncLibrary.class);
+        mockStatic(LayoutInflater.class);
+        mockStatic(PncLibrary.class);
 
-        PowerMockito.when(LayoutInflater.from(any(Context.class))).thenReturn(mInflater);
-        PowerMockito.when(PncLibrary.getInstance()).thenReturn(pncLibrary);
+        when(LayoutInflater.from(any(Context.class))).thenReturn(mInflater);
+        when(PncLibrary.getInstance()).thenReturn(pncLibrary);
 
         adapter = new PncProfileOverviewAdapter(context, mData, facts);
 
@@ -82,8 +85,8 @@ public class PncProfileOverviewAdapterTest {
 
         PncProfileOverviewAdapter.ViewHolder viewHolder = mock(PncProfileOverviewAdapter.ViewHolder.class);
         View view = mock(View.class);
-        PowerMockito.doReturn(view).when(mInflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
-        PowerMockito.whenNew(PncProfileOverviewAdapter.ViewHolder.class).withArguments(view).thenReturn(viewHolder);
+        doReturn(view).when(mInflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
+        whenNew(PncProfileOverviewAdapter.ViewHolder.class).withArguments(view).thenReturn(viewHolder);
 
         PncProfileOverviewAdapter.ViewHolder vh = adapter.onCreateViewHolder(mock(ViewGroup.class), -1);
         Assert.assertThat(viewHolder, instanceOf(vh.getClass()));
@@ -102,28 +105,28 @@ public class PncProfileOverviewAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileOverviewAdapter.ViewHolder vh = mock(PncProfileOverviewAdapter.ViewHolder.class);
 
-        ReflectionHelpers.setField(vh, "sectionHeader", sectionHeader);
-        ReflectionHelpers.setField(vh, "subSectionHeader", subSectionHeader);
-        ReflectionHelpers.setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        ReflectionHelpers.setField(vh, "sectionDetails", sectionDetails);
+        setField(vh, "sectionHeader", sectionHeader);
+        setField(vh, "subSectionHeader", subSectionHeader);
+        setField(vh, "sectionDetailTitle", sectionDetailTitle);
+        setField(vh, "sectionDetails", sectionDetails);
 
         mockStatic(TextUtils.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
         PncRulesEngineHelper pncRulesEngineHelper = mock(PncRulesEngineHelper.class);
 
-        PowerMockito.when(TextUtils.isEmpty(anyString())).thenReturn(false);
-        PowerMockito.when(context.getResources()).thenReturn(resources);
-        PowerMockito.when(resources.getColor(anyInt())).thenReturn(Color.RED);
-        PowerMockito.when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
-        PowerMockito.when(yamlConfigWrapper.getGroup()).thenReturn(group);
-        PowerMockito.when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
-        PowerMockito.when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
-        PowerMockito.when(yamlConfigItem.getTemplate()).thenReturn(template);
-        PowerMockito.when(yamlConfigItem.getIsRedFont()).thenReturn("yes");
-        PowerMockito.when(pncLibrary.getPncRulesEngineHelper()).thenReturn(pncRulesEngineHelper);
-        PowerMockito.when(pncRulesEngineHelper.getRelevance(any(Facts.class), anyString())).thenReturn(true);
-        PowerMockito.when(facts.get("one")).thenReturn("two");
+        when(TextUtils.isEmpty(anyString())).thenReturn(false);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getColor(anyInt())).thenReturn(Color.RED);
+        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
+        when(yamlConfigWrapper.getGroup()).thenReturn(group);
+        when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
+        when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
+        when(yamlConfigItem.getTemplate()).thenReturn(template);
+        when(yamlConfigItem.getIsRedFont()).thenReturn("yes");
+        when(pncLibrary.getPncRulesEngineHelper()).thenReturn(pncRulesEngineHelper);
+        when(pncRulesEngineHelper.getRelevance(any(Facts.class), anyString())).thenReturn(true);
+        when(facts.get("one")).thenReturn("two");
 
         adapter.onBindViewHolder(vh, 0);
 
@@ -151,22 +154,22 @@ public class PncProfileOverviewAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileOverviewAdapter.ViewHolder vh = mock(PncProfileOverviewAdapter.ViewHolder.class);
 
-        ReflectionHelpers.setField(vh, "sectionHeader", sectionHeader);
-        ReflectionHelpers.setField(vh, "subSectionHeader", subSectionHeader);
-        ReflectionHelpers.setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        ReflectionHelpers.setField(vh, "sectionDetails", sectionDetails);
+        setField(vh, "sectionHeader", sectionHeader);
+        setField(vh, "subSectionHeader", subSectionHeader);
+        setField(vh, "sectionDetailTitle", sectionDetailTitle);
+        setField(vh, "sectionDetails", sectionDetails);
 
         mockStatic(TextUtils.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
 
-        PowerMockito.when(TextUtils.isEmpty(anyString())).thenReturn(true);
-        PowerMockito.when(context.getResources()).thenReturn(resources);
-        PowerMockito.when(resources.getColor(anyInt())).thenReturn(Color.BLACK);
-        PowerMockito.when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
-        PowerMockito.when(yamlConfigWrapper.getGroup()).thenReturn(group);
-        PowerMockito.when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
-        PowerMockito.when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
+        when(TextUtils.isEmpty(anyString())).thenReturn(true);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getColor(anyInt())).thenReturn(Color.BLACK);
+        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
+        when(yamlConfigWrapper.getGroup()).thenReturn(group);
+        when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
+        when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
 
         adapter.onBindViewHolder(vh, 0);
 
@@ -187,16 +190,16 @@ public class PncProfileOverviewAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileOverviewAdapter.ViewHolder vh = mock(PncProfileOverviewAdapter.ViewHolder.class);
 
-        ReflectionHelpers.setField(vh, "sectionHeader", sectionHeader);
-        ReflectionHelpers.setField(vh, "subSectionHeader", subSectionHeader);
-        ReflectionHelpers.setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        ReflectionHelpers.setField(vh, "sectionDetails", sectionDetails);
+        setField(vh, "sectionHeader", sectionHeader);
+        setField(vh, "subSectionHeader", subSectionHeader);
+        setField(vh, "sectionDetailTitle", sectionDetailTitle);
+        setField(vh, "sectionDetails", sectionDetails);
 
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
 
-        PowerMockito.when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
-        PowerMockito.when(yamlConfigWrapper.getGroup()).thenReturn("");
-        PowerMockito.when(yamlConfigWrapper.getSubGroup()).thenReturn("");
+        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
+        when(yamlConfigWrapper.getGroup()).thenReturn("");
+        when(yamlConfigWrapper.getSubGroup()).thenReturn("");
 
         adapter.onBindViewHolder(vh, 0);
 
@@ -207,14 +210,14 @@ public class PncProfileOverviewAdapterTest {
     @Test
     public void getItemCountShouldReturnOne() {
         int size = 1;
-        PowerMockito.when(mData.size()).thenReturn(size);
-        Assert.assertEquals(size, adapter.getItemCount());
+        when(mData.size()).thenReturn(size);
+        assertEquals(size, adapter.getItemCount());
     }
 
     @Test
     public void getTemplateShouldReturnRawData() {
         String rawTemplate = "nothing";
         PncProfileOverviewAdapter.Template template = adapter.getTemplate(rawTemplate);
-        Assert.assertEquals(rawTemplate, template.title);
+        assertEquals(rawTemplate, template.title);
     }
 }

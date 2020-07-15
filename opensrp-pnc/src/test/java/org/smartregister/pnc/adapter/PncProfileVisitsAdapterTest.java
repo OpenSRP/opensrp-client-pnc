@@ -11,18 +11,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.jeasy.rules.api.Facts;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.robolectric.util.ReflectionHelpers;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.util.StringUtil;
@@ -30,6 +25,7 @@ import org.smartregister.util.StringUtil;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -37,14 +33,16 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.robolectric.util.ReflectionHelpers.setField;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"org.mockito.*"})
-@PrepareForTest({LayoutInflater.class, PncLibrary.class, TextUtils.class})
+@PrepareForTest({LayoutInflater.class, TextUtils.class})
 public class PncProfileVisitsAdapterTest {
 
     @Mock
@@ -59,16 +57,12 @@ public class PncProfileVisitsAdapterTest {
     @Mock
     private ArrayList<Pair<YamlConfigWrapper, Facts>> items;
 
-    @Mock
-    private PncLibrary pncLibrary;
-
     private PncProfileVisitsAdapter adapter;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
         mockStatic(LayoutInflater.class);
-        mockStatic(PncLibrary.class);
         when(LayoutInflater.from(any(Context.class))).thenReturn(mInflater);
         adapter = new PncProfileVisitsAdapter(context, items);
     }
@@ -98,10 +92,10 @@ public class PncProfileVisitsAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileVisitsAdapter.YamlViewHolder vh = mock(PncProfileVisitsAdapter.YamlViewHolder.class);
 
-        ReflectionHelpers.setField(vh, "sectionHeader", sectionHeader);
-        ReflectionHelpers.setField(vh, "subSectionHeader", subSectionHeader);
-        ReflectionHelpers.setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        ReflectionHelpers.setField(vh, "sectionDetails", sectionDetails);
+        setField(vh, "sectionHeader", sectionHeader);
+        setField(vh, "subSectionHeader", subSectionHeader);
+        setField(vh, "sectionDetailTitle", sectionDetailTitle);
+        setField(vh, "sectionDetails", sectionDetails);
 
         mockStatic(TextUtils.class);
         Facts facts = mock(Facts.class);
@@ -109,8 +103,8 @@ public class PncProfileVisitsAdapterTest {
         Pair<YamlConfigWrapper, Facts> pair = mock(new Pair<>(yamlConfigWrapper, facts).getClass());
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
 
-        ReflectionHelpers.setField(pair, "first", yamlConfigWrapper);
-        ReflectionHelpers.setField(pair, "second", facts);
+        setField(pair, "first", yamlConfigWrapper);
+        setField(pair, "second", facts);
 
         when(TextUtils.isEmpty(anyString())).thenReturn(false);
         when(context.getResources()).thenReturn(resources);
@@ -146,17 +140,17 @@ public class PncProfileVisitsAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileVisitsAdapter.YamlViewHolder vh = mock(PncProfileVisitsAdapter.YamlViewHolder.class);
 
-        ReflectionHelpers.setField(vh, "sectionHeader", sectionHeader);
-        ReflectionHelpers.setField(vh, "subSectionHeader", subSectionHeader);
-        ReflectionHelpers.setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        ReflectionHelpers.setField(vh, "sectionDetails", sectionDetails);
+        setField(vh, "sectionHeader", sectionHeader);
+        setField(vh, "subSectionHeader", subSectionHeader);
+        setField(vh, "sectionDetailTitle", sectionDetailTitle);
+        setField(vh, "sectionDetails", sectionDetails);
 
         mockStatic(TextUtils.class);
         Facts facts = mock(Facts.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         Pair<YamlConfigWrapper, Facts> pair = mock(new Pair<>(yamlConfigWrapper, facts).getClass());
-        ReflectionHelpers.setField(pair, "first", yamlConfigWrapper);
-        ReflectionHelpers.setField(pair, "second", facts);
+        setField(pair, "first", yamlConfigWrapper);
+        setField(pair, "second", facts);
 
         when(TextUtils.isEmpty(anyString())).thenReturn(true);
         when(items.get(anyInt())).thenReturn(pair);
@@ -175,14 +169,14 @@ public class PncProfileVisitsAdapterTest {
     @Test
     public void getItemCountShouldReturnOne() {
         int size = 1;
-        PowerMockito.when(items.size()).thenReturn(size);
-        Assert.assertEquals(size, adapter.getItemCount());
+        when(items.size()).thenReturn(size);
+        assertEquals(size, adapter.getItemCount());
     }
 
     @Test
     public void getTemplateShouldReturnRawData() {
         String rawTemplate = "nothing";
         PncProfileVisitsAdapter.Template template = adapter.getTemplate(rawTemplate);
-        Assert.assertEquals(rawTemplate, template.title);
+        assertEquals(rawTemplate, template.title);
     }
 }
