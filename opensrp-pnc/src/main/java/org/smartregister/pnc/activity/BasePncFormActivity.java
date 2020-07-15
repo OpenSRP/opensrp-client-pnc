@@ -31,7 +31,6 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
 
     @Override
     protected void attachBaseContext(android.content.Context base) {
-
         String language = LangUtils.getLanguage(base);
         super.attachBaseContext(LangUtils.setAppLocale(base, language));
     }
@@ -110,7 +109,6 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
 
     @Override
     protected void toggleViewVisibility(View view, boolean visible, boolean popup) {
-
         try {
             String addressString = (String) view.getTag(R.id.address);
             String[] address = addressString.split(":");
@@ -128,14 +126,4 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
             Timber.e(ex);
         }
     }
-
-    @Override
-    protected void initiateFormUpdate(JSONObject json) {
-        super.initiateFormUpdate(json);
-        generateRepeatingGrpFields(json);
-    }
-
-    public void generateRepeatingGrpFields(JSONObject json) {
-    }
-
 }

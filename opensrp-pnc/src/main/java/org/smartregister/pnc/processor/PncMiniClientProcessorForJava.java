@@ -240,7 +240,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     JSONObject jsonChildObject = jsonObject.optJSONObject(key);
                     Map<String, String> data = new HashMap<>();
                     data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
-                    data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, key);
+                    data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));
