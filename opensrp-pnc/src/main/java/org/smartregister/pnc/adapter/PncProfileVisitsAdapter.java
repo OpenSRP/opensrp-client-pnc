@@ -134,7 +134,7 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
         return context.getResources().getColor(colorId);
     }
 
-    private PncProfileVisitsAdapter.Template getTemplate(String rawTemplate) {
+    public PncProfileVisitsAdapter.Template getTemplate(String rawTemplate) {
         PncProfileVisitsAdapter.Template template = new PncProfileVisitsAdapter.Template();
 
         if (rawTemplate.contains(":")) {
@@ -179,7 +179,7 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
         }
     }
 
-    private class Template {
+    public static class Template {
         public String title = "";
         public String detail = "";
     }

@@ -1,15 +1,20 @@
 package org.smartregister.pnc.provider;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.BuildConfig;
@@ -27,9 +33,21 @@ import org.smartregister.pnc.config.BasePncRegisterProviderMetadata;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.config.PncRegisterRowOptions;
+import org.smartregister.pnc.holder.FooterViewHolder;
 import org.smartregister.pnc.holder.PncRegisterViewHolder;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.contract.SmartRegisterClient;
+import org.smartregister.view.contract.SmartRegisterClients;
+import org.smartregister.view.dialog.FilterOption;
+import org.smartregister.view.dialog.ServiceModeOption;
+import org.smartregister.view.dialog.SortOption;
+import org.smartregister.view.viewholder.OnClickFormLauncher;
+
+import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PncRegisterProviderTest {
@@ -54,14 +72,22 @@ public class PncRegisterProviderTest {
     @Mock
     private LayoutInflater inflator;
 
+    @Mock
+    private Resources resources;
+
     @Before
     public void setUp() throws Exception {
+
         BasePncRegisterProviderMetadata pncRegisterProviderMetadata = Mockito.spy(new BasePncRegisterProviderMetadata());
         Mockito.doReturn(mockedView).when(inflator).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.anyBoolean());
         Mockito.doReturn(inflator).when(context).getSystemService(Mockito.eq(Context.LAYOUT_INFLATER_SERVICE));
+        PowerMockito.doReturn(resources).when(context).getResources();
+
+        PncRegisterRowOptions<? extends PncRegisterViewHolder> pncRegisterRowOption = PowerMockito.mock(PncRegisterRowOptions.class);
 
         PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProvider.class)
                 .setPncRegisterProviderMetadata(BasePncRegisterProviderMetadata.class)
+                .setPncRegisterRowOptions(pncRegisterRowOption.getClass())
                 .build();
 
         PncLibrary.init(Mockito.mock(org.smartregister.Context.class), Mockito.mock(Repository.class), pncConfiguration, BuildConfig.VERSION_CODE, 1);
@@ -73,6 +99,18 @@ public class PncRegisterProviderTest {
     @After
     public void tearDown() throws Exception {
         ReflectionHelpers.setStaticField(PncLibrary.class, "instance", null);
+    }
+
+    @Test
+    public void verifyFillValue() {
+
+        TextView textView = PowerMockito.mock(TextView.class);
+        PowerMockito.doNothing().when(textView).setText(anyString());
+
+        PncRegisterProvider.fillValue(textView, "value");
+
+        Mockito.verify(textView, Mockito.times(1)).setText("value");
+
     }
 
     // TODO: Fix this test
@@ -150,6 +188,125 @@ public class PncRegisterProviderTest {
                 , Mockito.any(CommonPersonObjectClient.class)
                 , Mockito.any(SmartRegisterClient.class)
                 , Mockito.any(PncRegisterViewHolder.class));
+    }
+
+    @Test
+    public void getViewShouldCallPopulatePatientColumn() {
+
+        PncRegisterViewHolder pncRegisterViewHolder = Mockito.mock(PncRegisterViewHolder.class);
+        View view = PowerMockito.mock(View.class);
+        Button button = PowerMockito.mock(Button.class);
+        View.OnClickListener onClickListener = PowerMockito.mock(View.OnClickListener.class);
+
+        PowerMockito.doReturn("y").when(resources).getString(anyInt());
+        PowerMockito.doReturn("Age: %s").when(context).getString(anyInt());
+        ReflectionHelpers.setField(pncRegisterViewHolder, "patientColumn", view);
+        ReflectionHelpers.setField(pncRegisterViewHolder, "dueButton", button);
+        ReflectionHelpers.setField(pncRegisterProvider, "onClickListener", onClickListener);
+        //PowerMockito.doNothing().when(view).setOnClickListener(onClickListener);
+
+        pncRegisterProvider.getView(Mockito.mock(Cursor.class)
+                , Mockito.mock(CommonPersonObjectClient.class)
+                , pncRegisterViewHolder);
+
+
+    }
+
+    @Test
+    public void getFooterViewShouldVerifyClickListenerAndShouldVisiblePreviousAndNextPageView() {
+
+        FooterViewHolder footerViewHolder = PowerMockito.mock(FooterViewHolder.class);
+        TextView pageInfoView = PowerMockito.mock(TextView.class);
+        Button nextPageView = PowerMockito.mock(Button.class);
+        Button previousPageView = PowerMockito.mock(Button.class);
+        View.OnClickListener paginationClickListener = PowerMockito.mock(View.OnClickListener.class);
+
+        ReflectionHelpers.setField(footerViewHolder, "pageInfoView", pageInfoView);
+        ReflectionHelpers.setField(footerViewHolder, "nextPageView", nextPageView);
+        ReflectionHelpers.setField(footerViewHolder, "previousPageView", previousPageView);
+        ReflectionHelpers.setField(pncRegisterProvider, "paginationClickListener", paginationClickListener);
+
+        PowerMockito.doReturn("Page {0} of {1}").when(context).getString(anyInt());
+
+
+        pncRegisterProvider.getFooterView(footerViewHolder, 1, 10, true, true);
+
+        Mockito.verify(pageInfoView, Mockito.times(1)).setText("Page 1 of 10");
+        Mockito.verify(nextPageView, Mockito.times(1)).setVisibility(View.VISIBLE);
+        Mockito.verify(previousPageView, Mockito.times(1)).setVisibility(View.VISIBLE);
+        Mockito.verify(nextPageView, Mockito.times(1)).setOnClickListener(paginationClickListener);
+        Mockito.verify(previousPageView, Mockito.times(1)).setOnClickListener(paginationClickListener);
+    }
+
+    @Test
+    public void getFooterShouldInvisiblePreviousAndNextPageView() {
+
+        FooterViewHolder footerViewHolder = PowerMockito.mock(FooterViewHolder.class);
+        TextView pageInfoView = PowerMockito.mock(TextView.class);
+        Button nextPageView = PowerMockito.mock(Button.class);
+        Button previousPageView = PowerMockito.mock(Button.class);
+        View.OnClickListener paginationClickListener = PowerMockito.mock(View.OnClickListener.class);
+
+        ReflectionHelpers.setField(footerViewHolder, "pageInfoView", pageInfoView);
+        ReflectionHelpers.setField(footerViewHolder, "nextPageView", nextPageView);
+        ReflectionHelpers.setField(footerViewHolder, "previousPageView", previousPageView);
+        ReflectionHelpers.setField(pncRegisterProvider, "paginationClickListener", paginationClickListener);
+
+        PowerMockito.doReturn("Page {0} of {1}").when(context).getString(anyInt());
+
+        pncRegisterProvider.getFooterView(footerViewHolder, 1, 10, false, false);
+
+        Mockito.verify(nextPageView, Mockito.times(1)).setVisibility(View.INVISIBLE);
+        Mockito.verify(previousPageView, Mockito.times(1)).setVisibility(View.INVISIBLE);
+    }
+
+    @Test
+    public void updateClientsShouldReturnNull() {
+        SmartRegisterClients client = pncRegisterProvider.updateClients(
+                PowerMockito.mock(FilterOption.class),
+                PowerMockito.mock(ServiceModeOption.class),
+                PowerMockito.mock(FilterOption.class),
+                PowerMockito.mock(SortOption.class)
+        );
+
+        Assert.assertNull(client);
+    }
+
+    @Test
+    public void newFormLauncherShouldReturnNull() {
+        OnClickFormLauncher formLauncher = pncRegisterProvider.newFormLauncher("", "", "");
+        Assert.assertNull(formLauncher);
+    }
+
+    @Test
+    public void onServiceModeSelectedDoNothing() {
+        pncRegisterProvider.onServiceModeSelected(PowerMockito.mock(ServiceModeOption.class));
+    }
+
+    @Test
+    public void inflaterShouldReturnMockedInflater() {
+        LayoutInflater layoutInflater = pncRegisterProvider.inflater();
+        Assert.assertEquals(inflator, layoutInflater);
+    }
+
+    @Test
+    public void createFooterHolderShouldReturnFooterViewHolder() throws Exception{
+
+        ViewGroup parent = PowerMockito.mock(ViewGroup.class);
+        View view = PowerMockito.mock(View.class);
+
+        PowerMockito.doReturn(view).when(inflator).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
+
+        RecyclerView.ViewHolder footerViewHolder = pncRegisterProvider.createFooterHolder(parent);
+
+        Assert.assertThat(footerViewHolder, instanceOf(RecyclerView.ViewHolder.class));
+    }
+
+    @Test
+    public void isFooterViewHolderShouldReturnTrue() {
+        FooterViewHolder footerViewHolder = PowerMockito.mock(FooterViewHolder.class);
+        boolean result = pncRegisterProvider.isFooterViewHolder(footerViewHolder);
+        Assert.assertTrue(result);
     }
 
     static class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {

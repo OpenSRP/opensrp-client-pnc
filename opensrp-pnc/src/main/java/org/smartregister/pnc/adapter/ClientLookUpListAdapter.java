@@ -53,11 +53,11 @@ public class ClientLookUpListAdapter extends RecyclerView.Adapter<ClientLookUpLi
         return data.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView txtName;
         private TextView txtDetails;
 
-        private MyViewHolder(View view) {
+        public MyViewHolder(View view) {
             super(view);
             txtName = view.findViewById(R.id.txtName);
             txtDetails = view.findViewById(R.id.txtDetails);

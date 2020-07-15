@@ -103,7 +103,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
         return string.replace("_", " ").toUpperCase();
     }
 
-    private Template getTemplate(String rawTemplate) {
+    public Template getTemplate(String rawTemplate) {
         Template template = new Template();
 
         if (rawTemplate.contains(":")) {
@@ -121,7 +121,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
     }
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public View parent;
         private TextView sectionHeader;
         private TextView subSectionHeader;
@@ -139,7 +139,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
         }
     }
 
-    private class Template {
+    public static class Template {
         public String title = "";
         public String detail = "";
     }
