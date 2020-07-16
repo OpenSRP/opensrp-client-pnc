@@ -12,10 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.pnc.utils.PncDbConstants;
 
@@ -32,13 +30,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.robolectric.util.ReflectionHelpers.setField;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"org.mockito.*"})
-@PrepareForTest(LayoutInflater.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ClientLookUpListAdapterTest {
 
     private ClientLookUpListAdapter adapter;
@@ -50,6 +45,9 @@ public class ClientLookUpListAdapterTest {
     private Context context;
 
     @Mock
+    private LayoutInflater mInflater;
+
+    @Mock
     private static ClientLookUpListAdapter.ClickListener clickListener;
 
     @Before
@@ -58,22 +56,18 @@ public class ClientLookUpListAdapterTest {
 
         adapter = new ClientLookUpListAdapter(data, context);
         setField(adapter, "clickListener", clickListener);
+        setField(adapter, "mInflater", mInflater);
     }
 
     @Test
     public void onCreateViewHolderShouldReturnMyViewHolder() throws Exception {
 
-        mockStatic(LayoutInflater.class);
 
-        LayoutInflater inflater = mock(LayoutInflater.class);
         View itemView = mock(View.class);
         ViewGroup parent = mock(ViewGroup.class);
         ClientLookUpListAdapter.MyViewHolder viewHolder = mock(ClientLookUpListAdapter.MyViewHolder.class);
 
-        doReturn(context).when(parent).getContext();
-        when(LayoutInflater.from(any(Context.class))).thenReturn(inflater);
-        doReturn(itemView).when(inflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
-        PowerMockito.whenNew(ClientLookUpListAdapter.MyViewHolder.class).withArguments(itemView).thenReturn(viewHolder);
+        doReturn(itemView).when(mInflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
 
         int viewType = -1;
 

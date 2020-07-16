@@ -21,16 +21,18 @@ public class ClientLookUpListAdapter extends RecyclerView.Adapter<ClientLookUpLi
     private List<CommonPersonObject> data;
     private Context context;
     private static ClickListener clickListener;
+    private LayoutInflater mInflater;
 
     public ClientLookUpListAdapter(List<CommonPersonObject> data, Context context) {
         this.data = data;
         this.context = context;
+        this.mInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.pnc_lookup_item, viewGroup, false);
+        View itemView = mInflater.inflate(R.layout.pnc_lookup_item, viewGroup, false);
         return new MyViewHolder(itemView);
     }
 

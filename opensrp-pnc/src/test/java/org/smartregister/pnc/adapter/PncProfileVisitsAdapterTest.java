@@ -3,7 +3,6 @@ package org.smartregister.pnc.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
+import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.util.StringUtil;
 
 import java.util.ArrayList;
@@ -35,14 +33,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.robolectric.util.ReflectionHelpers.setField;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"org.mockito.*"})
-@PrepareForTest({LayoutInflater.class, TextUtils.class})
+@RunWith(MockitoJUnitRunner.class)
 public class PncProfileVisitsAdapterTest {
 
     @Mock
@@ -57,14 +51,18 @@ public class PncProfileVisitsAdapterTest {
     @Mock
     private ArrayList<Pair<YamlConfigWrapper, Facts>> items;
 
+    @Mock
+    private TextUtilHelper textUtilHelper;
+
     private PncProfileVisitsAdapter adapter;
 
     @Before
     public void setUp() {
         initMocks(this);
-        mockStatic(LayoutInflater.class);
-        when(LayoutInflater.from(any(Context.class))).thenReturn(mInflater);
+
         adapter = new PncProfileVisitsAdapter(context, items);
+        setField(adapter, "mInflater", mInflater);
+        setField(adapter, "textUtilHelper", textUtilHelper);
     }
 
     @Test
@@ -74,7 +72,6 @@ public class PncProfileVisitsAdapterTest {
         View view = mock(View.class);
         PncProfileVisitsAdapter.YamlViewHolder vh = mock(PncProfileVisitsAdapter.YamlViewHolder.class);
         when(mInflater.inflate(anyInt(), any(ViewGroup.class), anyBoolean())).thenReturn(view);
-        whenNew(PncProfileVisitsAdapter.YamlViewHolder.class).withArguments(view).thenReturn(vh);
 
         assertThat(vh, instanceOf(adapter.onCreateViewHolder(parent, -1).getClass()));
     }
@@ -97,7 +94,6 @@ public class PncProfileVisitsAdapterTest {
         setField(vh, "sectionDetailTitle", sectionDetailTitle);
         setField(vh, "sectionDetails", sectionDetails);
 
-        mockStatic(TextUtils.class);
         Facts facts = mock(Facts.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         Pair<YamlConfigWrapper, Facts> pair = mock(new Pair<>(yamlConfigWrapper, facts).getClass());
@@ -106,7 +102,7 @@ public class PncProfileVisitsAdapterTest {
         setField(pair, "first", yamlConfigWrapper);
         setField(pair, "second", facts);
 
-        when(TextUtils.isEmpty(anyString())).thenReturn(false);
+        when(textUtilHelper.isEmpty(anyString())).thenReturn(false);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.RED);
         when(items.get(anyInt())).thenReturn(pair);
@@ -145,14 +141,13 @@ public class PncProfileVisitsAdapterTest {
         setField(vh, "sectionDetailTitle", sectionDetailTitle);
         setField(vh, "sectionDetails", sectionDetails);
 
-        mockStatic(TextUtils.class);
         Facts facts = mock(Facts.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         Pair<YamlConfigWrapper, Facts> pair = mock(new Pair<>(yamlConfigWrapper, facts).getClass());
         setField(pair, "first", yamlConfigWrapper);
         setField(pair, "second", facts);
 
-        when(TextUtils.isEmpty(anyString())).thenReturn(true);
+        when(textUtilHelper.isEmpty(anyString())).thenReturn(true);
         when(items.get(anyInt())).thenReturn(pair);
 
         when(yamlConfigWrapper.getGroup()).thenReturn(group);

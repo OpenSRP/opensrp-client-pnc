@@ -7,16 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"org.mockito.*"})
+@RunWith(MockitoJUnitRunner.class)
 public class ViewPagerAdapterTest {
 
     @Mock

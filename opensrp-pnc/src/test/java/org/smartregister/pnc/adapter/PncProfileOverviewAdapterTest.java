@@ -3,7 +3,6 @@ package org.smartregister.pnc.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
+import org.smartregister.pnc.helper.LibraryHelper;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
+import org.smartregister.pnc.helper.TextUtilHelper;
 
 import java.util.List;
 
@@ -36,14 +36,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.robolectric.util.ReflectionHelpers.setField;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"org.mockito.*"})
-@PrepareForTest({LayoutInflater.class, PncLibrary.class, TextUtils.class})
+@RunWith(MockitoJUnitRunner.class)
 public class PncProfileOverviewAdapterTest {
 
     @Mock
@@ -64,19 +60,23 @@ public class PncProfileOverviewAdapterTest {
     @Mock
     private PncLibrary pncLibrary;
 
+    @Mock
+    private TextUtilHelper textUtilHelper;
+
+    @Mock
+    private LibraryHelper libraryHelper;
+
     private PncProfileOverviewAdapter adapter;
 
     @Before
+    @PrepareForTest(LayoutInflater.class)
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mockStatic(LayoutInflater.class);
-        mockStatic(PncLibrary.class);
-
-        when(LayoutInflater.from(any(Context.class))).thenReturn(mInflater);
-        when(PncLibrary.getInstance()).thenReturn(pncLibrary);
-
         adapter = new PncProfileOverviewAdapter(context, mData, facts);
+        setField(adapter, "mInflater", mInflater);
+        setField(adapter, "textUtilHelper", textUtilHelper);
+        setField(adapter, "libraryHelper", libraryHelper);
 
     }
 
@@ -86,7 +86,6 @@ public class PncProfileOverviewAdapterTest {
         PncProfileOverviewAdapter.ViewHolder viewHolder = mock(PncProfileOverviewAdapter.ViewHolder.class);
         View view = mock(View.class);
         doReturn(view).when(mInflater).inflate(anyInt(), any(ViewGroup.class), anyBoolean());
-        whenNew(PncProfileOverviewAdapter.ViewHolder.class).withArguments(view).thenReturn(viewHolder);
 
         PncProfileOverviewAdapter.ViewHolder vh = adapter.onCreateViewHolder(mock(ViewGroup.class), -1);
         Assert.assertThat(viewHolder, instanceOf(vh.getClass()));
@@ -110,12 +109,11 @@ public class PncProfileOverviewAdapterTest {
         setField(vh, "sectionDetailTitle", sectionDetailTitle);
         setField(vh, "sectionDetails", sectionDetails);
 
-        mockStatic(TextUtils.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
         PncRulesEngineHelper pncRulesEngineHelper = mock(PncRulesEngineHelper.class);
 
-        when(TextUtils.isEmpty(anyString())).thenReturn(false);
+        when(textUtilHelper.isEmpty(anyString())).thenReturn(false);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.RED);
         when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
@@ -124,6 +122,7 @@ public class PncProfileOverviewAdapterTest {
         when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
         when(yamlConfigItem.getTemplate()).thenReturn(template);
         when(yamlConfigItem.getIsRedFont()).thenReturn("yes");
+        when(libraryHelper.getPncLibraryInstance()).thenReturn(pncLibrary);
         when(pncLibrary.getPncRulesEngineHelper()).thenReturn(pncRulesEngineHelper);
         when(pncRulesEngineHelper.getRelevance(any(Facts.class), anyString())).thenReturn(true);
         when(facts.get("one")).thenReturn("two");
@@ -159,11 +158,10 @@ public class PncProfileOverviewAdapterTest {
         setField(vh, "sectionDetailTitle", sectionDetailTitle);
         setField(vh, "sectionDetails", sectionDetails);
 
-        mockStatic(TextUtils.class);
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
 
-        when(TextUtils.isEmpty(anyString())).thenReturn(true);
+        when(textUtilHelper.isEmpty(anyString())).thenReturn(true);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.BLACK);
         when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
