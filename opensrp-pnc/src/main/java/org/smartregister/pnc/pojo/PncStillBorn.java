@@ -4,6 +4,8 @@ public class PncStillBorn {
     private String motherBaseEntityId;
     private String stillBirthCondition;
 
+    private String eventDate;
+
     public String getMotherBaseEntityId() {
         return motherBaseEntityId;
     }
@@ -18,5 +20,13 @@ public class PncStillBorn {
 
     public void setStillBirthCondition(String stillBirthCondition) {
         this.stillBirthCondition = stillBirthCondition;
+    }
+
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
     }
 }

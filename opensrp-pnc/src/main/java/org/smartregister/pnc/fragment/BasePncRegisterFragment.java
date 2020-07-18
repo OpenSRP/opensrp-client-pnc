@@ -27,6 +27,7 @@ import org.smartregister.pnc.model.PncRegisterFragmentModel;
 import org.smartregister.pnc.presenter.PncRegisterFragmentPresenter;
 import org.smartregister.pnc.provider.PncRegisterProvider;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
+import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.pnc.utils.PncViewConstants;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
@@ -180,7 +181,13 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
 
                         goToClientDetailActivity((CommonPersonObjectClient) viewClient);
                     } else if (view.getTag(R.id.VIEW_TYPE).equals(PncViewConstants.Provider.ACTION_BUTTON_COLUMN)) {
-                        performPatientAction((CommonPersonObjectClient) viewClient);
+                        Object buttonType = view.getTag(R.id.BUTTON_TYPE);
+                        if (buttonType != null && buttonType.equals(R.string.record_pnc)) {
+                            performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_VISIT);
+                        }
+                        else {
+                            performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
+                        }
                     }
                 } else {
                     Timber.e(new Exception(), "Value for key[%d] is not a CommonPersonObjectClient but is of type %s"
@@ -191,7 +198,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         }
     }
 
-    abstract protected void performPatientAction(@NonNull CommonPersonObjectClient commonPersonObjectClient);
+    abstract protected void performPatientAction(@NonNull CommonPersonObjectClient commonPersonObjectClient, @NonNull String formName);
 
     @Override
     public void onSyncInProgress(FetchStatus fetchStatus) {

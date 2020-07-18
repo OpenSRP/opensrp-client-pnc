@@ -169,7 +169,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
                 // Fetch saved form & continue editing
-                if (formName.equals(PncConstants.Form.PNC_OUTCOME)) {
+                if (formName.equals(PncConstants.Form.PNC_VISIT)) {
                     mProfileInteractor.fetchSavedDiagnosisAndTreatmentForm(caseId, entityTable);
                 } else {
                     startFormActivity(form, caseId, entityTable);

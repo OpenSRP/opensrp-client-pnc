@@ -11,7 +11,7 @@ import org.smartregister.pnc.utils.PncDbConstants;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 
-public class PncOutcomeDetailsRepository extends PncDetailsRepository {
+public class PncOtherDetailsRepository extends PncDetailsRepository {
 
     private String[] propertyNames;
 

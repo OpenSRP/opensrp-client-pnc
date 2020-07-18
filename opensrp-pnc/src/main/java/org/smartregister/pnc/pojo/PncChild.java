@@ -2,25 +2,68 @@ package org.smartregister.pnc.pojo;
 
 public class PncChild {
     private String motherBaseEntityId;
+    private String dischargedAlive;
+    private String childRegistered;
+    private String birthRecordDate;
     private String firstName;
     private String lastName;
     private String dob;
     private String gender;
-    private String dischargedAlive;
+    private String weightEntered;
     private String weight;
-    private String height;
+    private String heightEntered;
     private String apgar;
     private String firstCry;
     private String complications;
     private String complicationsOther;
-    private String nvpAdministration;
-    private String bfFirstHour;
-    private String interventionReferralLocation;
-    private String interventionSpecify;
     private String careMgt;
-    private String eventDate;
+    private String careMgtSpecify;
+    private String refLocation;
+    private String bfFirstHour;
     private String childHivStatus;
+    private String nvpAdministration;
+    private String eventDate;
     private String stillBirthCondition;
+
+    public String getChildRegistered() {
+        return childRegistered;
+    }
+
+    public void setChildRegistered(String childRegistered) {
+        this.childRegistered = childRegistered;
+    }
+
+    public String getBirthRecordDate() {
+        return birthRecordDate;
+    }
+
+    public void setBirthRecordDate(String birthRecordDate) {
+        this.birthRecordDate = birthRecordDate;
+    }
+
+    public String getWeightEntered() {
+        return weightEntered;
+    }
+
+    public void setWeightEntered(String weightEntered) {
+        this.weightEntered = weightEntered;
+    }
+
+    public String getCareMgtSpecify() {
+        return careMgtSpecify;
+    }
+
+    public void setCareMgtSpecify(String careMgtSpecify) {
+        this.careMgtSpecify = careMgtSpecify;
+    }
+
+    public String getRefLocation() {
+        return refLocation;
+    }
+
+    public void setRefLocation(String refLocation) {
+        this.refLocation = refLocation;
+    }
 
     public String getChildHivStatus() {
         return childHivStatus;
@@ -94,12 +137,12 @@ public class PncChild {
         this.weight = weight;
     }
 
-    public String getHeight() {
-        return height;
+    public String getHeightEntered() {
+        return heightEntered;
     }
 
-    public void setHeight(String height) {
-        this.height = height;
+    public void setHeightEntered(String heightEntered) {
+        this.heightEntered = heightEntered;
     }
 
     public String getApgar() {
@@ -148,22 +191,6 @@ public class PncChild {
 
     public void setBfFirstHour(String bfFirstHour) {
         this.bfFirstHour = bfFirstHour;
-    }
-
-    public String getInterventionReferralLocation() {
-        return interventionReferralLocation;
-    }
-
-    public void setInterventionReferralLocation(String interventionReferralLocation) {
-        this.interventionReferralLocation = interventionReferralLocation;
-    }
-
-    public String getInterventionSpecify() {
-        return interventionSpecify;
-    }
-
-    public void setInterventionSpecify(String interventionSpecify) {
-        this.interventionSpecify = interventionSpecify;
     }
 
     public String getEventDate() {

@@ -71,7 +71,7 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
     }
 
     @Override
-    protected void performPatientAction(@NonNull CommonPersonObjectClient commonPersonObjectClient) {
+    protected void performPatientAction(@NonNull CommonPersonObjectClient commonPersonObjectClient, @NonNull String formName) {
         Map<String, String> clientColumnMaps = commonPersonObjectClient.getColumnmaps();
 
         PncRegisterActivity pncRegisterActivity = (PncRegisterActivity) getActivity();
@@ -84,7 +84,7 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
             injectableFormValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, currentHivStatus);
 
 
-            pncRegisterActivity.startFormActivityFromFormName(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
+            pncRegisterActivity.startFormActivityFromFormName(formName, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
         }
     }
 

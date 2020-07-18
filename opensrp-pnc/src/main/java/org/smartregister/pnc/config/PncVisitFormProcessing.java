@@ -33,12 +33,12 @@ import timber.log.Timber;
 import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
 import static org.smartregister.util.JsonFormUtils.gson;
 
-public class PncOutcomeFormProcessing implements PncFormProcessingTask {
+public class PncVisitFormProcessing implements PncFormProcessingTask {
 
 
     @Override
     public List<Event> processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             return processPncOutcomeForm(jsonString, data);
         }
         return new ArrayList<>();
@@ -63,15 +63,15 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
 
             String title = step.optString(JsonFormConstants.STEP_TITLE);
 
-            if (PncConstants.JsonFormStepNameConstants.LIVE_BIRTHS.equals(title)) {
-                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS);
+            if (PncConstants.JsonFormStepNameConstants.PNC_VISIT_INFO.equals(title)) {
+                HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.OTHER_VISIT_GROUP);
 
                 //buildChildRegEvent
                 PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
 
-                    List<PncEventClient> childEvents = buildChildRegistrationEvents(buildRepeatingGroupBorn, baseEntityId, jsonFormObject);
-                    if (!childEvents.isEmpty()) {
-                        PncUtils.processEvents(childEvents);
+                    List<PncEventClient> visitEvents = buildChildRegistrationEvents(buildRepeatingGroupBorn, baseEntityId, jsonFormObject);
+                    if (!visitEvents.isEmpty()) {
+                        PncUtils.processEvents(visitEvents);
                     }
                 });
 
@@ -79,18 +79,18 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     String strGroup = gson.toJson(buildRepeatingGroupBorn);
 
                     JSONObject repeatingGroupObj = new JSONObject();
-                    repeatingGroupObj.put(JsonFormConstants.KEY, PncConstants.JsonFormKeyConstants.BABIES_BORN_MAP);
+                    repeatingGroupObj.put(JsonFormConstants.KEY, PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
                     repeatingGroupObj.put(JsonFormConstants.VALUE, strGroup);
                     repeatingGroupObj.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
                     fieldsArray.put(repeatingGroupObj);
                 }
-            } else if (PncConstants.JsonFormStepNameConstants.STILL_BIRTHS.equals(title)) {
-                HashMap<String, HashMap<String, String>> buildRepeatingGroupStillBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.BABIES_STILLBORN);
+            } else if (PncConstants.JsonFormStepNameConstants.PNC_VISIT_CHILD_STATUS.equals(title)) {
+                HashMap<String, HashMap<String, String>> buildRepeatingGroupStillBorn = PncUtils.buildRepeatingGroup(step, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP);
                 if (!buildRepeatingGroupStillBorn.isEmpty()) {
                     String strGroup = gson.toJson(buildRepeatingGroupStillBorn);
 
                     JSONObject repeatingGroupObj = new JSONObject();
-                    repeatingGroupObj.put(JsonFormConstants.KEY, PncConstants.JsonFormKeyConstants.BABIES_STILL_BORN_MAP);
+                    repeatingGroupObj.put(JsonFormConstants.KEY, PncConstants.JsonFormKeyConstants.CHILD_STATUS_MAP);
                     repeatingGroupObj.put(JsonFormConstants.VALUE, strGroup);
                     repeatingGroupObj.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
                     fieldsArray.put(repeatingGroupObj);
@@ -100,20 +100,12 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
 
         FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
 
-        Event pncOutcomeEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_OUTCOME, "");
-        PncJsonFormUtils.tagSyncMetadata(pncOutcomeEvent);
-        eventList.add(pncOutcomeEvent);
-
-
-        /*Event closePncEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
-                formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_CLOSE, "");
-        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
-        closePncEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
-        eventList.add(closePncEvent);*/
+        Event pncVisitEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
+                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_VISIT, "");
+        PncJsonFormUtils.tagSyncMetadata(pncVisitEvent);
+        eventList.add(pncVisitEvent);
 
         return eventList;
-
     }
 
     @NonNull

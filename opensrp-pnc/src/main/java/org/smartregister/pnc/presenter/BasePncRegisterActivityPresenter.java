@@ -10,7 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.FetchStatus;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
 import org.smartregister.pnc.pojo.PncOutcomeForm;
@@ -94,8 +96,24 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data) {
-        // Do nothing
+    public void savePncForm(String eventType, @Nullable Intent data) {
+        String jsonString = null;
+        if (data != null) {
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+        }
+
+        if (jsonString == null) {
+            return;
+        }
+
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            try {
+                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
+                interactor.saveEvents(pncOutcomeAndCloseEvent, this);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
     }
 
     @Override
@@ -123,10 +141,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
         try {
             form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
             // Todo: Enquire if we have to save a session of the outcome form to be continued later
-            if (formName.equals(PncConstants.Form.PNC_OUTCOME)) {
-                //interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
+            /*if (formName.equals(PncConstants.Form.PNC_RECURRING_VISIT)) {
+                interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
                 return;
-            }
+            }*/
 
         } catch (JSONException e) {
             Timber.e(e);
@@ -155,7 +173,8 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             intentKeys.put(PncConstants.IntentKey.BASE_ENTITY_ID, entityId);
             intentKeys.put(PncConstants.IntentKey.ENTITY_TABLE, entityTable);
 
-            getView().startFormActivityFromFormJson(form, intentKeys);
+
+            getView().startFormActivityFromFormJson(entityId, form, intentKeys);
         }
     }
 

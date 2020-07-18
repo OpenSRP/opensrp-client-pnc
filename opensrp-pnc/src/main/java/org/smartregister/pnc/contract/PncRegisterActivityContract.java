@@ -30,7 +30,7 @@ public interface PncRegisterActivityContract {
 
         void startFormActivityFromFormName(String formName, String entityId, String metaData, @Nullable HashMap<String, String> injectedFieldValues, @Nullable String clientTable);
 
-        void startFormActivityFromFormJson(@NonNull JSONObject jsonForm, @Nullable HashMap<String, String> parcelableData);
+        void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> parcelableData);
     }
 
     interface Presenter extends BaseRegisterContract.Presenter {
@@ -39,7 +39,7 @@ public interface PncRegisterActivityContract {
 
         void saveForm(String jsonString, @NonNull RegisterParams registerParams);
 
-        void saveOutcomeForm(@NonNull String eventType, @Nullable Intent data);
+        void savePncForm(String eventType, @Nullable Intent data);
 
         void startForm(@NonNull String formName, @Nullable String entityId, String metaData, @NonNull String locationId, @Nullable HashMap<String, String> injectedFieldValues, @Nullable String entityTable);
 

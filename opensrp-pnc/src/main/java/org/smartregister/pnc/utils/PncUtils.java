@@ -314,6 +314,7 @@ public class PncUtils extends org.smartregister.util.Utils {
                 JSONObject valueField = jsonArray.optJSONObject(i);
                 String fieldKey = valueField.optString(JsonFormConstants.KEY);
                 keysArrayList.add(fieldKey);
+                jsonObject.remove(JsonFormConstants.VALUE);
             }
 
             for (int k = 0; k < fields.length(); k++) {
@@ -351,7 +352,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         return uniqueIdRepo.getNextUniqueId() != null ? uniqueIdRepo.getNextUniqueId().getOpenmrsId() : "";
     }
 
-    public static void savePncChild(@NonNull List<PncEventClient> pncEventClients) {
+    public static void processEvents(@NonNull List<PncEventClient> pncEventClients) {
         try {
             List<String> currentFormSubmissionIds = new ArrayList<>();
             for (PncEventClient eventClient : pncEventClients) {
