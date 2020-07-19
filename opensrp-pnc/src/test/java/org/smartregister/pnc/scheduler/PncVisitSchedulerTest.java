@@ -73,6 +73,6 @@ public class PncVisitSchedulerTest {
         pncVisitScheduler.setLatestVisit(data);
 
         pncVisitScheduler.buildStatusTable();
-        Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.PNC_DONE_TODAY);
+        Assert.assertEquals(VisitStatus.PNC_DONE_TODAY, pncVisitScheduler.getStatus());
     }
 }
