@@ -58,21 +58,4 @@ public class PncVisitSchedulerTest {
         pncVisitScheduler.buildStatusTable();
         Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.RECORD_PNC);
     }
-
-    @Test
-    public void getStatusShouldEqualPncDoneToday() {
-
-        LocalDate deliveryDate = LocalDate.now();
-        LocalDate currentDate = LocalDate.now().plusDays(62);
-        Map<String, String> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisit.CREATED_AT, String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1))));
-
-        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
-        pncVisitScheduler.setDeliveryDate(deliveryDate);
-        pncVisitScheduler.setCurrentDate(currentDate);
-        pncVisitScheduler.setLatestVisit(data);
-
-        pncVisitScheduler.buildStatusTable();
-        Assert.assertEquals(VisitStatus.PNC_DONE_TODAY, pncVisitScheduler.getStatus());
-    }
 }
