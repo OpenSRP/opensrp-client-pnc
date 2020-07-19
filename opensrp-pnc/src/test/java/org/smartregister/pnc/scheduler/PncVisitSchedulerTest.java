@@ -63,7 +63,7 @@ public class PncVisitSchedulerTest {
     public void getStatusShouldEqualPncDoneToday() {
 
         LocalDate deliveryDate = LocalDate.now();
-        LocalDate currentDate = LocalDate.now().plusDays(61);
+        LocalDate currentDate = LocalDate.now().plusDays(62);
         Map<String, String> data = new HashMap<>();
         data.put(PncDbConstants.Column.PncVisit.CREATED_AT, String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1))));
 
