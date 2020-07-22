@@ -33,11 +33,11 @@ public class PncMultiSelectDrugPicker extends MultiSelectListFactory implements 
     public void afterTextChanged(Editable s) {
         if (!s.toString().isEmpty()) {
             if (saveDrugPncBtn != null) {
-                saveDrugPncBtn.setTextColor(context.getResources().getColor(R.color.primary_text));
+                saveDrugPncBtn.setTextColor(getContext().getResources().getColor(R.color.primary_text));
             }
         } else {
             if (saveDrugPncBtn != null) {
-                saveDrugPncBtn.setTextColor(context.getResources().getColor(R.color.light_grey));
+                saveDrugPncBtn.setTextColor(getContext().getResources().getColor(R.color.light_grey));
             }
         }
     }
