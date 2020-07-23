@@ -111,8 +111,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     }
 
     @Override
-    public void onServiceModeSelected(ServiceModeOption serviceModeOption) {//Implement Abstract Method
-    }
+    public void onServiceModeSelected(ServiceModeOption serviceModeOption) { /*Implement Abstract Method */ }
 
     @Override
     public OnClickFormLauncher newFormLauncher(String formName, String entityId, String metaData) {
