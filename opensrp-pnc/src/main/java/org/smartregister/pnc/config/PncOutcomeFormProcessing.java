@@ -147,18 +147,16 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     String dischargedAlive = jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE);
                     if (!jsonChildObject.optBoolean(PncConstants.JsonFormField.GENERATED_GRP, false)) {
-                        if ("yes".equalsIgnoreCase(dischargedAlive)) {
-                            String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID);
-                            JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);
-                            if (fields != null) {
-                                Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
-                                baseClient.addRelationship(PncConstants.MOTHER, baseEntityId);
-                                baseClient.setRelationalBaseEntityId(baseEntityId);
-                                Event childRegEvent = PncJsonFormUtils.createEvent(fields, jsonFormObject.optJSONObject(METADATA)
-                                        , formTag, entityId, childRegistrationEvent(), "");
-                                PncJsonFormUtils.tagSyncMetadata(childRegEvent);
-                                childRegEventList.add(new PncEventClient(baseClient, childRegEvent));
-                            }
+                        String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID);
+                        JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);
+                        if ("yes".equalsIgnoreCase(dischargedAlive) && fields != null) {
+                            Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
+                            baseClient.addRelationship(PncConstants.MOTHER, baseEntityId);
+                            baseClient.setRelationalBaseEntityId(baseEntityId);
+                            Event childRegEvent = PncJsonFormUtils.createEvent(fields, jsonFormObject.optJSONObject(METADATA)
+                                    , formTag, entityId, childRegistrationEvent(), "");
+                            PncJsonFormUtils.tagSyncMetadata(childRegEvent);
+                            childRegEventList.add(new PncEventClient(baseClient, childRegEvent));
                         }
                     }
                 }
