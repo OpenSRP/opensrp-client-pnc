@@ -79,9 +79,6 @@ public class PncRegisterProviderTest {
     @Mock
     private Resources resources;
 
-    @Mock
-    PncLibrary pncLibrary;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
