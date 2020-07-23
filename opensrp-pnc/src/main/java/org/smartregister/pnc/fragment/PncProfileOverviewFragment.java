@@ -90,9 +90,6 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
                     if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
                         profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_VISIT);
                     }
-                    else if(buttonType.equals(R.string.pnc_close)) {
-                        //profileActivity.performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_CLOSE);
-                    }
                     else if (buttonType.equals(R.string.start_pnc)){
                         profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
                     }

@@ -3,7 +3,6 @@ package org.smartregister.pnc.utils;
 import android.content.Intent;
 
 import org.jeasy.rules.api.Facts;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -111,7 +110,7 @@ public class PncUtilsTest {
 
     @Test
     public void testGenerateNIdsShouldGenerateNIds() {
-        Assert.assertEquals(2, PncUtils.generateNIds(2).length);
-        Assert.assertEquals(0, PncUtils.generateNIds(0).length);
+        assertEquals(2, PncUtils.generateNIds(2).length);
+        assertEquals(0, PncUtils.generateNIds(0).length);
     }
 }
