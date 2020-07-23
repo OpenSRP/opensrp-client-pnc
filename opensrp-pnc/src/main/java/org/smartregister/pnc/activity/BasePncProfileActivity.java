@@ -45,7 +45,6 @@ import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.pnc.utils.SampleConstants;
 import org.smartregister.util.Utils;
 import org.smartregister.view.activity.BaseProfileActivity;
 
@@ -411,10 +410,6 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public void startFormActivity(JSONObject jsonForm) {
         Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getPncFormActivity());
-        if (jsonForm.has(SampleConstants.KEY.ENCOUNTER_TYPE) && jsonForm.optString(SampleConstants.KEY.ENCOUNTER_TYPE).equals(
-                SampleConstants.KEY.PNC_REGISTRATION)) {
-//            PncJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KeyConstants.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
-        }
 
         intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonForm.toString());
 
@@ -429,12 +424,12 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     @Override
     public void refreshList(FetchStatus fetchStatus) {
-
+        // add implementation
     }
 
     @Override
     public void updateInitialsText(String s) {
-
+        // add implementation
     }
 
     @Override
