@@ -65,6 +65,7 @@ public class RepeatingGroupGenerator {
     }
 
     private void updateGroupValue(JSONArray repeatingGrpValues, JSONArray stepFields, int pos) throws JSONException {
+        int mPos = pos;
         for (Map<String, String> entryMap : storedValues) {
             baseEntityId = entryMap.get(uniqueKeyField);
             String baseEntityIdModified = baseEntityId.replaceAll("-", "");
@@ -107,7 +108,7 @@ public class RepeatingGroupGenerator {
 
                 updateField(repeatingGrpField, entryMap);
                 repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
-                stepFields.put(++pos, repeatingGrpField);
+                stepFields.put(++mPos, repeatingGrpField);
             }
         }
     }

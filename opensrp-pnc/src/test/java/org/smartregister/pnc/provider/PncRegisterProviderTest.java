@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
@@ -33,6 +35,7 @@ import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.config.PncRegisterRowOptions;
 import org.smartregister.pnc.holder.FooterViewHolder;
 import org.smartregister.pnc.holder.PncRegisterViewHolder;
+import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.contract.SmartRegisterClient;
 import org.smartregister.view.contract.SmartRegisterClients;
@@ -76,9 +79,12 @@ public class PncRegisterProviderTest {
     @Mock
     private Resources resources;
 
+    @Mock
+    PncLibrary pncLibrary;
+
     @Before
     public void setUp() throws Exception {
-
+        MockitoAnnotations.initMocks(this);
         BasePncRegisterProviderMetadata pncRegisterProviderMetadata = Mockito.spy(new BasePncRegisterProviderMetadata());
         Mockito.doReturn(mockedView).when(inflator).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.anyBoolean());
         Mockito.doReturn(inflator).when(context).getSystemService(Mockito.eq(Context.LAYOUT_INFLATER_SERVICE));
@@ -95,6 +101,9 @@ public class PncRegisterProviderTest {
 
         pncRegisterProvider = new PncRegisterProvider(context, onClickListener, paginationClickListener);
         ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterProviderMetadata", pncRegisterProviderMetadata);
+
+        PncRegistrationDetailsRepository pncRegistrationDetailsRepository = mock(PncRegistrationDetailsRepository.class);
+        ReflectionHelpers.setField(PncLibrary.getInstance(), "pncRegistrationDetailsRepository", pncRegistrationDetailsRepository);
     }
 
     @After
