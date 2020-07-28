@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +44,6 @@ public class PncVisitInfoSchedulerTest {
 
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(61);
-        Map<String, String> data = new HashMap<>();
         PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
