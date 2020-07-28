@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import org.json.JSONObject;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
@@ -18,6 +19,7 @@ import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,7 +34,7 @@ public interface PncProfileActivityContract {
         @Nullable
         PncProfileActivityContract.View getProfileView();
 
-        void refreshProfileTopSection(@NonNull Map<String, String> client);
+        void refreshProfileTopSection(@NonNull Map<String, String> client, String baseEntityId);
 
         void startForm(@NonNull String formName, @NonNull CommonPersonObjectClient commonPersonObjectClient);
 
@@ -42,6 +44,8 @@ public interface PncProfileActivityContract {
 
         @Nullable
         PncEventClient processRegistration(@NonNull String jsonString, @NonNull FormTag formTag);
+
+        void savePncForm(String eventType, @Nullable Intent data);
 
         void onUpdateRegistrationBtnCLicked(@NonNull String baseEntityId);
 
@@ -66,15 +70,17 @@ public interface PncProfileActivityContract {
 
         void setProfileAge(@NonNull String age);
 
-        void setDeliveryDays(@NonNull String gender);
+        void setProfileGender(@NonNull String gender);
 
         void setProfileImage(@NonNull String baseEntityId);
 
-        void openPncOutcomeForm();
+        void openPncVisitForm();
+
+        void openPncMedicInfoForm();
 
         void openPncCloseForm();
 
-        void startFormActivity(@NonNull JSONObject form, @NonNull HashMap<String, String> intentData);
+        void startFormActivity(String entityId, @NonNull JSONObject form, @NonNull HashMap<String, String> intentData);
 
         OnSendActionToFragment getActionListenerForVisitFragment();
 
@@ -108,6 +114,8 @@ public interface PncProfileActivityContract {
         @Nullable
         CommonPersonObjectClient retrieveUpdatedClient(@NonNull String baseEntityId);
 
+        void saveEvents(@NonNull List<Event> events, @NonNull PncProfileActivityContract.InteractorCallBack callBack);
+
         void onDestroy(boolean isChangingConfiguration);
     }
 
@@ -117,5 +125,6 @@ public interface PncProfileActivityContract {
 
         void onFetchedSavedDiagnosisAndTreatmentForm(@Nullable PncOutcomeForm diagnosisAndTreatmentForm, @NonNull String caseId, @NonNull String entityTable);
 
+        void onEventSaved();
     }
 }

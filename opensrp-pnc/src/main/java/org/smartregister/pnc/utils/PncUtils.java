@@ -28,17 +28,16 @@ import org.json.JSONObject;
 import org.smartregister.CoreLibrary;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.listener.PncEventActionCallBack;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
-import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
@@ -379,59 +378,55 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
     }
 
-    public static void setVisitButtonStatus(Button button, String baseEntityId) {
+    public static void setVisitButtonStatus(Button button, CommonPersonObjectClient client) {
         button.setTag(R.id.BUTTON_TYPE, R.string.start_pnc);
         button.setText(R.string.start_pnc);
         button.setBackgroundResource(R.drawable.pnc_outcome_bg);
 
-        PncBaseDetails pncBaseDetails = new PncBaseDetails();
-        pncBaseDetails.setBaseEntityId(baseEntityId);
-        pncBaseDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(pncBaseDetails);
-        if (pncBaseDetails != null && pncBaseDetails.getProperties() != null) {
-            HashMap<String, String> data = pncBaseDetails.getProperties();
+        if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED) != null) {
 
-            if ("1".equals(data.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED))) {
+            String deliveryDateStr = client.getColumnmaps().get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
+            LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
+            PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+            pncVisitScheduler.setDeliveryDate(deliveryDate);
+            pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get("latest_visit_date"));
 
-                String deliveryDateStr = data.get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
-                LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
-                VisitScheduler pncVisitScheduler = new PncVisitScheduler(deliveryDate, baseEntityId);
+            if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
+                button.setText(R.string.pnc_due);
+                button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
+                button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
+                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
+            } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
+                button.setText(R.string.pnc_due);
+                button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
+                button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.white));
+                button.setBackgroundColor(ContextCompat.getColor(button.getContext(), R.color.overdue_color));
+            } else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
+                button.setText(R.string.record_pnc);
+                button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
+                button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
+                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
 
-                if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
-                    button.setText(R.string.pnc_due);
-                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
-                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
-                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
-                    button.setText(R.string.pnc_due);
-                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
-                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.white));
-                    button.setBackgroundColor(ContextCompat.getColor(button.getContext(), R.color.overdue_color));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
-                    button.setText(R.string.record_pnc);
-                    button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
-                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
-                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
-
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
-                    button.setText(R.string.pnc_done_today);
-                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
-                    button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
-                    button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_done_today));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
-                    button.setText(R.string.pnc_close);
-                    button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
-                }
+            } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
+                button.setText(R.string.pnc_done_today);
+                button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
+                button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
+                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_done_today));
+            } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
+                button.setText(R.string.pnc_close);
+                button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
             }
         }
     }
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        String q1 = "SELECT * FROM ec_client WHERE base_entity_id = '" + baseEntityId + "'";
-        String q2 = "SELECT * FROM pnc_registration_details WHERE base_entity_id = '" + baseEntityId + "'";
-        String q3 = "SELECT dob AS baby_dob FROM pnc_baby WHERE mother_base_entity_id = '" + baseEntityId + "'";
+        String query = "SELECT prd.delivery_date, pb.dob AS baby_dob, prd.hiv_status_previous, prd.hiv_status_current, pb.complications AS baby_complications FROM ec_client AS ec \n" +
+                "LEFT JOIN pnc_registration_details AS prd ON prd.base_entity_id = ec.base_entity_id \n" +
+                "LEFT JOIN pnc_baby AS pb ON pb.mother_base_entity_id = ec.base_entity_id \n" +
+                "WHERE ec.base_entity_id = '" + baseEntityId + "'";
 
-        Map<String, String> detailMap = getMergedData(q1, q2, q3);
+        Map<String, String> detailMap = getMergedData(query);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
@@ -464,8 +459,6 @@ public class PncUtils extends org.smartregister.util.Utils {
             if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
             }
-
-            defaultGlobal.put("child_registered_count", 2);
 
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
         } catch (JSONException ex) {
@@ -513,8 +506,9 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
         intentData.put(PncDbConstants.KEY.BASE_ENTITY_ID, entityId);
-        PncUtils.addGlobals(entityId, jsonForm);
+
         if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            PncUtils.addGlobals(entityId, jsonForm);
             PncUtils.addNumberOfBabyCount(entityId, jsonForm);
         }
 

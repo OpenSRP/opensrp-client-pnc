@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PncVisitSchedulerTest {
+public class PncVisitInfoSchedulerTest {
 
     @Test
     public void getStatusShouldEqualPncDue() {
@@ -48,12 +48,12 @@ public class PncVisitSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(61);
         Map<String, String> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisit.CREATED_AT, String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));
+        data.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));
 
         PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
-        pncVisitScheduler.setLatestVisit(data);
+        pncVisitScheduler.setLatestVisitDateInMills(data);
 
         pncVisitScheduler.buildStatusTable();
         Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.RECORD_PNC);
