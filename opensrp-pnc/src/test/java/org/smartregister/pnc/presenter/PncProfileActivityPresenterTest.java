@@ -132,7 +132,7 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         client.put(PncDbConstants.KEY.REGISTER_ID, registerId);
         client.put(PncDbConstants.KEY.ID, clientId);
 
-        presenter.refreshProfileTopSection(client);
+        presenter.refreshProfileTopSection(client, clientId);
 
         Mockito.verify(view, Mockito.times(1)).setProfileName(Mockito.eq(firstName + " " + lastName));
         Mockito.verify(view, Mockito.times(1)).setProfileID(Mockito.eq(registerId));

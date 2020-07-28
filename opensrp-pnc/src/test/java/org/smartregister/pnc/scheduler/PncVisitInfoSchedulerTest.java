@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.smartregister.pnc.utils.PncDbConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class PncVisitInfoSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(4);
 
-        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
+        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
@@ -34,7 +33,7 @@ public class PncVisitInfoSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(5);
 
-        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
+        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
@@ -48,12 +47,10 @@ public class PncVisitInfoSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(61);
         Map<String, String> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));
-
-        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
+        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
-        pncVisitScheduler.setLatestVisitDateInMills(data);
+        pncVisitScheduler.setLatestVisitDateInMills(String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));
 
         pncVisitScheduler.buildStatusTable();
         Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.RECORD_PNC);
