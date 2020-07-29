@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,42 +14,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vijay.jsonwizard.constants.JsonFormConstants;
-import com.vijay.jsonwizard.domain.Form;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.AllConstants;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
-import org.smartregister.domain.FetchStatus;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.adapter.ViewPagerAdapter;
 import org.smartregister.pnc.config.PncRegisterSwitcher;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
-import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.fragment.PncProfileOverviewFragment;
 import org.smartregister.pnc.fragment.PncProfileVisitsFragment;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.listener.OngoingTaskCompleteListener;
-import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.pojo.OngoingTask;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.RegisterParams;
-import org.smartregister.pnc.presenter.BasePncRegisterActivityPresenter;
 import org.smartregister.pnc.presenter.PncProfileActivityPresenter;
-import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.PncConstants;
-import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.pnc.utils.SampleConstants;
-import org.smartregister.util.Utils;
 import org.smartregister.view.activity.BaseProfileActivity;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -58,12 +43,12 @@ import timber.log.Timber;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 
-public class BasePncProfileActivity extends BaseProfileActivity implements PncProfileActivityContract.View, PncRegisterActivityContract.View {
+public class BasePncProfileActivity extends BaseProfileActivity implements PncProfileActivityContract.View {
 
     private TextView nameView;
     private TextView ageView;
     private TextView genderView;
-    private TextView pncIdView;
+    private TextView ancIdView;
     private ImageView imageView;
     private String baseEntityId;
     private OnSendActionToFragment sendActionListenerForProfileOverview;
@@ -72,12 +57,9 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     private CommonPersonObjectClient commonPersonObjectClient;
     private Button switchRegBtn;
 
-    private BasePncRegisterActivityPresenter registerActivityPresenter;
-
     @Override
     protected void initializePresenter() {
         presenter = new PncProfileActivityPresenter(this);
-        registerActivityPresenter = new PncRegisterActivityPresenter(this, new PncRegisterActivityModel());
     }
 
     @Override
@@ -86,7 +68,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
         ageView = findViewById(R.id.textview_detail_two);
         genderView = findViewById(R.id.textview_detail_three);
-        pncIdView = findViewById(R.id.textview_detail_one);
+        ancIdView = findViewById(R.id.textview_detail_one);
         nameView = findViewById(R.id.textview_name);
         imageView = findViewById(R.id.imageview_profile);
         switchRegBtn = findViewById(R.id.btn_pncActivityBaseProfile_switchRegView);
@@ -123,7 +105,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void fetchProfileData() {
         CommonPersonObjectClient commonPersonObjectClient = (CommonPersonObjectClient) getIntent()
                 .getSerializableExtra(PncConstants.IntentKey.CLIENT_OBJECT);
-        ((PncProfileActivityPresenter) presenter).refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
+        ((PncProfileActivityPresenter) presenter).refreshProfileTopSection(commonPersonObjectClient.getColumnmaps(), baseEntityId);
     }
 
     @Override
@@ -148,7 +130,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
             commonPersonObjectClient = (CommonPersonObjectClient) getIntent()
                     .getSerializableExtra(PncConstants.IntentKey.CLIENT_OBJECT);
             baseEntityId = commonPersonObjectClient.getCaseId();
-            pncProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
+            pncProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps(), baseEntityId);
 
             // Enable switcher
             configureRegisterSwitcher();
@@ -196,7 +178,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     @Override
     public void setProfileID(@NonNull String registerId) {
-        pncIdView.setText(String.format(getString(R.string.id_detail), registerId));
+        ancIdView.setText(String.format(getString(R.string.id_detail), registerId));
     }
 
     @Override
@@ -206,7 +188,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     @Override
-    public void setDeliveryDays(@NonNull String deliveryDays) {
+    public void setProfileGender(@NonNull String deliveryDays) {
         genderView.setText(deliveryDays);
     }
 
@@ -224,14 +206,30 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     @Override
+    public void openPncVisitForm() {
+        if (commonPersonObjectClient != null) {
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_VISIT, commonPersonObjectClient);
+        }
+    }
+
+    @Override
+    public void openPncMedicInfoForm() {
+        if (commonPersonObjectClient != null) {
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_MEDIC_INFORMATION, commonPersonObjectClient);
+        }
+    }
+
+    @Override
     public void openPncCloseForm() {
         if (commonPersonObjectClient != null) {
+            // FIXME paternity_close.json file not found
             ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_CLOSE, commonPersonObjectClient);
         }
     }
 
     @Override
-    public void startFormActivity(@NonNull JSONObject form, @NonNull HashMap<String, String> intentData) {
+    public void startFormActivity(String entityId, @NonNull JSONObject form, @NonNull HashMap<String, String> intentData) {
+        PncUtils.processPreChecks(entityId, form, intentData);
         Intent intent = PncUtils.buildFormActivityIntent(form, intentData, this);
         startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
     }
@@ -276,21 +274,28 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
             JSONObject form = new JSONObject(jsonString);
             String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
-            if (PncUtils.metadata() != null && encounterType.equals(PncUtils.metadata().getRegisterEventType())) {
+           if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                    ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                    ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
+                    showProgressDialog(R.string.saving_dialog_title);
                 RegisterParams registerParam = new RegisterParams();
-                registerParam.setEditMode(false);
+                registerParam.setEditMode(true);
                 registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
 
                 showProgressDialog(R.string.saving_dialog_title);
-                presenter().saveForm(jsonString, registerParam);
+                ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
             }
             else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
                 showProgressDialog(R.string.saving_dialog_title);
                 ((PncProfileActivityPresenter) this.presenter).savePncCloseForm(encounterType, data);
             }
-            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
                 showProgressDialog(R.string.saving_dialog_title);
-                presenter().savePncForm(encounterType, data);
+                ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
             }
 
         } catch (JSONException e) {
@@ -346,92 +351,5 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public void closeView() {
         finish();
-    }
-
-    public void performPatientAction(@NonNull CommonPersonObjectClient commonPersonObjectClient, @NonNull String formName) {
-        Map<String, String> clientColumnMaps = commonPersonObjectClient.getColumnmaps();
-
-        String entityTable = clientColumnMaps.get(PncConstants.IntentKey.ENTITY_TABLE);
-        String currentHivStatus = clientColumnMaps.get(PncRegistrationDetails.Property.hiv_status_current.name());
-
-        HashMap<String, String> injectableFormValues = new HashMap<>();
-        injectableFormValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, currentHivStatus);
-
-
-        startFormActivityFromFormName(formName, commonPersonObjectClient.getCaseId(), null, injectableFormValues, entityTable);
-
-    }
-
-    @Override
-    public PncRegisterActivityContract.Presenter presenter() {
-        return registerActivityPresenter;
-    }
-
-    @Override
-    public void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
-        PncUtils.processPreChecks(entityId, jsonForm, intentData);
-        Intent intent = PncUtils.buildFormActivityIntent(jsonForm, intentData, this);
-        if (intent != null) {
-            startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
-        } else {
-            Timber.e(new Exception(), "FormActivityConstants cannot be started because PncMetadata is NULL");
-        }
-    }
-
-    @Override
-    public void displaySyncNotification() {
-        Snackbar syncStatusSnackbar = Snackbar.make(this.getWindow().getDecorView(), R.string.manual_sync_triggered, Snackbar.LENGTH_LONG);
-        syncStatusSnackbar.show();
-    }
-
-    @Override
-    public void displayToast(String s) {
-        Utils.showShortToast(this.getApplicationContext(), s);
-    }
-
-    @Override
-    public void displayShortToast(int i) {
-        Utils.showShortToast(this.getApplicationContext(), this.getString(i));
-    }
-
-    @Override
-    public void startFormActivity(String formName, String entityId, String metaData) {
-        String locationId = PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-        presenter().startForm(formName, entityId, metaData, locationId, null, PncDbConstants.KEY.TABLE);
-    }
-
-    @Override
-    public void startFormActivity(JSONObject jsonForm) {
-        Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getPncFormActivity());
-        if (jsonForm.has(SampleConstants.KEY.ENCOUNTER_TYPE) && jsonForm.optString(SampleConstants.KEY.ENCOUNTER_TYPE).equals(
-                SampleConstants.KEY.PNC_REGISTRATION)) {
-//            PncJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KeyConstants.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
-        }
-
-        intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonForm.toString());
-
-        Form form = new Form();
-        form.setWizard(true);
-        form.setHideSaveLabel(true);
-        form.setNextLabel("");
-
-        intent.putExtra(JsonFormConstants.JSON_FORM_KEY.FORM, form);
-        startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
-    }
-
-    @Override
-    public void refreshList(FetchStatus fetchStatus) {
-
-    }
-
-    @Override
-    public void updateInitialsText(String s) {
-
-    }
-
-    @Override
-    public void startFormActivityFromFormName(String formName, String entityId, String metaData, @Nullable HashMap<String, String> injectedFieldValues, @Nullable String clientTable) {
-        String locationId = PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-        presenter().startForm(formName, entityId, metaData, locationId, injectedFieldValues, clientTable);
     }
 }

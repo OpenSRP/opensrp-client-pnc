@@ -44,10 +44,8 @@ public class PncConstants extends AllConstants {
 
     public interface JsonFormField {
         String MOTHER_HIV_STATUS = "mother_hiv_status";
-    }
-
-    public interface JsonFormWidget {
-        String MULTI_SELECT_DRUG_PICKER = "multi_select_drug_picker";
+        String GENERATED_GRP = "generated_grp";
+        String OTHER_PNC_VISIT_DATE = "other_pnc_visit_date";
     }
 
     public static class JsonFormKeyConstants {

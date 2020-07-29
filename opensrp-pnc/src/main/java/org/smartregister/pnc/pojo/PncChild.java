@@ -1,6 +1,7 @@
 package org.smartregister.pnc.pojo;
 
 public class PncChild {
+    private String baseEntityId;
     private String motherBaseEntityId;
     private String baseEntityId;
     private String dischargedAlive;
@@ -25,6 +26,14 @@ public class PncChild {
     private String nvpAdministration;
     private String eventDate;
     private String stillBirthCondition;
+
+    public String getBaseEntityId() {
+        return baseEntityId;
+    }
+
+    public void setBaseEntityId(String baseEntityId) {
+        this.baseEntityId = baseEntityId;
+    }
 
     public String getChildRegistered() {
         return childRegistered;
