@@ -2008,13 +2008,6 @@
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
                         },
-                        "relevance": {
-                            "rules-engine": {
-                                "ex-rules": {
-                                    "rules-dynamic": "pnc/outcome_relevance_rules.yml"
-                                }
-                            }
-                        },
                         "options": [
                             {
                                 "key": "positive",
