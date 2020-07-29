@@ -99,8 +99,8 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
 
         if (cursor != null && cursor.moveToFirst()) {
             CommonPersonObject commonPersonObject = commonRepository.getCommonPersonObjectFromCursor(cursor);
-            String name = commonPersonObject.getColumnmaps().get(PncDbConstants.KEY.FIRST_NAME)
-                    + " " + commonPersonObject.getColumnmaps().get(PncDbConstants.KEY.LAST_NAME);
+            String name = commonPersonObject.getDetails().get(PncDbConstants.KEY.FIRST_NAME)
+                    + " " + commonPersonObject.getDetails().get(PncDbConstants.KEY.LAST_NAME);
             CommonPersonObjectClient client = new CommonPersonObjectClient(commonPersonObject.getCaseId(),
                     commonPersonObject.getDetails(), name);
             client.setColumnmaps(commonPersonObject.getDetails());

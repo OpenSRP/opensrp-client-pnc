@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncReverseJsonFormUtils;
+import org.smartregister.pnc.utils.PncUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -19,16 +19,16 @@ public class FetchRegistrationDataTask extends AsyncTask<String, Void, String> {
     private WeakReference<Context> contextWeakReference;
     private OnTaskComplete onTaskComplete;
 
-    public FetchRegistrationDataTask(@NonNull WeakReference<Context> contextWeakReference, @NonNull OnTaskComplete onTaskComplete){
+    public FetchRegistrationDataTask(@NonNull WeakReference<Context> contextWeakReference, @NonNull OnTaskComplete onTaskComplete) {
         this.contextWeakReference = contextWeakReference;
         this.onTaskComplete = onTaskComplete;
     }
 
     @Nullable
     protected String doInBackground(String... params) {
-        Map<String, String> detailsMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(params[0]);
-        detailsMap.put(PncJsonFormUtils.OPENSRP_ID, detailsMap.get(PncConstants.KeyConstants.OPENSRP_ID));
-        return PncReverseJsonFormUtils.prepareJsonEditPncRegistrationForm(detailsMap, Arrays.asList(PncJsonFormUtils.OPENSRP_ID, PncConstants.JsonFormKeyConstants.BHT_ID), contextWeakReference.get());
+        Map<String, String> clientMap = PncUtils.getPncClient(params[0]);
+        clientMap.put(PncJsonFormUtils.OPENSRP_ID, clientMap.get(PncConstants.KeyConstants.OPENSRP_ID));
+        return PncReverseJsonFormUtils.prepareJsonEditPncRegistrationForm(clientMap, Arrays.asList(PncJsonFormUtils.OPENSRP_ID, PncConstants.JsonFormKeyConstants.BHT_ID), contextWeakReference.get());
     }
 
     protected void onPostExecute(@Nullable String jsonForm) {
