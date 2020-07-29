@@ -14,7 +14,7 @@ import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.listener.OngoingTaskCompleteListener;
 import org.smartregister.pnc.pojo.OngoingTask;
 import org.smartregister.pnc.pojo.PncEventClient;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.view.contract.BaseProfileContract;
 
@@ -40,7 +40,7 @@ public interface PncProfileActivityContract {
 
         void startFormActivity(@Nullable JSONObject form, @NonNull String caseId, @NonNull String entityTable);
 
-        void savePncCloseForm(@NonNull String eventType, @Nullable Intent data);
+        //void savePncCloseForm(@NonNull String eventType, @Nullable Intent data);
 
         void saveUpdateRegistrationForm(@NonNull String jsonString, @NonNull RegisterParams registerParams);
 
@@ -109,7 +109,7 @@ public interface PncProfileActivityContract {
 
     interface Interactor {
 
-        void fetchSavedDiagnosisAndTreatmentForm(@NonNull String baseEntityId, @NonNull String entityTable);
+        void fetchSavedForm(final @NonNull String baseEntityId, final @Nullable String entityTable, @NonNull final PncProfileActivityContract.InteractorCallBack interactorCallBack);
 
         void saveRegistration(@NonNull PncEventClient pncEventClient, @NonNull String jsonString, RegisterParams registerParams, @NonNull PncProfileActivityContract.InteractorCallBack callBack);
 
@@ -125,7 +125,7 @@ public interface PncProfileActivityContract {
 
         void onRegistrationSaved(@Nullable CommonPersonObjectClient client, boolean isEdit);
 
-        void onFetchedSavedDiagnosisAndTreatmentForm(@Nullable PncOutcomeForm diagnosisAndTreatmentForm, @NonNull String caseId, @NonNull String entityTable);
+        void onFetchedSavedForm(@Nullable PncPartialForm pncPartialForm, @NonNull String caseId, @Nullable String entityTable);
 
         void onEventSaved();
     }

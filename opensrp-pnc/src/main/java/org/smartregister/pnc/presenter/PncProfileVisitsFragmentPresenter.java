@@ -131,25 +131,25 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
 
         items.add(new Pair<>(new YamlConfigWrapper(null, "pnc_visit_information", null), facts));
 
-        String keyPeriod = PncDbConstants.Column.PncVisit.PERIOD;
+        String keyPeriod = PncDbConstants.Column.PncVisitInfo.PERIOD;
         if (isNotEmpty(keyPeriod, data) && Integer.parseInt((String)data.get(keyPeriod)) > 0) {
             facts.put(keyPeriod, data.get(keyPeriod));
             items.add(new Pair<>(getConfigItem("PNC Visit day: {" + keyPeriod + "}"), facts));
         }
 
-        String firstVisitCheck = PncDbConstants.Column.PncVisit.FIRST_VISIT_CHECK;
+        String firstVisitCheck = PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK;
         if (isNotEmpty(firstVisitCheck, data)) {
             facts.put(firstVisitCheck, data.get(firstVisitCheck));
             items.add(new Pair<>(getConfigItem("PNC received within 48 hours of delivery?: {" + firstVisitCheck + "}"), facts));
         }
 
-        String outsideFacility = PncDbConstants.Column.PncVisit.OUTSIDE_FACILITY;
+        String outsideFacility = PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY;
         if (isNotEmpty(outsideFacility, data)) {
             facts.put(outsideFacility, data.get(outsideFacility));
             items.add(new Pair<>(getConfigItem("Other visits outside this facility?: {" + outsideFacility + "}"), facts));
         }
 
-        String outsideFacilityNumber = PncDbConstants.Column.PncVisit.OUTSIDE_FACILITY_NUMBER;
+        String outsideFacilityNumber = PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY_NUMBER;
         if (isNotEmpty(outsideFacilityNumber, data)) {
             facts.put(outsideFacilityNumber, data.get(outsideFacilityNumber));
             items.add(new Pair<>(getConfigItem("How many visits?: {" + outsideFacilityNumber + "}"), facts));
@@ -160,76 +160,76 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
 
         items.add(new Pair<>(new YamlConfigWrapper(null, "woman_status", null), facts));
 
-        String keyComplications = PncDbConstants.Column.PncVisit.COMPLICATIONS;
-        String keyComplicationsOther = PncDbConstants.Column.PncVisit.COMPLICATIONS_OTHER;
+        String keyComplications = PncDbConstants.Column.PncVisitInfo.COMPLICATIONS;
+        String keyComplicationsOther = PncDbConstants.Column.PncVisitInfo.COMPLICATIONS_OTHER;
         if (isNotEmpty(keyComplications, data) || isNotEmpty(keyComplicationsOther, data)) {
             String value = isNotEmpty(keyComplications, data) ? (String) data.get(keyComplications) : (String) data.get(keyComplicationsOther);
             facts.put(keyComplications, value);
             items.add(new Pair<>(getConfigItem("Postnatal complications: {" + keyComplications + "}", !"none".equalsIgnoreCase(value)), facts));
         }
 
-        String keyCSection = PncDbConstants.Column.PncVisit.STATUS_C_SECTION;
+        String keyCSection = PncDbConstants.Column.PncVisitInfo.STATUS_C_SECTION;
         if (isNotEmpty(keyCSection, data)) {
             facts.put(keyCSection, data.get(keyCSection));
             items.add(new Pair<>(getConfigItem("Status of C-section incision: {" + keyCSection + "}", isNotEmpty(keyCSection, data)), facts));
         }
 
-        String keyTearStatus = PncDbConstants.Column.PncVisit.EPISOTOMY_TEAR_STATUS;
+        String keyTearStatus = PncDbConstants.Column.PncVisitInfo.EPISOTOMY_TEAR_STATUS;
         if (isNotEmpty(keyTearStatus, data)) {
             facts.put(keyTearStatus, data.get(keyTearStatus));
             items.add(new Pair<>(getConfigItem("Condition of episiotomy/tear, if present: {" + keyTearStatus + "}", isNotEmpty(keyTearStatus, data)), facts));
         }
 
-        String keyLochia = PncDbConstants.Column.PncVisit.LOCHIA_STATUS;
-        String keyLochiaOther = PncDbConstants.Column.PncVisit.LOCHIA_STATUS_OTHER;
+        String keyLochia = PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS;
+        String keyLochiaOther = PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS_OTHER;
         if (isNotEmpty(keyLochia, data) || isNotEmpty(keyLochiaOther, data)) {
             String value = isNotEmpty(keyLochia, data) ? (String) data.get(keyLochia) : (String) data.get(keyLochiaOther);
             facts.put(keyLochia, value);
             items.add(new Pair<>(getConfigItem("Status of the lochia: {" + keyLochia + "}", true), facts));
         }
 
-        String keyUterus = PncDbConstants.Column.PncVisit.UTERUS_STATUS;
-        String keyUterusOther = PncDbConstants.Column.PncVisit.UTERUS_STATUS_OTHER;
+        String keyUterus = PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS;
+        String keyUterusOther = PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER;
         if (isNotEmpty(keyUterus, data) || isNotEmpty(keyUterusOther, data)) {
             String value = isNotEmpty(keyUterus, data) ? (String) data.get(keyUterus) : (String) data.get(keyUterusOther);
             facts.put(keyUterus, value);
             items.add(new Pair<>(getConfigItem("Status of the uterus: {" + keyUterus + "}", true), facts));
         }
 
-        String keyIntervention = PncDbConstants.Column.PncVisit.INTERVENTION_GIVEN_TEXT;
+        String keyIntervention = PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT;
         if (isNotEmpty(keyIntervention, data)) {
             facts.put(keyIntervention, data.get(keyIntervention));
             items.add(new Pair<>(getConfigItem("Intervention given: {" + keyIntervention + "}", isNotEmpty(keyIntervention, data)), facts));
         }
 
-        String keyReferred = PncDbConstants.Column.PncVisit.REFERRED_OUT;
-        String keyReferredOther = PncDbConstants.Column.PncVisit.REFERRED_OUT_SPECIFY;
+        String keyReferred = PncDbConstants.Column.PncVisitInfo.REFERRED_OUT;
+        String keyReferredOther = PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY;
         if (isNotEmpty(keyReferred, data) || isNotEmpty(keyReferredOther, data)) {
             String value = isNotEmpty(keyReferred, data) ? (String) data.get(keyReferred) : (String) data.get(keyReferredOther);
             facts.put(keyReferred, value);
             items.add(new Pair<>(getConfigItem("Was the woman referred?: {" + keyReferred + "}"), facts));
         }
 
-        String keyVitA = PncDbConstants.Column.PncVisit.VIT_A;
+        String keyVitA = PncDbConstants.Column.PncVisitInfo.VIT_A;
         if (isNotEmpty(keyVitA, data)) {
             facts.put(keyVitA, data.get(keyVitA));
             items.add(new Pair<>(getConfigItem("Was Vitamin A given?: {" + keyVitA + "}"), facts));
         }
 
-        String keyVitANotGivenReason = PncDbConstants.Column.PncVisit.VIT_A_NOT_GIVING_REASON;
+        String keyVitANotGivenReason = PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON;
         if (isNotEmpty(keyVitANotGivenReason, data)) {
             facts.put(keyVitANotGivenReason, data.get(keyVitANotGivenReason));
             items.add(new Pair<>(getConfigItem("Provide a reason for not giving Vitamin A: {" + keyVitANotGivenReason + "}"), facts));
         }
 
-        String keyFPCounsel = PncDbConstants.Column.PncVisit.FP_COUNSEL;
+        String keyFPCounsel = PncDbConstants.Column.PncVisitInfo.FP_COUNSEL;
         if (isNotEmpty(keyFPCounsel, data)) {
             facts.put(keyFPCounsel, data.get(keyFPCounsel));
             items.add(new Pair<>(getConfigItem("Family planning done?: {" + keyFPCounsel + "}"), facts));
         }
 
-        String keyMethod = PncDbConstants.Column.PncVisit.FP_METHOD;
-        String keyMethodOther = PncDbConstants.Column.PncVisit.FP_METHOD_OTHER;
+        String keyMethod = PncDbConstants.Column.PncVisitInfo.FP_METHOD;
+        String keyMethodOther = PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER;
         if (isNotEmpty(keyMethod, data) || isNotEmpty(keyMethodOther, data)) {
             String value = isNotEmpty(keyMethod, data) ? (String) data.get(keyMethod) : (String) data.get(keyMethodOther);
             facts.put(keyMethod, value);

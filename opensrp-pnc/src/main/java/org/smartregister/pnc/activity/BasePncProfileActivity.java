@@ -215,7 +215,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public void openPncMedicInfoForm() {
         if (commonPersonObjectClient != null) {
-            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_MEDIC_INFORMATION, commonPersonObjectClient);
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient);
         }
     }
 
@@ -270,6 +270,8 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
         try {
             String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+            data.putExtra(PncConstants.IntentKey.BASE_ENTITY_ID, baseEntityId);
+
             Timber.d("JSONResult : %s", jsonString);
 
             JSONObject form = new JSONObject(jsonString);
@@ -288,10 +290,6 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
                 showProgressDialog(R.string.saving_dialog_title);
                 ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
-            }
-            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
-                showProgressDialog(R.string.saving_dialog_title);
-                ((PncProfileActivityPresenter) this.presenter).savePncCloseForm(encounterType, data);
             }
             else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
                 showProgressDialog(R.string.saving_dialog_title);

@@ -419,11 +419,9 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
         }
 
-        if (formType != null) {
-            PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(baseEntityId, formType));
-            if (pncPartialForm != null) {
-                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
-            }
+        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId()));
+        if (pncPartialForm != null) {
+            button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
         }
     }
 

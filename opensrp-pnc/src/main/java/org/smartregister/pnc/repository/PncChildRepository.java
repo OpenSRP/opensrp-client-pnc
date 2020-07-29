@@ -20,7 +20,6 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_BABY + "("
             + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " VARCHAR NOT NULL PRIMARY KEY, "
             + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
-            + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_RECORD + " VARCHAR NULL, "

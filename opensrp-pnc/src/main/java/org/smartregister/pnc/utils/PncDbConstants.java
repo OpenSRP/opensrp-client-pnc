@@ -110,7 +110,6 @@ public interface PncDbConstants {
         }
 
         interface PncVisitChildStatus {
-            String PARENT_RELATION_ID = "parent_relation_id";
             String CHILD_RELATION_ID = "child_relation_id";
             String BABY_AGE = "baby_age";
             String BABY_FIRST_NAME = "baby_first_name";

@@ -3,7 +3,6 @@ package org.smartregister.pnc.pojo;
 public class PncChild {
     private String baseEntityId;
     private String motherBaseEntityId;
-    private String baseEntityId;
     private String dischargedAlive;
     private String childRegistered;
     private String birthRecordDate;
@@ -89,14 +88,6 @@ public class PncChild {
 
     public void setCareMgt(String careMgt) {
         this.careMgt = careMgt;
-    }
-
-    public String getBaseEntityId() {
-        return baseEntityId;
-    }
-
-    public void setBaseEntityId(String baseEntityId) {
-        this.baseEntityId = baseEntityId;
     }
 
     public String getMotherBaseEntityId() {
