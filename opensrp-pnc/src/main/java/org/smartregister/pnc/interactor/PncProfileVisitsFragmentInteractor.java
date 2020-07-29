@@ -8,6 +8,9 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
 import org.smartregister.pnc.utils.AppExecutors;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
@@ -35,35 +38,19 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
 
     @Override
     public void fetchVisits(@NonNull final String baseEntityId, final int pageNo, @NonNull final PncProfileVisitsFragmentContract.Presenter.OnVisitsLoadedCallback onVisitsLoadedCallback) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                /*final List<OpdVisitSummary> summaries = PncLibrary.getInstance().getOpdVisitSummaryRepository().getOpdVisitSummaries(baseEntityId, pageNo);
+        appExecutors.diskIO().execute(() -> {
+            final List<Map<String, Object>> summaries = PncLibrary.getInstance().getPncVisitInfoRepository().getPncVisitSummaries(baseEntityId, pageNo);
 
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        onVisitsLoadedCallback.onVisitsLoaded(summaries);
-                    }
-                });*/
-            }
+            appExecutors.mainThread().execute(() -> onVisitsLoadedCallback.onVisitsLoaded(summaries));
         });
     }
 
     @Override
     public void fetchVisitsPageCount(@NonNull final String baseEntityId, @NonNull final OnFetchVisitsPageCountCallback onFetchVisitsPageCountCallback) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                /*final int visitsPageCount = PncLibrary.getInstance().getOpdVisitSummaryRepository().getVisitPageCount(baseEntityId);
+        appExecutors.diskIO().execute(() -> {
+            final int visitsPageCount = PncLibrary.getInstance().getPncVisitInfoRepository().getVisitPageCount(baseEntityId);
 
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        onFetchVisitsPageCountCallback.onFetchVisitsPageCount(visitsPageCount);
-                    }
-                });*/
-            }
+            appExecutors.mainThread().execute(() -> onFetchVisitsPageCountCallback.onFetchVisitsPageCount(visitsPageCount));
         });
     }
 

@@ -3,15 +3,28 @@ package org.smartregister.pnc.repository;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
+import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.dao.PncGenericDao;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncBaby;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitChildStatus;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitInfo;
+import org.smartregister.pnc.utils.PncDbConstants.Table;
 import org.smartregister.repository.BaseRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import timber.log.Timber;
+
+import static org.smartregister.pnc.utils.PncConstants.CHILD_RECORDS;
 
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
@@ -104,4 +117,188 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
         throw new NotImplementedException("");
     }
 
+    @NonNull
+    public List<Map<String, Object>> getPncVisitSummaries(@NonNull String motherBaseEntityId, int pageNo) {
+        List<Map<String, Object>> data = new ArrayList<>();
+
+        Cursor cursor = null;
+        Cursor subCursor = null;
+        try {
+            String[] visitIds = getVisitIds(motherBaseEntityId, pageNo);
+            String joinedIds = "'" + StringUtils.join(visitIds, "','") + "'";
+
+            String query = "SELECT * FROM " + Table.PNC_VISIT_INFO + " " +
+                    " WHERE " + PncVisitInfo.PARENT_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.BASE_ENTITY_ID + " IN (" + joinedIds + ") " +
+                    " ORDER BY " + PncVisitInfo.CREATED_AT + " DESC";
+
+            cursor = getReadableDatabase().rawQuery(query, null);
+
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    Map<String, Object> record = convert(cursor);
+
+                    List<Map<String, String>> childData = new ArrayList<>();
+                    record.put(CHILD_RECORDS, childData);
+
+                    String subQuery = "SELECT pb.first_name, pb.last_name, pb.dob, pvcs.* FROM pnc_visit_child_status AS pvcs " +
+                            "LEFT JOIN " + Table.PNC_BABY + " AS pb ON pb." + PncBaby.BASE_ENTITY_ID + " = pvcs." + PncVisitChildStatus.CHILD_RELATION_ID + " " +
+                            "WHERE pvcs." + PncVisitInfo.PARENT_BASE_ENTITY_ID + " = '" + record.get(PncVisitInfo.BASE_ENTITY_ID) + "'";
+
+                    subCursor = getReadableDatabase().rawQuery(subQuery, null);
+
+                    if (subCursor.getCount() > 0) {
+
+                        while (subCursor.moveToNext()) {
+
+                            Map<String, String> childRecord = new HashMap<>();
+                            childRecord.put(PncDbConstants.Column.PncBaby.FIRST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.FIRST_NAME)));
+                            childRecord.put(PncDbConstants.Column.PncBaby.LAST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.LAST_NAME)));
+                            childRecord.put(PncDbConstants.Column.PncBaby.DOB, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.DOB)));
+                            childRecord.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.CAUSE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.CAUSE_OF_DEATH_BABY)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.DEATH_FOLLOW_UP_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.DEATH_FOLLOW_UP_BABY)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_BREAST_FEEDING, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_BREAST_FEEDING)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_NOT_BREAST_FEEDING_REASON, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_NOT_BREAST_FEEDING_REASON)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS_OTHER, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS_OTHER)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_REFERRED_OUT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_REFERRED_OUT)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_EXPOSED, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_EXPOSED)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.MOTHER_BABY_PAIRING, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.MOTHER_BABY_PAIRING)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_TREATMENT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_TREATMENT)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON_OTHER, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON_OTHER)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DBS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DBS)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT)));
+
+                            childData.add(childRecord);
+                        }
+                    }
+
+                    data.add(record);
+                }
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (subCursor != null) {
+                subCursor.close();
+            }
+        }
+
+        return data;
+    }
+
+    public int getVisitPageCount(@NonNull String baseEntityId) {
+        Cursor mCursor = null;
+        int pageCount = 0;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+
+            String query = String.format("SELECT count(%s) FROM %s WHERE %s = '%s'"
+                    , PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID
+                    , PncDbConstants.Table.PNC_VISIT_INFO
+                    , PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID
+                    , baseEntityId
+            );
+
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                mCursor = db.rawQuery(query, null);
+
+                if (mCursor != null) {
+                    while (mCursor.moveToNext()) {
+                        int recordCount = mCursor.getInt(0);
+                        pageCount = (int) Math.ceil(recordCount / 10d);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (mCursor != null) {
+                mCursor.close();
+            }
+        }
+
+        return pageCount;
+    }
+
+    public String[] getVisitIds(@NonNull String motherBaseEntityId, int pageNo) {
+        ArrayList<String> visitIds = new ArrayList<>();
+        Cursor mCursor = null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            int offset = pageNo * 10;
+
+            String query = String.format(Locale.getDefault(), "SELECT %s FROM %s WHERE %s = '%s' ORDER BY %s DESC LIMIT 10 OFFSET %d "
+                    , PncVisitInfo.BASE_ENTITY_ID
+                    , Table.PNC_VISIT_INFO
+                    , PncVisitInfo.PARENT_BASE_ENTITY_ID
+                    , motherBaseEntityId
+                    , PncVisitInfo.CREATED_AT
+                    , offset
+            );
+
+            if (StringUtils.isNotBlank(motherBaseEntityId)) {
+                mCursor = db.rawQuery(query, null);
+
+                if (mCursor != null) {
+                    while (mCursor.moveToNext()) {
+                        visitIds.add(mCursor.getString(0));
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (mCursor != null) {
+                mCursor.close();
+            }
+        }
+
+        return visitIds.toArray(new String[0]);
+    }
+
+    private Map<String, Object> convert(Cursor cursor) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID)));
+        data.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
+        data.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.CREATED_AT)));
+        data.put(PncDbConstants.Column.PncVisitInfo.PERIOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.PERIOD)));
+        data.put(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK)));
+        data.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY)));
+        data.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY_NUMBER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY_NUMBER)));
+        data.put(PncDbConstants.Column.PncVisitInfo.OTHER_VISIT_DATE, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OTHER_VISIT_DATE)));
+        data.put(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS)));
+        data.put(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS_OTHER)));
+        data.put(PncDbConstants.Column.PncVisitInfo.STATUS_C_SECTION, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.STATUS_C_SECTION)));
+        data.put(PncDbConstants.Column.PncVisitInfo.EPISOTOMY_TEAR_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.EPISOTOMY_TEAR_STATUS)));
+        data.put(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS)));
+        data.put(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS_OTHER)));
+        data.put(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS)));
+        data.put(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER)));
+        data.put(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN)));
+        data.put(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT)));
+        data.put(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT)));
+        data.put(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY)));
+        data.put(PncDbConstants.Column.PncVisitInfo.BREAST_FEEDING, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BREAST_FEEDING)));
+        data.put(PncDbConstants.Column.PncVisitInfo.NOT_BREAST_FEEDING_REASON, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.NOT_BREAST_FEEDING_REASON)));
+        data.put(PncDbConstants.Column.PncVisitInfo.VIT_A, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.VIT_A)));
+        data.put(PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON)));
+        data.put(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL)));
+        data.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_METHOD)));
+        data.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER)));
+
+        return data;
+    }
 }

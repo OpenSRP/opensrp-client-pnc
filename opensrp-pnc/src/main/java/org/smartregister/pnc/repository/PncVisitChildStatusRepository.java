@@ -19,6 +19,7 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
             + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_AGE + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY + " VARCHAR NULL, "
@@ -39,8 +40,8 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
 
 
     private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS
-            + "_" + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS +
-            "(" + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " COLLATE NOCASE);";
+            + "_" + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS +
+            "(" + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
@@ -53,6 +54,7 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
         contentValues.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
+        contentValues.put(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID, data.get(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, data.get(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, data.get(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY));

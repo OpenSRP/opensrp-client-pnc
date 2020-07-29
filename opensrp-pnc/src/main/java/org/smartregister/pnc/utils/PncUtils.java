@@ -35,6 +35,7 @@ import org.smartregister.pnc.listener.PncEventActionCallBack;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
@@ -422,6 +423,11 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
 
         }
+
+        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId()));
+        if (pncPartialForm != null) {
+            button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
+        }
     }
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
@@ -523,7 +529,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
+        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, PncConstants.HOW_BABY_OLD_IN_DAYS);
         PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
     }
 

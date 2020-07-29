@@ -61,6 +61,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         ContentValues contentValues = new ContentValues();
         contentValues.put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, pncChild.getBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID, pncChild.getMotherBaseEntityId());
+        contentValues.put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, pncChild.getBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE, pncChild.getDischargedAlive());
         contentValues.put(PncDbConstants.Column.PncBaby.CHILD_REGISTERED, pncChild.getChildRegistered());
         contentValues.put(PncDbConstants.Column.PncBaby.BIRTH_RECORD, pncChild.getBirthRecordDate());
@@ -133,6 +134,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         PncChild pncChild = new PncChild();
 
         pncChild.setMotherBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID)));
+        pncChild.setBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID)));
         pncChild.setDischargedAlive(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE)));
         pncChild.setChildRegistered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_REGISTERED)));
         pncChild.setBirthRecordDate(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_RECORD)));

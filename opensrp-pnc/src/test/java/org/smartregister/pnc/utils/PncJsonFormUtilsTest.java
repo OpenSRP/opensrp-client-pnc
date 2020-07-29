@@ -23,6 +23,7 @@ import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.SyncConfiguration;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.domain.UniqueId;
 import org.smartregister.domain.form.FormLocation;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.location.helper.LocationHelper;
@@ -33,6 +34,7 @@ import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.provider.PncRegisterQueryProviderTest;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.Repository;
+import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.JsonFormUtils;
 
 import java.util.ArrayList;
@@ -75,17 +77,40 @@ public class PncJsonFormUtilsTest {
     }
 
     @Test
+    @PrepareForTest(PncLibrary.class)
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndEntityIdBlank() throws Exception {
-        PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProviderTest.class)
-                .setPncMetadata(pncMetadata)
-                .build();
 
-        PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
-                BuildConfig.VERSION_CODE, 1);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("metadata", new JSONObject());
-        JSONObject result = PncJsonFormUtils.getFormAsJson(jsonObject, PncConstants.Form.PNC_REGISTRATION, "", "");
-        Assert.assertNull(result);
+        String jsonString = "{\"encounter_type\":\"PNC Registration\",\"entity_id\":\"\",\"metadata\":{},\"step1\":{\"fields\":[{\"key\":\"OPENSRP_ID\"}]}}";
+
+        /*PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProviderTest.class)
+                .setPncMetadata(pncMetadata)
+                .build();*/
+
+        PncMetadata pncMetadata = PowerMockito.mock(PncMetadata.class);
+        PncConfiguration pncConfiguration = PowerMockito.mock(PncConfiguration.class);
+
+        PowerMockito.when(pncMetadata.getPncRegistrationFormName()).thenReturn(PncConstants.Form.PNC_REGISTRATION);
+
+        //PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
+                //BuildConfig.VERSION_CODE, 1);
+
+        PowerMockito.mockStatic(PncLibrary.class);
+
+        UniqueIdRepository uniqueIdRepository = PowerMockito.spy(new UniqueIdRepository());
+        UniqueId uniqueId = PowerMockito.spy(new UniqueId());
+        PowerMockito.when(PncLibrary.getInstance()).thenReturn(pncLibrary);
+        PowerMockito.when(uniqueIdRepository.getNextUniqueId()).thenReturn(uniqueId);
+        PowerMockito.when(uniqueId.getOpenmrsId()).thenReturn("123-dfcxv-3-sdf");
+        PowerMockito.when(PncLibrary.getInstance().getUniqueIdRepository()).thenReturn(uniqueIdRepository);
+        PowerMockito.when(PncLibrary.getInstance().getPncConfiguration()).thenReturn(pncConfiguration);
+        PowerMockito.when(PncLibrary.getInstance().getPncConfiguration().getPncMetadata()).thenReturn(pncMetadata);
+
+        HashMap<String, String> injectedFields = new HashMap<>();
+        injectedFields.put("OPENSRP_ID", "1");
+
+        JSONObject jsonObject = new JSONObject(jsonString);
+        JSONObject result = PncJsonFormUtils.getFormAsJson(jsonObject, PncConstants.Form.PNC_REGISTRATION, "", "", injectedFields);
+        Assert.assertNotNull(result);
     }
 
     @Test
