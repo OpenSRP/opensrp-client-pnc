@@ -84,5 +84,6 @@
     <string name="female">Female</string>
     <string name="pnc_close">PNC Close</string>
     <string name="pnc_client_close_message">PNC client has been removed from the register</string>
+    <string name="day_p">Day P</string>
 
 </resources>

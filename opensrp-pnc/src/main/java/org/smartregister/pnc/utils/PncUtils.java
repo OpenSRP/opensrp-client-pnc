@@ -28,18 +28,17 @@ import org.json.JSONObject;
 import org.smartregister.CoreLibrary;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.listener.PncEventActionCallBack;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
-import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.UniqueIdRepository;
@@ -180,19 +179,6 @@ public class PncUtils extends org.smartregister.util.Utils {
         return date;
     }
 
-    @NonNull
-    public static String generateNIds(int n) {
-        StringBuilder strIds = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            if ((i + 1) == n) {
-                strIds.append(JsonFormUtils.generateRandomUUIDString());
-            } else {
-                strIds.append(JsonFormUtils.generateRandomUUIDString()).append(",");
-            }
-        }
-        return strIds.toString();
-    }
-
     @NotNull
     public static String getClientAge(String dobString, String translatedYearInitial) {
         String age = dobString;
@@ -251,7 +237,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     @Nullable
-    public static JSONObject getJsonFormToJsonObject(String formName){
+    public static JSONObject getJsonFormToJsonObject(String formName) {
         if (getFormUtils() == null) {
             return null;
         }
@@ -393,80 +379,70 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
     }
 
-    public static void setVisitButtonStatus(Button button, String baseEntityId) {
+    public static void setVisitButtonStatus(Button button, CommonPersonObjectClient client) {
         button.setTag(R.id.BUTTON_TYPE, R.string.start_pnc);
         button.setText(R.string.start_pnc);
         button.setBackgroundResource(R.drawable.pnc_outcome_bg);
 
-        String formType = null;
-        PncBaseDetails pncBaseDetails = new PncBaseDetails();
-        pncBaseDetails.setBaseEntityId(baseEntityId);
-        pncBaseDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findOne(pncBaseDetails);
-        if (pncBaseDetails != null && pncBaseDetails.getProperties() != null) {
-            HashMap<String, String> data = pncBaseDetails.getProperties();
+        if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED) != null) {
 
-            formType = PncConstants.EventTypeConstants.PNC_OUTCOME;
-
-            if ("1".equals(data.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED))) {
-
-                formType = PncConstants.EventTypeConstants.PNC_VISIT;
-
-                String deliveryDateStr = data.get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
+            String deliveryDateStr = client.getColumnmaps().get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
+            if (StringUtils.isNotBlank(deliveryDateStr)) {
                 LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
-                VisitScheduler pncVisitScheduler = new PncVisitScheduler(deliveryDate, baseEntityId);
+                PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+                pncVisitScheduler.setDeliveryDate(deliveryDate);
+                pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get("latest_visit_date"));
 
                 if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
-                }
-                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
+                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.white));
                     button.setBackgroundColor(ContextCompat.getColor(button.getContext(), R.color.overdue_color));
-                }
-                else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
+                } else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
                     button.setText(R.string.record_pnc);
                     button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
 
-                }
-                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
+                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
                     button.setText(R.string.pnc_done_today);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_done_today));
-                }
-                else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
+                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
                     button.setText(R.string.pnc_close);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
                 }
+            } else {
+                Timber.e("deliveryStr is null");
             }
+
         }
 
-        if (formType != null) {
-            PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(baseEntityId, formType));
-            if (pncPartialForm != null) {
-                button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
-            }
+        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId()));
+        if (pncPartialForm != null) {
+            button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
         }
     }
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        String q1 = "SELECT * FROM ec_client WHERE base_entity_id = '" + baseEntityId + "'";
-        String q2 = "SELECT * FROM pnc_registration_details WHERE base_entity_id = '" + baseEntityId + "'";
-        String q3 = "SELECT dob AS baby_dob FROM pnc_baby WHERE mother_base_entity_id = '" + baseEntityId + "'";
+        String query = "SELECT prd.delivery_date, pb.dob AS baby_dob, prd.hiv_status_previous, prd.hiv_status_current, pb.complications AS baby_complications FROM ec_client AS ec \n" +
+                "LEFT JOIN pnc_registration_details AS prd ON prd.base_entity_id = ec.base_entity_id \n" +
+                "LEFT JOIN pnc_baby AS pb ON pb.mother_base_entity_id = ec.base_entity_id \n" +
+                "WHERE ec.base_entity_id = '" + baseEntityId + "' and (pb.discharged_alive == 'yes' or pb.discharged_alive == 'Yes')";
 
-        Map<String, String> detailMap = getMergedData(q1, q2, q3);
+        Map<String, String> detailMap = getMergedData(query);
 
         try {
             JSONObject defaultGlobal = new JSONObject();
 
-            for (Map.Entry<String, String> entry: detailMap.entrySet()) {
+            for (Map.Entry<String, String> entry : detailMap.entrySet()) {
                 defaultGlobal.put(entry.getKey(), entry.getValue());
             }
 
@@ -495,11 +471,8 @@ public class PncUtils extends org.smartregister.util.Utils {
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
             }
 
-            defaultGlobal.put("child_registered_count", 2);
-
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
-        }
-        catch (JSONException ex) {
+        } catch (JSONException ex) {
             Timber.e(ex);
         }
     }
@@ -509,15 +482,14 @@ public class PncUtils extends org.smartregister.util.Utils {
         if (detailMap != null && StringUtils.isNotBlank(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE))) {
             LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
             return Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
-        }
-        else {
+        } else {
             return 0;
         }
     }
 
     public static void saveRegistrationFormSilent(String jsonString, RegisterParams registerParams, PncEventActionCallBack callBack) {
 
-        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()){
+        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()) {
             @Override
             public void onRegistrationSaved(boolean isEdit) {
                 super.onRegistrationSaved(isEdit);
@@ -531,7 +503,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void saveOutcomeAndVisitFormSilent(String jsonString, Intent data, PncEventActionCallBack callBack) {
 
-        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()){
+        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()) {
             @Override
             public void onEventSaved() {
                 super.onEventSaved();
@@ -545,8 +517,9 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
         intentData.put(PncDbConstants.KEY.BASE_ENTITY_ID, entityId);
-        PncUtils.addGlobals(entityId, jsonForm);
-        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))){
+
+        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            PncUtils.addGlobals(entityId, jsonForm);
             PncUtils.addNumberOfBabyCount(entityId, jsonForm);
         }
 
@@ -577,8 +550,7 @@ public class PncUtils extends org.smartregister.util.Utils {
                     }
                 }
             }
-        }
-        catch (JSONException ex) {
+        } catch (JSONException ex) {
             Timber.e(ex);
         }
     }
@@ -598,5 +570,14 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
 
         return mergedData;
+    }
+
+    @NonNull
+    public static String[] generateNIds(int n) {
+        String[] strIds = new String[n];
+        for (int i = 0; i < n; i++) {
+            strIds[i] = JsonFormUtils.generateRandomUUIDString();
+        }
+        return strIds;
     }
 }

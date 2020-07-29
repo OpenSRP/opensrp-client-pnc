@@ -358,7 +358,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
                     }
                 } catch (NullPointerException e) {
                     Timber.e(e);
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | JSONException e) {
                     Timber.e(e);
                 }
         }
@@ -573,8 +573,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 int result = value.equals(Boolean.toString(false)) ? 0 : 1;
                 reminderObject.put(PncConstants.KeyConstants.VALUE, result);
             }
-        }
-        catch (JSONException ex) {
+        } catch (JSONException ex) {
             Timber.e(ex);
         }
     }

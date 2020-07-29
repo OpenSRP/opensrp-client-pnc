@@ -6,13 +6,16 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.common.reflect.TypeToken;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.domain.Photo;
+import org.smartregister.domain.form.FormLocation;
 import org.smartregister.location.helper.LocationHelper;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.enums.LocationHierarchy;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.util.AssetHandler;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -70,6 +74,8 @@ public class PncReverseJsonFormUtils {
     }
 
     private static void setFormFieldValues(@NonNull Map<String, String> pncDetails, @NonNull List<String> nonEditableFields, @NonNull JSONObject jsonObject) throws JSONException {
+        Set<String> fieldsWithLocationHierarchy = PncUtils.metadata().getFieldsWithLocationHierarchy();
+
         if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.KeyConstants.PHOTO)) {
             reversePhoto(pncDetails.get(PncConstants.KeyConstants.BASE_ENTITY_ID), jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.DOB_UNKNOWN)) {
@@ -87,10 +93,36 @@ public class PncReverseJsonFormUtils {
             }
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.HOME_ADDRESS)) {
             reverseHomeAddress(jsonObject, pncDetails.get(PncConstants.JsonFormKeyConstants.HOME_ADDRESS));
-        }  else {
+        } else if (fieldsWithLocationHierarchy != null && !fieldsWithLocationHierarchy.isEmpty()
+                && fieldsWithLocationHierarchy.contains(jsonObject.getString(PncJsonFormUtils.KEY))) {
+            reverseLocationField(jsonObject, pncDetails.get(jsonObject.getString(PncJsonFormUtils.KEY)));
+        } else {
             jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), pncDetails));
         }
         jsonObject.put(PncJsonFormUtils.READ_ONLY, nonEditableFields.contains(jsonObject.getString(PncJsonFormUtils.KEY)));
+    }
+
+    private static void reverseLocationField(@NonNull JSONObject jsonObject, @Nullable String entity) throws JSONException {
+        List<String> entityHierarchy = null;
+        if (entity != null) {
+            if (PncConstants.FormValue.OTHER.equalsIgnoreCase(entity)) {
+                entityHierarchy = new ArrayList<>();
+                entityHierarchy.add(entity);
+            } else {
+                String locationId = LocationHelper.getInstance().getOpenMrsLocationId(entity);
+                entityHierarchy = LocationHelper.getInstance().getOpenMrsLocationHierarchy(locationId, false);
+            }
+        }
+        ArrayList<String> allLevels = PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getHealthFacilityLevels();
+        List<FormLocation> entireTree = LocationHelper.getInstance().generateLocationHierarchyTree(true, allLevels);
+        String entireTreeString = AssetHandler.javaToJsonString(entireTree, new TypeToken<List<FormLocation>>() {
+        }.getType());
+        String facilityHierarchyString = AssetHandler.javaToJsonString(entityHierarchy, new TypeToken<List<String>>() {
+        }.getType());
+        if (StringUtils.isNotBlank(facilityHierarchyString)) {
+            jsonObject.put(JsonFormConstants.VALUE, facilityHierarchyString);
+            jsonObject.put(JsonFormConstants.TREE, new JSONArray(entireTreeString));
+        }
     }
 
     private static void reversePhoto(@NonNull String baseEntityId, @NonNull JSONObject jsonObject) throws JSONException {
@@ -133,7 +165,8 @@ public class PncReverseJsonFormUtils {
             }
         }
 
-        String facilityHierarchyString = AssetHandler.javaToJsonString(entityHierarchy, new TypeToken<List<String>>() {}.getType());
+        String facilityHierarchyString = AssetHandler.javaToJsonString(entityHierarchy, new TypeToken<List<String>>() {
+        }.getType());
         if (StringUtils.isNotBlank(facilityHierarchyString)) {
             jsonObject.put(PncJsonFormUtils.VALUE, facilityHierarchyString);
         }

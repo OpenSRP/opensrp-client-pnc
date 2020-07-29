@@ -44,10 +44,8 @@ public class PncConstants extends AllConstants {
 
     public interface JsonFormField {
         String MOTHER_HIV_STATUS = "mother_hiv_status";
-    }
-
-    public interface JsonFormWidget {
-        String MULTI_SELECT_DRUG_PICKER = "multi_select_drug_picker";
+        String GENERATED_GRP = "generated_grp";
+        String OTHER_PNC_VISIT_DATE = "other_pnc_visit_date";
     }
 
     public static class JsonFormKeyConstants {
@@ -164,7 +162,7 @@ public class PncConstants extends AllConstants {
     public static final class EventTypeConstants {
         public static final String PNC_REGISTRATION = "PNC Registration";
         public static final String PNC_OUTCOME = "PNC Medic Information";
-        public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
+        public static final String UPDATE_PNC_REGISTRATION = "Update PNC Registration";
         public static final String PNC_CLOSE = "PNC Close";
         public static final String BIRTH_REGISTRATION = "Birth Registration";
         public static final String PNC_VISIT = "PNC Visit";
@@ -181,7 +179,7 @@ public class PncConstants extends AllConstants {
 
     public interface Form {
         String PNC_REGISTRATION = "pnc_registration";
-        String PNC_OUTCOME = "pnc_medic_information";
+        String PNC_MEDIC_INFORMATION = "pnc_medic_information";
         String PNC_VISIT = "pnc_visit";
         String PNC_CLOSE = "pnc_close";
     }

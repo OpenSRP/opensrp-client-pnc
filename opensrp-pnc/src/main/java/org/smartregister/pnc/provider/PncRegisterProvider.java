@@ -111,8 +111,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
     }
 
     @Override
-    public void onServiceModeSelected(ServiceModeOption serviceModeOption) {//Implement Abstract Method
-    }
+    public void onServiceModeSelected(ServiceModeOption serviceModeOption) { /*Implement Abstract Method */ }
 
     @Override
     public OnClickFormLauncher newFormLauncher(String formName, String entityId, String metaData) {
@@ -180,7 +179,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
 
     public void addButtonClickListeners(@NonNull CommonPersonObjectClient client, PncRegisterViewHolder viewHolder) {
 
-        PncUtils.setVisitButtonStatus(viewHolder.dueButton, client.getCaseId());
+        PncUtils.setVisitButtonStatus(viewHolder.dueButton, client);
 
         View patient = viewHolder.patientColumn;
         attachPatientOnclickListener(PncViewConstants.Provider.PATIENT_COLUMN, patient, client);

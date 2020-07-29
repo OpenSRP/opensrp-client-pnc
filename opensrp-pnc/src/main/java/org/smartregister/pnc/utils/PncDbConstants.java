@@ -56,7 +56,6 @@ public interface PncDbConstants {
 
         interface PncBaby {
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
-            String BASE_ENTITY_ID = "base_entity_id";
             String DISCHARGED_ALIVE = "discharged_alive";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
@@ -77,10 +76,11 @@ public interface PncDbConstants {
             String BF_FIRST_HOUR = "bf_first_hour";
             String NVP_ADMINISTRATION = "nvp_administration";
             String CHILD_HIV_STATUS = "child_hiv_status";
+            String BASE_ENTITY_ID = "base_entity_id";
         }
 
-        interface PncVisit {
-            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+        interface PncVisitInfo {
+            String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
             String CREATED_AT = "created_at";
             String PERIOD = "pnc_visit_period";
@@ -110,7 +110,6 @@ public interface PncDbConstants {
         }
 
         interface PncVisitChildStatus {
-            String PARENT_RELATION_ID = "parent_relation_id";
             String CHILD_RELATION_ID = "child_relation_id";
             String BABY_AGE = "baby_age";
             String BABY_FIRST_NAME = "baby_first_name";
@@ -132,6 +131,11 @@ public interface PncDbConstants {
             String NOT_ART_PAIRING_REASON_OTHER = "not_art_pairing_reason_other";
             String BABY_DBS = "baby_dbs";
             String BABY_CARE_MGMT = "baby_care_mgt";
+        }
+
+        interface PncOtherVisit {
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String VISIT_DATE = "visit_date";
         }
 
         interface PncStillBorn {
@@ -156,5 +160,6 @@ public interface PncDbConstants {
         String PNC_VISIT_INFO = "pnc_visit_info";
         String PNC_VISIT_CHILD_STATUS = "pnc_visit_child_status";
         String PNC_PARTIAL_FORM = "pnc_partial_form";
+        String PNC_OTHER_VISIT = "pnc_other_visit";
     }
 }

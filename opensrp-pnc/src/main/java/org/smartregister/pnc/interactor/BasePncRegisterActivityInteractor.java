@@ -52,7 +52,7 @@ public class BasePncRegisterActivityInteractor implements PncRegisterActivityCon
             final PncPartialForm partialForm = PncLibrary
                     .getInstance()
                     .getPncPartialFormRepository()
-                    .findOne(new PncPartialForm(baseEntityId, formType));
+                    .findOne(new PncPartialForm(baseEntityId));
 
             appExecutors.mainThread().execute(() -> interactorCallBack.onFetchedSavedForm(partialForm, baseEntityId, formType, entityTable));
         });

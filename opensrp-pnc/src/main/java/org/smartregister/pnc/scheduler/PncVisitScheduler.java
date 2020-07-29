@@ -2,61 +2,52 @@ package org.smartregister.pnc.scheduler;
 
 import android.support.annotation.VisibleForTesting;
 
-import org.jetbrains.annotations.TestOnly;
 import org.joda.time.LocalDate;
-import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.utils.PncDbConstants;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PncVisitScheduler extends VisitScheduler {
 
+    private static PncVisitScheduler INSTANCE;
+
     private LocalDate deliveryDate;
-    private String parentBaseEntityId;
     private List<VisitBlock> visitBlocks;
     private LocalDate currentDate;
-    private Map<String, Object> latestVisit;
+    private String latestVisitDateInMills;
 
-    public PncVisitScheduler(LocalDate deliveryDate, String parentBaseEntityId) {
-        this.deliveryDate = deliveryDate;
+    private PncVisitScheduler() {
         this.currentDate = LocalDate.now();
-        this.parentBaseEntityId = parentBaseEntityId;
-        visitBlocks = new ArrayList<>();
-        setLatestVisit(PncLibrary.getInstance().getPncVisitInfoRepository().getLatestVisitByParent(getParentBaseEntityId()));
-        buildStatusTable();
     }
 
-    @TestOnly
-    public PncVisitScheduler(){}
+    public static PncVisitScheduler getInstance() {
+        return INSTANCE == null ? INSTANCE = new PncVisitScheduler() : INSTANCE;
+    }
 
-    @VisibleForTesting
     public void buildStatusTable() {
+        visitBlocks = new ArrayList<>();
 
-        if (visitBlocks == null) visitBlocks = new ArrayList<>();
+        List<VisitCase> withIn48HoursCases = new ArrayList<>();
+        withIn48HoursCases.add(new VisitCase(getDeliveryDate(), getDeliveryDate().plusDays(2), VisitStatus.PNC_DUE));
 
-        List<VisitCase> caseList1 = new ArrayList<>();
-        caseList1.add(new VisitCase(getDeliveryDate(), getDeliveryDate().plusDays(2), VisitStatus.PNC_DUE));
+        List<VisitCase> case3To7Days = new ArrayList<>();
+        case3To7Days.add(new VisitCase(getDeliveryDate().plusDays(3), getDeliveryDate().plusDays(4), VisitStatus.PNC_DUE));
+        case3To7Days.add(new VisitCase(getDeliveryDate().plusDays(5), getDeliveryDate().plusDays(8), VisitStatus.PNC_OVERDUE));
 
-        List<VisitCase> caseList2 = new ArrayList<>();
-        caseList2.add(new VisitCase(getDeliveryDate().plusDays(3), getDeliveryDate().plusDays(4), VisitStatus.PNC_DUE));
-        caseList2.add(new VisitCase(getDeliveryDate().plusDays(5), getDeliveryDate().plusDays(8), VisitStatus.PNC_OVERDUE));
+        List<VisitCase> case8to28Days = new ArrayList<>();
+        case8to28Days.add(new VisitCase(getDeliveryDate().plusDays(9), getDeliveryDate().plusDays(18), VisitStatus.PNC_DUE));
+        case8to28Days.add(new VisitCase(getDeliveryDate().plusDays(19), getDeliveryDate().plusDays(28), VisitStatus.PNC_OVERDUE));
 
-        List<VisitCase> caseList3 = new ArrayList<>();
-        caseList3.add(new VisitCase(getDeliveryDate().plusDays(9), getDeliveryDate().plusDays(18), VisitStatus.PNC_DUE));
-        caseList3.add(new VisitCase(getDeliveryDate().plusDays(19), getDeliveryDate().plusDays(28), VisitStatus.PNC_OVERDUE));
+        List<VisitCase> case29To42Days = new ArrayList<>();
+        case29To42Days.add(new VisitCase(getDeliveryDate().plusDays(29), getDeliveryDate().plusDays(36), VisitStatus.PNC_DUE));
+        case29To42Days.add(new VisitCase(getDeliveryDate().plusDays(37), getDeliveryDate().plusDays(60), VisitStatus.PNC_OVERDUE));
 
-        List<VisitCase> caseList4 = new ArrayList<>();
-        caseList4.add(new VisitCase(getDeliveryDate().plusDays(29), getDeliveryDate().plusDays(36), VisitStatus.PNC_DUE));
-        caseList4.add(new VisitCase(getDeliveryDate().plusDays(37), getDeliveryDate().plusDays(60), VisitStatus.PNC_OVERDUE));
-
-        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(2), caseList1));
-        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(8), caseList2));
-        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(28), caseList3));
-        addBlock(new VisitBlock(getDeliveryDate(), null, caseList4));
+        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(2), withIn48HoursCases));
+        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(8), case3To7Days));
+        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(28), case8to28Days));
+        addBlock(new VisitBlock(getDeliveryDate(), null, case29To42Days));
     }
 
     public void addBlock(VisitBlock visitCase) {
@@ -77,7 +68,7 @@ public class PncVisitScheduler extends VisitScheduler {
         while (blocksIterator.hasNext()) {
             VisitBlock block = blocksIterator.next();
 
-            if (isVisitDoneToday(getLatestVisit())) {
+            if (isVisitDoneToday()) {
                 visitStatus = VisitStatus.PNC_DONE_TODAY;
                 break;
             }
@@ -110,34 +101,28 @@ public class PncVisitScheduler extends VisitScheduler {
 
     public void setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
+        buildStatusTable();
     }
 
     public LocalDate getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setParentBaseEntityId(String parentBaseEntityId) {
-        this.parentBaseEntityId = parentBaseEntityId;
+
+    public void setLatestVisitDateInMills(String latestVisitDateInMills) {
+        this.latestVisitDateInMills = latestVisitDateInMills;
     }
 
-    public String getParentBaseEntityId() {
-        return parentBaseEntityId;
-    }
-
-    public void setLatestVisit(Map<String, Object> latestVisit) {
-        this.latestVisit = latestVisit;
-    }
-
-    public Map<String, Object> getLatestVisit() {
-        return latestVisit;
+    public String getLatestVisitDateInMills() {
+        return latestVisitDateInMills;
     }
 
     @VisibleForTesting
-    public boolean isVisitDoneToday(Map<String, Object> data) {
+    public boolean isVisitDoneToday() {
 
-        if (data == null) return false;
+        if (getLatestVisitDateInMills() == null) return false;
 
-        long createdAtMillis = Long.parseLong((String)data.get(PncDbConstants.Column.PncVisit.CREATED_AT));
+        long createdAtMillis = Long.parseLong(getLatestVisitDateInMills());
 
         long diffInMills = System.currentTimeMillis() - createdAtMillis;
         return diffInMills <= TimeUnit.DAYS.toMillis(1);
