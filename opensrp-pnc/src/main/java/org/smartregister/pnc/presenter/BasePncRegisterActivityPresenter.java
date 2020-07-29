@@ -139,7 +139,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
 
         try {
             String formPath = formName;
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) formPath = PncConstants.Form.PNC_OUTCOME;
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) formPath = PncConstants.Form.PNC_MEDIC_INFORMATION;
             if (formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) formPath = PncConstants.Form.PNC_VISIT;
 
             form = model.getFormAsJson(formPath, entityId, locationId, injectedFieldValues);

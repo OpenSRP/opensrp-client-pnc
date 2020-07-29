@@ -190,7 +190,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
 
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
-                if (formName.equals(PncConstants.Form.PNC_OUTCOME) || formName.equals(PncConstants.Form.PNC_VISIT)) {
+                if (formName.equals(PncConstants.Form.PNC_MEDIC_INFORMATION) || formName.equals(PncConstants.Form.PNC_VISIT)) {
                     mProfileInteractor.fetchSavedForm(caseId, entityTable, this);
                     return;
                 }

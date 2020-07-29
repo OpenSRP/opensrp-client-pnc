@@ -215,7 +215,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     @Override
     public void openPncMedicInfoForm() {
         if (commonPersonObjectClient != null) {
-            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_OUTCOME, commonPersonObjectClient);
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_MEDIC_INFORMATION, commonPersonObjectClient);
         }
     }
 
