@@ -139,12 +139,12 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
-        keyValues.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
-        keyValues.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, baseEntityId);
+        keyValues.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
+        keyValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, baseEntityId);
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
         processOtherVisits(strOtherVisit, baseEntityId);
-        keyValues.put(PncDbConstants.Column.PncVisit.OTHER_VISIT_DATE, strOtherVisit);
+        keyValues.put(PncDbConstants.Column.PncVisitInfo.OTHER_VISIT_DATE, strOtherVisit);
 
         String strChildStatus = keyValues.get(PncConstants.JsonFormKeyConstants.CHILD_STATUS_MAP);
         processVisitChildStatus(strChildStatus, baseEntityId);
@@ -239,8 +239,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     String key = repeatingGroupKeys.next();
                     JSONObject jsonChildObject = jsonObject.optJSONObject(key);
                     Map<String, String> data = new HashMap<>();
-                    data.put(PncDbConstants.Column.PncVisit.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
-                    data.put(PncDbConstants.Column.PncVisit.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
+                    data.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
+                    data.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));

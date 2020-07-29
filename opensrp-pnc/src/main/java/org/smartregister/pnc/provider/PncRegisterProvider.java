@@ -179,7 +179,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
 
     public void addButtonClickListeners(@NonNull CommonPersonObjectClient client, PncRegisterViewHolder viewHolder) {
 
-        PncUtils.setVisitButtonStatus(viewHolder.dueButton, client.getCaseId());
+        PncUtils.setVisitButtonStatus(viewHolder.dueButton, client);
 
         View patient = viewHolder.patientColumn;
         attachPatientOnclickListener(PncViewConstants.Provider.PATIENT_COLUMN, patient, client);

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import org.smartregister.commonregistry.CommonPersonObjectClient;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.activity.BasePncProfileActivity;
 import org.smartregister.pnc.adapter.PncProfileOverviewAdapter;
@@ -21,6 +22,8 @@ import org.smartregister.pnc.presenter.PncProfileOverviewFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.fragment.BaseProfileFragment;
+
+import java.util.HashMap;
 
 
 /**
@@ -81,17 +84,20 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     private void showOutcomeBtn() {
         if (getActivity() != null) {
-            PncUtils.setVisitButtonStatus(recordOutcomeBtn, baseEntityId);
+            HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
+            commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED, clientDetail.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED));
+            commonPersonObjectClient.getColumnmaps().put("latest_visit_date", clientDetail.get("latest_visit_date"));
+            PncUtils.setVisitButtonStatus(recordOutcomeBtn, commonPersonObjectClient);
             pncOutcomeSectionLayout.setVisibility(View.VISIBLE);
             recordOutcomeBtn.setOnClickListener(v -> {
                 Object buttonType = v.getTag(R.id.BUTTON_TYPE);
                 if (buttonType != null) {
                     BasePncProfileActivity profileActivity = (BasePncProfileActivity) getActivity();
                     if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
-                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_VISIT);
+                        profileActivity.openPncVisitForm();
                     }
                     else if (buttonType.equals(R.string.start_pnc)){
-                        profileActivity.performPatientAction(commonPersonObjectClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
+                        profileActivity.openPncMedicInfoForm();
                     }
                 }
             });

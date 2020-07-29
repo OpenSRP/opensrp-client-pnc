@@ -11,13 +11,14 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.domain.tag.FormTag;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.interactor.PncProfileInteractor;
 import org.smartregister.pnc.listener.OngoingTaskCompleteListener;
-import org.smartregister.pnc.listener.PncEventActionCallBack;
 import org.smartregister.pnc.model.PncProfileActivityModel;
 import org.smartregister.pnc.pojo.OngoingTask;
 import org.smartregister.pnc.pojo.PncEventClient;
@@ -35,6 +36,7 @@ import org.smartregister.util.Utils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -43,7 +45,7 @@ import timber.log.Timber;
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
-public class PncProfileActivityPresenter implements PncProfileActivityContract.Presenter, PncProfileActivityContract.InteractorCallBack, PncEventActionCallBack {
+public class PncProfileActivityPresenter implements PncProfileActivityContract.Presenter, PncProfileActivityContract.InteractorCallBack {
 
     private WeakReference<PncProfileActivityContract.View> mProfileView;
     private PncProfileActivityContract.Interactor mProfileInteractor;
@@ -98,7 +100,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             }
 
             if (isEdit && reassignableClient != null) {
-                refreshProfileTopSection(reassignableClient.getColumnmaps());
+                refreshProfileTopSection(reassignableClient.getColumnmaps(), reassignableClient.getCaseId());
             }
         }
     }
@@ -122,12 +124,12 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             HashMap<String, String> intentKeys = new HashMap<>();
             intentKeys.put(PncConstants.IntentKey.BASE_ENTITY_ID, caseId);
             intentKeys.put(PncConstants.IntentKey.ENTITY_TABLE, entityTable);
-            getProfileView().startFormActivity(form, intentKeys);
+            getProfileView().startFormActivity(caseId, form, intentKeys);
         }
     }
 
     @Override
-    public void refreshProfileTopSection(@NonNull Map<String, String> client) {
+    public void refreshProfileTopSection(@NonNull Map<String, String> client, String baseEntityId) {
         PncProfileActivityContract.View profileView = getProfileView();
         if (profileView != null) {
             profileView.setProfileName(client.get(PncDbConstants.KEY.FIRST_NAME) + " " + client.get(PncDbConstants.KEY.LAST_NAME));
@@ -142,7 +144,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             profileView.setProfileID(Utils.getValue(client, PncDbConstants.KEY.REGISTER_ID, false));
             profileView.setProfileImage(Utils.getValue(client, PncDbConstants.KEY.ID, false));
 
-            profileView.setDeliveryDays("Day P" + PncUtils.getDeliveryDays(client.get(PncDbConstants.Column.Client.BASE_ENTITY_ID)));
+            profileView.setProfileGender(profileView.getString(R.string.day_p) + PncUtils.getDeliveryDays(baseEntityId));
         }
     }
 
@@ -165,11 +167,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
                 // Fetch saved form & continue editing
-                if (formName.equals(PncConstants.Form.PNC_VISIT)) {
-                    mProfileInteractor.fetchSavedDiagnosisAndTreatmentForm(caseId, entityTable);
-                } else {
-                    startFormActivity(form, caseId, entityTable);
-                }
+                startFormActivity(form, caseId, entityTable);
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -209,18 +207,31 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     }
 
     @Override
-    public void onPncEventSaved() {
+    public void savePncForm(String eventType, @Nullable Intent data) {
+        String jsonString = null;
+        if (data != null) {
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+        }
+
+        if (jsonString == null) {
+            return;
+        }
+
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT) || eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            try {
+                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
+                mProfileInteractor.saveEvents(pncOutcomeAndCloseEvent, this);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
+    }
+
+    @Override
+    public void onEventSaved() {
         PncProfileActivityContract.View view = getProfileView();
         if (view != null) {
             view.hideProgressDialog();
-
-            if(getOngoingTask() != null) {
-                view.showMessage(view.getString(R.string.pnc_client_close_message));
-                view.closeView();
-
-                removeOngoingTask(ongoingTask);
-            }
-
         }
     }
 
