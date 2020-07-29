@@ -142,7 +142,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             profileView.setProfileID(Utils.getValue(client, PncDbConstants.KEY.REGISTER_ID, false));
             profileView.setProfileImage(Utils.getValue(client, PncDbConstants.KEY.ID, false));
 
-            profileView.setDeliveryDays("Day P" + PncUtils.getDeliveryDays(client.get("_id")));
+            profileView.setDeliveryDays("Day P" + PncUtils.getDeliveryDays(client.get(PncDbConstants.Column.Client.BASE_ENTITY_ID)));
         }
     }
 

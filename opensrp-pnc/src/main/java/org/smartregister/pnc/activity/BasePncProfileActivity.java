@@ -296,6 +296,15 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                 } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().savePncForm(encounterType, data);
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                    presenter().savePncForm(encounterType, data);
+
+                    RegisterParams registerParam = new RegisterParams();
+                    registerParam.setEditMode(true);
+                    registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
+
+                    ((PncProfileActivityPresenter) presenter).saveUpdateRegistrationForm(jsonString, registerParam);
                 }
 
             } catch (JSONException e) {

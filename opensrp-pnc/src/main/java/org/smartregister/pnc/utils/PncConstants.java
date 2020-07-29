@@ -159,8 +159,8 @@ public class PncConstants extends AllConstants {
     public static final class EventTypeConstants {
         public static final String PNC_REGISTRATION = "PNC Registration";
         public static final String PNC_OUTCOME = "PNC Medic Information";
-        public static final String UPDATE_PNC_REGISTRATION = "Update Pnc Registration";
-        public static final String PNC_CLOSE = "Pnc Close";
+        public static final String UPDATE_PNC_REGISTRATION = "Update PNC Registration";
+        public static final String PNC_CLOSE = "PNC Close";
         public static final String BIRTH_REGISTRATION = "Birth Registration";
         public static final String PNC_VISIT = "PNC Visit";
     }

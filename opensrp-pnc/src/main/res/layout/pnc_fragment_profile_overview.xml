@@ -38,7 +38,7 @@
             android:textColor="@color/diagnose_treat_txt_color"
             style="?android:attr/borderlessButtonStyle"
             android:textAppearance="?android:textAppearanceMedium"
-            android:text="@string/diagnose_and_treat"/>
+            android:text="@string/start_pnc"/>
 
     </LinearLayout>
 
