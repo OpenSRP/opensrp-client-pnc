@@ -89,8 +89,8 @@
                 "constraints": [
                     {
                         "type": "numeric",
-                        "ex": "lessThan(., step1:gravidity)",
-                        "err": "Para needs to be less than gravidity"
+                        "ex": "lessThanEqualTo(., step1:gravidity)",
+                        "err": "Para needs to be less than or equal to gravidity"
                     }
                 ]
             },
@@ -1600,6 +1600,7 @@
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "reference_edit_text_hint": "#Total baby born alive",
                 "repeating_group_label": "Baby born alive",
+                "reference_edit_text": "Number of babies born alive",
                 "label_text_style": "bold",
                 "value": [
                     {
