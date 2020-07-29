@@ -127,6 +127,6 @@ public interface PncProfileActivityContract {
 
         void onFetchedSavedForm(@Nullable PncPartialForm pncPartialForm, @NonNull String caseId, @Nullable String entityTable);
 
-        void onEventSaved();
+        void onEventSaved(List<Event> events);
     }
 }

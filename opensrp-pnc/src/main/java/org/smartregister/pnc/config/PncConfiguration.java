@@ -13,7 +13,7 @@ import java.util.HashMap;
  * This is the object used to configure any configurations added to Pnc. We mostly use objects that are
  * instantiated using {@link org.smartregister.pnc.utils.ConfigurationInstancesHelper} which means
  * that the constructors of any of the classes should not have any parameters
- *
+ * <p>
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 
@@ -38,6 +38,10 @@ public class PncConfiguration {
 
         if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_VISIT)) {
             builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_VISIT, PncVisitFormProcessing.class);
+        }
+
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_CLOSE, PncCloseFormProcessing.class);
         }
     }
 

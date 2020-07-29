@@ -1,5 +1,6 @@
 package org.smartregister.pnc.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -258,11 +259,18 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     }
 
     @Override
-    public void onEventSaved() {
+    public void onEventSaved(List<Event> events) {
         PncProfileActivityContract.View view = getProfileView();
 
         if (view != null) {
             view.hideProgressDialog();
+        }
+
+        for (Event event : events) {
+            if (PncConstants.EventTypeConstants.PNC_CLOSE.equals(event.getEventType())) {
+                ((Activity) getProfileView()).finish();
+                break;
+            }
         }
     }
 
@@ -314,7 +322,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     @Override
     public boolean removeOngoingTask(@NonNull OngoingTask ongoingTask) {
         if (this.ongoingTask == ongoingTask) {
-            for (OngoingTaskCompleteListener ongoingTaskCompleteListener: ongoingTaskCompleteListeners) {
+            for (OngoingTaskCompleteListener ongoingTaskCompleteListener : ongoingTaskCompleteListeners) {
                 ongoingTaskCompleteListener.onTaskComplete(ongoingTask);
             }
 

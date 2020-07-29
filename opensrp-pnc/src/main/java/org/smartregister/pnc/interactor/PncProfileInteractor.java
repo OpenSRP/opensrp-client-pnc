@@ -200,7 +200,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        callBack.onEventSaved();
+                        callBack.onEventSaved(events);
                     }
                 });
             }
