@@ -57,6 +57,7 @@ public interface PncDbConstants {
         interface PncBaby {
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String DISCHARGED_ALIVE = "discharged_alive";
+            String CREATED_AT = "created_at";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
             String FIRST_NAME = "first_name";

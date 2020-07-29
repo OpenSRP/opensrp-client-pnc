@@ -3,6 +3,7 @@ package org.smartregister.pnc.pojo;
 public class PncChild {
     private String baseEntityId;
     private String motherBaseEntityId;
+    private long createdAt;
     private String dischargedAlive;
     private String childRegistered;
     private String birthRecordDate;
@@ -32,6 +33,14 @@ public class PncChild {
 
     public void setBaseEntityId(String baseEntityId) {
         this.baseEntityId = baseEntityId;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
     }
 
     public String getChildRegistered() {
