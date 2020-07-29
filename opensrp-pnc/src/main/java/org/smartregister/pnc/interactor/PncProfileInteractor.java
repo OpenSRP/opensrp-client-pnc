@@ -17,6 +17,7 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
@@ -50,8 +51,15 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     }
 
     @Override
-    public void fetchSavedDiagnosisAndTreatmentForm(@NonNull final String baseEntityId, @NonNull final String entityTable) {
-        // Do nothing
+    public void fetchSavedForm(@NonNull String baseEntityId, @Nullable String entityTable, @NonNull PncProfileActivityContract.InteractorCallBack interactorCallBack) {
+        appExecutors.diskIO().execute(() -> {
+            final PncPartialForm partialForm = PncLibrary
+                    .getInstance()
+                    .getPncPartialFormRepository()
+                    .findOne(new PncPartialForm(baseEntityId));
+
+            appExecutors.mainThread().execute(() -> interactorCallBack.onFetchedSavedForm(partialForm, baseEntityId, entityTable));
+        });
     }
 
     @Override

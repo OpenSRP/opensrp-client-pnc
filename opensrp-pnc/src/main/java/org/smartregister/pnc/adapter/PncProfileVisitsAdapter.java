@@ -20,7 +20,7 @@ import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.StringUtil;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -29,11 +29,11 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
 
     private Context context;
     private LayoutInflater mInflater;
-    private ArrayList<Pair<YamlConfigWrapper, Facts>> items;
+    private List<Pair<YamlConfigWrapper, Facts>> items;
     private TextUtilHelper textUtilHelper;
 
     // data is passed into the constructor
-    public PncProfileVisitsAdapter(@NonNull Context context, ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
+    public PncProfileVisitsAdapter(@NonNull Context context, List<Pair<YamlConfigWrapper, Facts>> items) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.items = items;
