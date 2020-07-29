@@ -67,7 +67,7 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
         try {
             if (StringUtils.isNotBlank(baseEntityId)) {
                 return rawQuery(getReadableDatabase(),
-                        "SELECT *, pvi.created_at AS latest_visit_date FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
+                        "SELECT *, pvi.created_at AS latest_visit_date, prd.base_entity_id as base_entity_id FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
                                 "LEFT JOIN " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd ON prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
                                 "LEFT JOIN " + PncDbConstants.Table.PNC_VISIT_INFO + " AS pvi ON pvi." + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " = prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
                                 "WHERE ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
