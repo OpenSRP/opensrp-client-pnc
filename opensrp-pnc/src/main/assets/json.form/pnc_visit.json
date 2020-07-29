@@ -75,6 +75,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Did the woman receive PNC within 48 hours of delivery?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -106,6 +107,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Has the client had other visits outside this facility?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -139,6 +141,7 @@
         "reference_edit_text_hint": "#Total other visit",
         "repeating_group_label": "Other visit",
         "reference_edit_text": "Number of other visit",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -170,6 +173,7 @@
         "openmrs_entity_id": "",
         "type": "check_box",
         "label": "Postnatal complications",
+        "label_text_style": "bold",
         "exclusive": [
           "none"
         ],
@@ -215,6 +219,7 @@
         "openmrs_entity_id": "1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         "type": "edit_text",
         "hint": "Specify",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -234,6 +239,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Status of C-section incision",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "intact",
@@ -279,6 +285,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Condition of episiotomy/tear, if present",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "intact",
@@ -317,6 +324,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Status of the lochia",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "normal",
@@ -370,6 +378,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Status of the uterus",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "involuted",
@@ -416,6 +425,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was an intervention given?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -448,6 +458,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was the woman referred?",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -487,6 +498,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Breastfeeding status",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -533,6 +545,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was Vitamin A given?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -557,6 +570,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Provide a reason for not giving Vitamin A",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -595,6 +609,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was counseling on family planning done?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -619,6 +634,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Family planning methods chosen",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "implants",
@@ -686,6 +702,7 @@
         "reference_edit_text_hint": "#Total child status",
         "repeating_group_label": "Child status",
         "reference_edit_text": "Number of child status",
+        "label_text_style": "bold",
         "value": [
           {
             "key": "child_relation_id",
@@ -887,6 +904,7 @@
             "openmrs_entity_id": "",
             "type": "check_box",
             "label": "Danger signs and complications at visit",
+            "label_text_style": "bold",
             "exclusive": [
               "none"
             ],
@@ -1066,6 +1084,7 @@
             "openmrs_entity_id": "",
             "type": "check_box",
             "label": "Which HIV treatment is being given?",
+            "label_text_style": "bold",
             "relevance": {
               "rules-engine": {
                 "ex-rules": {

@@ -106,8 +106,8 @@
                 "openmrs_entity": "",
                 "openmrs_entity_id": "",
                 "type": "check_box",
-                "hint": "Last menstrual period unknown checkbox",
-                "label": "",
+                "label": "Last menstrual period unknown checkbox",
+                "label_text_style": "bold",
                 "options": [
                     {
                         "key": "lmp_unknown",
@@ -209,7 +209,8 @@
                 "openmrs_entity": "",
                 "openmrs_entity_id": "",
                 "type": "label",
-                "hint": "When did labour begin? (Onset of Labour)"
+                "hint": "When did labour begin? (Onset of Labour)",
+                "label_text_style": "bold"
             },
             {
                 "key": "onset_labour",
@@ -244,6 +245,7 @@
                 "openmrs_entity_id": "1430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Any past pregnancy problems?",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:parity": {
                         "type": "numeric",
@@ -406,6 +408,7 @@
                 "openmrs_entity_id": "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Modes of delivery in past pregnancies",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:parity": {
                         "type": "numeric",
@@ -462,6 +465,7 @@
                 "openmrs_entity_id": "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Outcomes of previous pregnancies",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:gravidity": {
                         "type": "numeric",
@@ -518,6 +522,7 @@
                 "openmrs_entity_id": "160592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Family medical history",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Select at least one medical condition OR None"
@@ -907,6 +912,7 @@
                 "openmrs_entity_id": "1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Obstetric complications",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
@@ -1059,6 +1065,7 @@
                 "openmrs_entity_id": "1669AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Obstetric care",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
@@ -1605,6 +1612,7 @@
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "reference_edit_text_hint": "#Total baby born alive",
                 "repeating_group_label": "Baby born alive",
+                "label_text_style": "bold",
                 "value": [
                     {
                         "key": "discharged_alive",
@@ -1815,6 +1823,7 @@
                         "openmrs_entity_id": "164122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Newborn care complications",
+                        "label_text_style": "bold",
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
@@ -1887,6 +1896,7 @@
                         "openmrs_entity_id": "159839AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Newborn Routine Care & Management",
+                        "label_text_style": "bold",
                         "relevance": {
                             "step4:baby_complications": {
                                 "ex-checkbox": [
@@ -2046,6 +2056,7 @@
                         "openmrs_entity_id": "5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Child's HIV status",
+                        "label_text_style": "bold",
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
@@ -2162,6 +2173,7 @@
                 "reference_edit_text_hint": "#Total baby stillborn",
                 "repeating_group_label": "Baby stillborn",
                 "reference_edit_text": "Number of babies stillborn",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
