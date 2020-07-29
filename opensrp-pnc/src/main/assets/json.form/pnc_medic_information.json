@@ -86,12 +86,6 @@
                     "value": "true",
                     "err": "Enter valid Para"
                 },
-                "relevance": {
-                    "step1:gravidity": {
-                        "type": "numeric",
-                        "ex": "greaterThan(., \"1\")"
-                    }
-                },
                 "constraints": [
                     {
                         "type": "numeric",
@@ -421,12 +415,6 @@
                 },
                 "options": [
                     {
-                        "key": "vaginal_birth",
-                        "text": "Vaginal Birth",
-                        "openmrs_entity": "concept",
-                        "openmrs_entity_id": "162595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                    },
-                    {
                         "key": "spontaneous_vertex",
                         "text": "Spontaneous Vertex (SVD)",
                         "openmrs_entity": "concept",
@@ -462,7 +450,7 @@
                 "key": "previous_pregnancy_outcomes",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "concept",
-                "openmrs_entity_id": "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "openmrs_entity_id": "161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Outcomes of previous pregnancies",
                 "label_text_style": "bold",
@@ -481,7 +469,7 @@
                         "key": "alive",
                         "text": "Alive",
                         "openmrs_entity": "concept",
-                        "openmrs_entity_id": ""
+                        "openmrs_entity_id": "151849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                     },
                     {
                         "key": "stillbirth_fresh",
@@ -618,7 +606,7 @@
                 "openmrs_entity": "concept",
                 "openmrs_entity_id": "165225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "native_radio",
-                "label": "How many does of TDV did the mother receive?",
+                "label": "How many doses of TDV did the mother receive?",
                 "label_text_style": "bold",
                 "v_required": {
                     "value": "true",

@@ -739,9 +739,8 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "reference_edit_text_hint": "#Total child status",
-        "repeating_group_label": "Child status",
         "reference_edit_text": "Number of child status",
-        "label_text_style": "bold",
+        "showGroupLabel": false,
         "value": [
           {
             "key": "child_relation_id",
