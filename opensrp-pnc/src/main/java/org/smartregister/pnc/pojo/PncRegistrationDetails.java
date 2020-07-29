@@ -67,6 +67,11 @@ public class PncRegistrationDetails extends PncBaseDetails {
         hiv_treatment_start,
         not_art_reason,
         not_art_reasons_other,
+        neonatal_death,
+        neonatal_death_count,
+        surviving_child,
+        surviving_child_count,
+        stillbirth,
         outcome_submitted
     }
 

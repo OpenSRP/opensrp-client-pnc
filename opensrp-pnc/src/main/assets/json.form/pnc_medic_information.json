@@ -1494,17 +1494,13 @@
         "next": "step5",
         "fields": [
             {
-                "key": "baby_not_discharged_alive",
+                "key": "neonatal_death",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "concept",
                 "openmrs_entity_id": "",
                 "type": "native_radio",
                 "label": "Was there any neonatal death?",
                 "label_text_style": "bold",
-                "v_required": {
-                    "value": "true",
-                    "err": "Field required"
-                },
                 "options": [
                     {
                         "key": "yes",
@@ -1523,7 +1519,7 @@
                 ]
             },
             {
-                "key": "baby_not_discharged_alive_count",
+                "key": "neonatal_death_count",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "",
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -1545,7 +1541,57 @@
                     }
                 ],
                 "relevance": {
-                    "step4:baby_not_discharged_alive": {
+                    "step4:neonatal_death": {
+                        "type": "string",
+                        "ex": "equalTo(., \"yes\")"
+                    }
+                }
+            },
+            {
+                "key": "surviving_child",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "concept",
+                "openmrs_entity_id": "",
+                "type": "native_radio",
+                "label": "Are there  any surviving infants in this pregnancy?",
+                "label_text_style": "bold",
+                "options": [
+                    {
+                        "key": "yes",
+                        "text": "Yes",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    },
+                    {
+                        "key": "no",
+                        "text": "No",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    }
+                ]
+            },
+            {
+                "key": "surviving_child_count",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "type": "edit_text",
+                "hint": "surviving infants in this pregnancy",
+                "v_numeric": {
+                    "value": "true",
+                    "err": "Enter valid number"
+                },
+                "constraints": [
+                    {
+                        "type": "numeric",
+                        "ex": "greaterThanEqualTo(., \"0\")",
+                        "err": "count must be greater than or equal to 0"
+                    }
+                ],
+                "relevance": {
+                    "step4:surviving_child": {
                         "type": "string",
                         "ex": "equalTo(., \"yes\")"
                     }
@@ -1717,10 +1763,6 @@
                         "type": "edit_text",
                         "hint": "APGAR score",
                         "v_numeric": {
-                            "value": "true",
-                            "err": "Enter valid agpar"
-                        },
-                        "v_required": {
                             "value": "true",
                             "err": "Enter valid agpar"
                         },
@@ -2045,8 +2087,13 @@
                         "label_text_style": "bold",
                         "relevance": {
                             "step4:child_hiv_status": {
-                                "type": "string",
-                                "ex": "equalTo(., \"[\"positive\",\"exposed\"]\")"
+                                "ex-checkbox": [
+                                    {
+                                        "or": [
+                                            "positive", "exposed"
+                                        ]
+                                    }
+                                ]
                             }
                         },
                         "v_required": {
@@ -2078,6 +2125,35 @@
         "title": "Still Births",
         "fields": [
             {
+                "key": "stillbirth",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "concept",
+                "openmrs_entity_id": "",
+                "type": "native_radio",
+                "label": "Were there any stillbirths?",
+                "label_text_style": "bold",
+                "v_required": {
+                    "value": "true",
+                    "err": "Field required"
+                },
+                "options": [
+                    {
+                        "key": "yes",
+                        "text": "Yes",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    },
+                    {
+                        "key": "no",
+                        "text": "No",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    }
+                ]
+            },
+            {
                 "key": "baby_stillborn_group",
                 "type": "repeating_group",
                 "openmrs_entity_parent": "",
@@ -2089,6 +2165,12 @@
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
+                },
+                "relevance": {
+                    "step5:stillbirth": {
+                        "type": "string",
+                        "ex": "equalTo(., \"yes\")"
+                    }
                 },
                 "value": [
                     {
