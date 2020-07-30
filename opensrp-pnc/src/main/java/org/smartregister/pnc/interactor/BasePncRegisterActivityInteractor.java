@@ -2,6 +2,7 @@ package org.smartregister.pnc.interactor;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -12,6 +13,7 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.pojo.PncEventClient;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.repository.AllSharedPreferences;
@@ -42,6 +44,18 @@ public class BasePncRegisterActivityInteractor implements PncRegisterActivityCon
     @VisibleForTesting
     BasePncRegisterActivityInteractor(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
+    }
+
+    @Override
+    public void fetchSavedForm(final @NonNull String formType, final @NonNull String baseEntityId, final @Nullable String entityTable, @NonNull final PncRegisterActivityContract.InteractorCallBack interactorCallBack) {
+        appExecutors.diskIO().execute(() -> {
+            final PncPartialForm partialForm = PncLibrary
+                    .getInstance()
+                    .getPncPartialFormRepository()
+                    .findOne(new PncPartialForm(baseEntityId));
+
+            appExecutors.mainThread().execute(() -> interactorCallBack.onFetchedSavedForm(partialForm, baseEntityId, formType, entityTable));
+        });
     }
 
     @Override

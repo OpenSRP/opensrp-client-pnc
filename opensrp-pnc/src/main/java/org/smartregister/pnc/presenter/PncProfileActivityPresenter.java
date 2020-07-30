@@ -1,5 +1,6 @@
 package org.smartregister.pnc.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -23,7 +24,7 @@ import org.smartregister.pnc.model.PncProfileActivityModel;
 import org.smartregister.pnc.pojo.OngoingTask;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.tasks.FetchRegistrationDataTask;
@@ -106,10 +107,10 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     }
 
     @Override
-    public void onFetchedSavedDiagnosisAndTreatmentForm(@Nullable PncOutcomeForm diagnosisAndTreatmentForm, @NonNull String caseId, @NonNull String entityTable) {
+    public void onFetchedSavedForm(@Nullable PncPartialForm pncPartialForm, @NonNull String caseId, @Nullable String entityTable) {
         try {
-            if (diagnosisAndTreatmentForm != null) {
-                form = new JSONObject(diagnosisAndTreatmentForm.getForm());
+            if (pncPartialForm != null) {
+                form = new JSONObject(pncPartialForm.getForm());
             }
 
             startFormActivity(form, caseId, entityTable);
@@ -127,6 +128,29 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             getProfileView().startFormActivity(caseId, form, intentKeys);
         }
     }
+
+    /*@Override
+    public void savePncCloseForm(@NonNull String eventType, @Nullable Intent data) {
+        String jsonString = null;
+        PncEventUtils maternityEventUtils = new PncEventUtils();
+        if (data != null) {
+            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+        }
+
+        if (jsonString == null) {
+            Timber.e(new Exception("PNC Close form JSON is null"));
+            return;
+        }
+
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            try {
+                List<Event> maternityCloseEvents = PncLibrary.getInstance().processPncCloseForm(eventType, jsonString, data);
+                maternityEventUtils.saveEvents(maternityCloseEvents);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
+    }*/
 
     @Override
     public void refreshProfileTopSection(@NonNull Map<String, String> client, String baseEntityId) {
@@ -164,7 +188,13 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             form = null;
             try {
                 String locationId = PncUtils.context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
+
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
+
+                if (formName.equals(PncConstants.Form.PNC_MEDIC_INFORMATION) || formName.equals(PncConstants.Form.PNC_VISIT)) {
+                    mProfileInteractor.fetchSavedForm(caseId, entityTable, this);
+                    return;
+                }
 
                 // Fetch saved form & continue editing
                 startFormActivity(form, caseId, entityTable);
@@ -221,6 +251,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             try {
                 List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 mProfileInteractor.saveEvents(pncOutcomeAndCloseEvent, this);
+                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID))));
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -228,10 +259,18 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     }
 
     @Override
-    public void onEventSaved() {
+    public void onEventSaved(List<Event> events) {
         PncProfileActivityContract.View view = getProfileView();
+
         if (view != null) {
             view.hideProgressDialog();
+        }
+
+        for (Event event : events) {
+            if (PncConstants.EventTypeConstants.PNC_CLOSE.equals(event.getEventType())) {
+                ((Activity) getProfileView()).finish();
+                break;
+            }
         }
     }
 
@@ -283,7 +322,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     @Override
     public boolean removeOngoingTask(@NonNull OngoingTask ongoingTask) {
         if (this.ongoingTask == ongoingTask) {
-            for (OngoingTaskCompleteListener ongoingTaskCompleteListener: ongoingTaskCompleteListeners) {
+            for (OngoingTaskCompleteListener ongoingTaskCompleteListener : ongoingTaskCompleteListeners) {
                 ongoingTaskCompleteListener.onTaskComplete(ongoingTask);
             }
 

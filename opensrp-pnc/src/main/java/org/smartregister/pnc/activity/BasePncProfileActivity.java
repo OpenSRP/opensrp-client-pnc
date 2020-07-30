@@ -268,17 +268,15 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     private void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
 
-        //TODO: Continue fixing pnc outcome form from here
-        // After filling in the form, we need to process it, create event(s) and process the event(s) (probably)
-        if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
-            try {
-                String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-                Timber.d("JSONResult : %s", jsonString);
+        try {
+            String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+            data.putExtra(PncConstants.IntentKey.BASE_ENTITY_ID, baseEntityId);
 
-                JSONObject form = new JSONObject(jsonString);
-                String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
+            Timber.d("JSONResult : %s", jsonString);
 
-                if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            JSONObject form = new JSONObject(jsonString);
+            String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
+           if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
                 } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
@@ -286,22 +284,20 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
                 } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
                     showProgressDialog(R.string.saving_dialog_title);
+                RegisterParams registerParam = new RegisterParams();
+                registerParam.setEditMode(true);
+                registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
 
-                    RegisterParams registerParam = new RegisterParams();
-                    registerParam.setEditMode(true);
-                    registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
-                    showProgressDialog(R.string.saving_dialog_title);
-
-                    ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
-                    showProgressDialog(R.string.saving_dialog_title);
-                    ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
-                }
-
-            } catch (JSONException e) {
-                Timber.e(e);
+                showProgressDialog(R.string.saving_dialog_title);
+                ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
+            }
+            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+                showProgressDialog(R.string.saving_dialog_title);
+                ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
             }
 
+        } catch (JSONException e) {
+            Timber.e(e);
         }
     }
 

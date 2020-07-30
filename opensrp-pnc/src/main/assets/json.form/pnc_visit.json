@@ -376,7 +376,7 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "type": "native_radio",
-        "label": "Status of the lochia",
+        "label": "Status of the uterus",
         "options": [
           {
             "key": "involuted",
@@ -695,18 +695,29 @@
         "reference_edit_text": "Number of child status",
         "value": [
           {
-            "key": "baby_age",
+            "key": "child_relation_id",
             "openmrs_entity_parent": "",
             "openmrs_entity": "",
-            "openmrs_entity_id": "160427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "type": "hidden",
-            "calculation": {
-              "rules-engine": {
-                "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_calculation_rules.yml"
-                }
-              }
-            }
+            "openmrs_entity_id": "",
+            "type": "hidden"
+          },
+          {
+            "key": "baby_first_name",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "",
+            "type": "edit_text",
+            "hint": "First Name",
+            "read_only": "true"
+          },
+          {
+            "key": "baby_last_name",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "",
+            "type": "edit_text",
+            "hint": "Last Name",
+            "read_only": "true"
           },
           {
             "key": "baby_status",

@@ -8,6 +8,8 @@ public class PncConstants extends AllConstants {
     public static final String CONFIG = "pnc_register";
     public static final String MOTHER = "mother";
     public static final String GLOBAL = "global";
+    public static final String CHILD_RECORDS = "child_records";
+    public static final int HOW_BABY_OLD_IN_DAYS = 28;
 
     public interface IntentKey {
         String BASE_ENTITY_ID = "base-entity-id";
@@ -78,6 +80,7 @@ public class PncConstants extends AllConstants {
         public static final String CHILD_STATUS_GROUP = "child_status";
         public static final String BABIES_STILLBORN = "baby_stillborn_group";
         public static final String DISCHARGED_ALIVE = "discharged_alive";
+        public static final String RELATION_ID = "relation_id";
         public static final String ZEIR_ID = "zeir_id";
         public static final String BABIES_BORN_MAP = "babies_born_map";
         public static final String BABIES_STILL_BORN_MAP = "babies_still_born_map";
