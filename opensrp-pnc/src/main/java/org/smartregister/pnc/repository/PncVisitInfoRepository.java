@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.dao.PncGenericDao;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.repository.BaseRepository;
@@ -13,12 +14,16 @@ import org.smartregister.repository.BaseRepository;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_VISIT_INFO + "("
-            + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.CREATED_AT + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.VISIT_DATE + " DATETIME NOT NULL,"
             + PncDbConstants.Column.PncVisitInfo.PERIOD + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY + " VARCHAR NULL, "
@@ -46,8 +51,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
 
     private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
-            + "_" + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
-            "(" + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " COLLATE NOCASE);";
+            + "_" + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
+            "(" + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
@@ -57,9 +62,10 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
     @Override
     public boolean saveOrUpdate(Map<String, String> data) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID));
+        contentValues.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, System.currentTimeMillis());
+        contentValues.put(PncDbConstants.Column.PncVisitInfo.VISIT_DATE, data.get(PncDbConstants.Column.PncVisitInfo.VISIT_DATE));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.PERIOD, data.get(PncDbConstants.Column.PncVisitInfo.PERIOD));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK, data.get(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY, data.get(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY));
@@ -89,8 +95,21 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
         return rows != -1;
     }
 
+    public Map<String, String> findOne(String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "SELECT * FROM " + PncDbConstants.Table.PNC_VISIT_INFO + " \n" +
+                                "WHERE " + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
     @Override
-    public Map<String, String> findOne(Map<String, String> pncChild) {
+    public Map<String, String> findOne(Map<String, String> data) {
         throw new NotImplementedException("");
     }
 

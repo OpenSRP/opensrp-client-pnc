@@ -1,15 +1,15 @@
 package org.smartregister.pnc.pojo;
 
 public class PncOtherVisit {
-    private String motherBaseEntityId;
+    private String visitId;
     private String visitDate;
 
-    public String getMotherBaseEntityId() {
-        return motherBaseEntityId;
+    public String getVisitId() {
+        return visitId;
     }
 
-    public void setMotherBaseEntityId(String motherBaseEntityId) {
-        this.motherBaseEntityId = motherBaseEntityId;
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
     }
 
     public String getVisitDate() {

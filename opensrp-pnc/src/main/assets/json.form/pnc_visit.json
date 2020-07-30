@@ -156,6 +156,13 @@
             "hint": "Date of other visit"
           }
         ]
+      },
+      {
+        "key": "visit_date",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "",
+        "openmrs_entity_id": "",
+        "type": "hidden"
       }
     ]
   },

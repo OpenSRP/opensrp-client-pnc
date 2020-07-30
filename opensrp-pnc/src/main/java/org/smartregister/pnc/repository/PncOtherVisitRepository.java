@@ -16,22 +16,23 @@ import java.util.List;
 public class PncOtherVisitRepository extends BaseRepository implements PncGenericDao<PncOtherVisit> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_OTHER_VISIT + "("
-            + PncDbConstants.Column.PncOtherVisit.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
+            + PncDbConstants.Column.PncOtherVisit.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + PncDbConstants.Column.PncOtherVisit.VISIT_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncOtherVisit.VISIT_DATE + " VARCHAR NOT NULL )";
 
-    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_OTHER_VISIT
-            + "_" + PncDbConstants.Column.PncOtherVisit.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_OTHER_VISIT +
-            "(" + PncDbConstants.Column.PncOtherVisit.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
+    private static final String INDEX_VISIT_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_OTHER_VISIT
+            + "_" + PncDbConstants.Column.PncOtherVisit.VISIT_ID + "_index ON " + PncDbConstants.Table.PNC_OTHER_VISIT +
+            "(" + PncDbConstants.Column.PncOtherVisit.VISIT_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL(INDEX_BASE_ENTITY_ID);
+        database.execSQL(INDEX_VISIT_ID);
     }
 
     @Override
     public boolean saveOrUpdate(@NonNull PncOtherVisit pncOtherVisit) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncOtherVisit.MOTHER_BASE_ENTITY_ID, pncOtherVisit.getMotherBaseEntityId());
+        contentValues.put(PncDbConstants.Column.PncOtherVisit.VISIT_ID, pncOtherVisit.getVisitId());
         contentValues.put(PncDbConstants.Column.PncOtherVisit.VISIT_DATE, pncOtherVisit.getVisitDate());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_OTHER_VISIT, null, contentValues);

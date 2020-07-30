@@ -1,17 +1,17 @@
 package org.smartregister.pnc.pojo;
 
 public class PncStillBorn {
-    private String motherBaseEntityId;
+    private String medicInfoId;
     private String stillBirthCondition;
 
     private String eventDate;
 
-    public String getMotherBaseEntityId() {
-        return motherBaseEntityId;
+    public String getMedicInfoId() {
+        return medicInfoId;
     }
 
-    public void setMotherBaseEntityId(String motherBaseEntityId) {
-        this.motherBaseEntityId = motherBaseEntityId;
+    public void setMedicInfoId(String medicInfoId) {
+        this.medicInfoId = medicInfoId;
     }
 
     public String getStillBirthCondition() {

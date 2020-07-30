@@ -10,6 +10,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,19 +69,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
         // Inject the field values
         if (injectedFieldValues != null && injectedFieldValues.size() > 0) {
-            JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
-            JSONArray jsonArray = stepOne.getJSONArray(PncJsonFormUtils.FIELDS);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String fieldKey = jsonObject.getString(PncJsonFormUtils.KEY);
-
-                String fieldValue = injectedFieldValues.get(fieldKey);
-
-                if (!TextUtils.isEmpty(fieldValue)) {
-                    jsonObject.put(PncJsonFormUtils.VALUE, fieldValue);
-                }
-            }
+            populateInjectedFields(form, injectedFieldValues);
         }
 
         if (PncUtils.metadata() != null && PncUtils.metadata().getPncRegistrationFormName().equals(formName)) {
@@ -575,6 +564,29 @@ public class PncJsonFormUtils extends JsonFormUtils {
             }
         } catch (JSONException ex) {
             Timber.e(ex);
+        }
+    }
+
+    public static void populateInjectedFields(@NonNull JSONObject form, @NotNull HashMap<String, String> injectedFieldValues) throws JSONException {
+        if (form.has(JsonFormConstants.COUNT)) {
+            int stepCount = Integer.parseInt(form.optString(JsonFormConstants.COUNT));
+            for (int index = 0; index < stepCount; index++) {
+                String stepName = JsonFormConstants.STEP + (index + 1);
+                JSONObject step = form.optJSONObject(stepName);
+                if (step != null) {
+                    JSONArray stepFields = step.optJSONArray(JsonFormConstants.FIELDS);
+                    if (stepFields != null) {
+                        for (int k = 0; k < stepFields.length(); k++) {
+                            JSONObject jsonObject = stepFields.optJSONObject(k);
+                            String fieldKey = jsonObject.optString(PncJsonFormUtils.KEY);
+                            String fieldValue = injectedFieldValues.get(fieldKey);
+                            if (!TextUtils.isEmpty(fieldValue)) {
+                                jsonObject.put(PncJsonFormUtils.VALUE, fieldValue);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

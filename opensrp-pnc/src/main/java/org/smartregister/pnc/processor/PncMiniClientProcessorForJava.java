@@ -19,6 +19,7 @@ import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.pojo.PncOtherVisit;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.PncStillBorn;
+import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
@@ -119,28 +120,31 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         Event event = eventClient.getEvent();
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
-        String strStillBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_STILL_BORN_MAP);
-        processStillBorn(strStillBorn, event);
-        String strBabiesBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_BORN_MAP);
-        processBabiesBorn(strBabiesBorn, event);
 
         keyValues.put(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED, "1");
         PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
         pncDetails.setCreatedAt(new Date());
 
-        PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
+        PncRegistrationDetailsRepository repo = PncLibrary.getInstance().getPncRegistrationDetailsRepository();
+        repo.saveOrUpdate(pncDetails);
+
+        HashMap<String, String> data = repo.findByBaseEntityId(event.getBaseEntityId());
+        String medicInfoId = data.get(PncDbConstants.Column.PncDetails.ID);
+        String strStillBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_STILL_BORN_MAP);
+        processStillBorn(strStillBorn, event, medicInfoId);
+        String strBabiesBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_BORN_MAP);
+        processBabiesBorn(strBabiesBorn, event, medicInfoId);
     }
 
     private void processPncVisit(@NonNull EventClient eventClient) {
         Event event = eventClient.getEvent();
 
-        String parentBaseEntityId = event.getBaseEntityId();
+        String motherBaseEntityId = event.getBaseEntityId();
         String baseEntityId = PncJsonFormUtils.generateRandomUUIDString();
 
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
-        keyValues.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
-        keyValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, baseEntityId);
+        keyValues.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, motherBaseEntityId);
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
         processOtherVisits(strOtherVisit, baseEntityId);
@@ -161,7 +165,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     JSONObject jsonOtherObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncOtherVisit pncOtherVisit = new PncOtherVisit();
                     pncOtherVisit.setVisitDate(jsonOtherObject.optString(PncConstants.JsonFormField.OTHER_PNC_VISIT_DATE));
-                    pncOtherVisit.setMotherBaseEntityId(baseEntityId);
+                    pncOtherVisit.setVisitId(baseEntityId);
                     PncLibrary.getInstance().getPncOtherVisitRepository().saveOrUpdate(pncOtherVisit);
                 }
             } catch (JSONException e) {
@@ -170,7 +174,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event) {
+    private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event, @NonNull String medicInfoId) {
         if (StringUtils.isNotBlank(strBabiesBorn)) {
             try {
                 JSONObject jsonObject = new JSONObject(strBabiesBorn);
@@ -178,7 +182,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncChild pncChild = new PncChild();
-                    pncChild.setMotherBaseEntityId(event.getBaseEntityId());
+                    pncChild.setMedicInfoId(medicInfoId);
                     pncChild.setDischargedAlive(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE));
                     pncChild.setChildRegistered(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED));
                     pncChild.setBirthRecordDate(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BIRTH_RECORD));
@@ -199,9 +203,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     pncChild.setBfFirstHour(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.BF_FIRST_HOUR));
                     pncChild.setChildHivStatus(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_HIV_STATUS));
                     pncChild.setNvpAdministration(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.NVP_ADMINISTRATION));
-                    pncChild.setBaseEntityId(jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID));
                     pncChild.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
-                    if (StringUtils.isNotBlank(pncChild.getBaseEntityId()) && StringUtils.isNotBlank(pncChild.getMotherBaseEntityId()))
+                    if (StringUtils.isNotBlank(pncChild.getMedicInfoId()))
                         PncLibrary.getInstance().getPncChildRepository().saveOrUpdate(pncChild);
                 }
             } catch (JSONException e) {
@@ -210,7 +213,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processStillBorn(@Nullable String strStillBorn, @NonNull Event event) {
+    private void processStillBorn(@Nullable String strStillBorn, @NonNull Event event, String medicInfoId) {
         if (StringUtils.isNotBlank(strStillBorn)) {
             try {
                 JSONObject jsonObject = new JSONObject(strStillBorn);
@@ -218,7 +221,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonTestObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncStillBorn pncStillBorn = new PncStillBorn();
-                    pncStillBorn.setMotherBaseEntityId(event.getBaseEntityId());
+                    pncStillBorn.setMedicInfoId(medicInfoId);
                     pncStillBorn.setStillBirthCondition(jsonTestObject.optString(PncConstants.JsonFormKeyConstants.STILL_BIRTH_CONDITION));
                     pncStillBorn.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
                     PncLibrary.getInstance().getPncStillBornRepository().saveOrUpdate(pncStillBorn);
@@ -229,7 +232,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processVisitChildStatus(@Nullable String strChildStatus, String parentBaseEntityId) {
+    private void processVisitChildStatus(@Nullable String strChildStatus, String baseEntityId) {
         if (StringUtils.isNotBlank(strChildStatus)) {
             try {
                 JSONObject jsonObject = new JSONObject(strChildStatus);
@@ -239,8 +242,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     String key = repeatingGroupKeys.next();
                     JSONObject jsonChildObject = jsonObject.optJSONObject(key);
                     Map<String, String> data = new HashMap<>();
-                    data.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, parentBaseEntityId);
-                    data.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
+                    data.put(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID, baseEntityId); //button that opens vaccine card should have clients' id as the value
+                    data.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));

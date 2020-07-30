@@ -55,7 +55,8 @@ public interface PncDbConstants {
         }
 
         interface PncBaby {
-            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String ID = "_id";
+            String MEDIC_INFO_ID = "medic_info_id";
             String DISCHARGED_ALIVE = "discharged_alive";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
@@ -76,11 +77,13 @@ public interface PncDbConstants {
             String BF_FIRST_HOUR = "bf_first_hour";
             String NVP_ADMINISTRATION = "nvp_administration";
             String CHILD_HIV_STATUS = "child_hiv_status";
-            String BASE_ENTITY_ID = "base_entity_id";
+            String EVENT_DATE = "event_date";
         }
 
         interface PncVisitInfo {
-            String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
+            String ID = "_id";
+            String VISIT_DATE = "visit_date";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
             String CREATED_AT = "created_at";
             String PERIOD = "pnc_visit_period";
@@ -110,6 +113,9 @@ public interface PncDbConstants {
         }
 
         interface PncVisitChildStatus {
+            String ID = "_id";
+            String VISIT_ID = "visit_id";
+            String BASE_ENTITY_ID = "base_entity_id";
             String BABY_AGE = "baby_age";
             String BABY_STATUS = "baby_status";
             String DATE_OF_DEATH_BABY = "date_of_death_baby";
@@ -131,12 +137,16 @@ public interface PncDbConstants {
         }
 
         interface PncOtherVisit {
-            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String ID = "_id";
+            String VISIT_ID = "visit_id";
             String VISIT_DATE = "visit_date";
         }
 
         interface PncStillBorn {
+            String ID = "_id";
+            String MEDIC_INFO_ID = "medic_info_id";
             String STILL_BIRTH_CONDITION = "still_birth_condition";
+            String EVENT_DATE = "event_date";
         }
     }
 

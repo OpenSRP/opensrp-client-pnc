@@ -27,7 +27,7 @@ public class PncVisitInfoSchedulerTest {
 
     @Test
     public void getStatusShouldEqualPncOverDue() {
-        System.out.println(System.currentTimeMillis());
+
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(5);
 

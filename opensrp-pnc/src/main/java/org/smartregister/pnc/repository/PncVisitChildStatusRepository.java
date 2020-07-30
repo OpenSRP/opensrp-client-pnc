@@ -16,8 +16,9 @@ import java.util.Map;
 public class PncVisitChildStatusRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS + "("
-            + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
-            + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitChildStatus.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + PncDbConstants.Column.PncVisitChildStatus.VISIT_ID + " VARCHAR NOT NULL, "
+            + PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_AGE + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY + " VARCHAR NULL, "
@@ -38,20 +39,20 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
             + PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT + " VARCHAR NULL )";
 
 
-    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS
-            + "_" + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS +
-            "(" + PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID + " COLLATE NOCASE);";
+    private static final String INDEX_VISIT_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS
+            + "_" + PncDbConstants.Column.PncVisitChildStatus.VISIT_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS +
+            "(" + PncDbConstants.Column.PncVisitChildStatus.VISIT_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL(INDEX_BASE_ENTITY_ID);
+        database.execSQL(INDEX_VISIT_ID);
     }
 
     @Override
     public boolean saveOrUpdate(Map<String, String> data) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID));
-        contentValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID));
+        contentValues.put(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID, data.get(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID));
+        contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, data.get(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));

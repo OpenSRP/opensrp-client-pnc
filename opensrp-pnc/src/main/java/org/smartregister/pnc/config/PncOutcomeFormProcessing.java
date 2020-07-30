@@ -71,7 +71,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     String[] ids = PncUtils.generateNIds(buildRepeatingGroupBorn.size());
                     int count = 0;
                     for (Map.Entry<String, HashMap<String, String>> entrySet : buildRepeatingGroupBorn.entrySet()) {
-                        entrySet.getValue().put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, ids[count]);
+                        entrySet.getValue().put(PncDbConstants.Column.PncBaby.MEDIC_INFO_ID, ids[count]);
                         count++;
                     }
 
@@ -147,7 +147,7 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     String dischargedAlive = jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE);
                     if (!jsonChildObject.optBoolean(PncConstants.JsonFormField.GENERATED_GRP, false)) {
-                        String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID);
+                        String entityId = jsonChildObject.optString(PncDbConstants.Column.PncBaby.MEDIC_INFO_ID);
                         JSONArray fields = populateChildFieldArray(jsonChildObject, motherDetails);
                         if ("yes".equalsIgnoreCase(dischargedAlive) && fields != null) {
                             Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);

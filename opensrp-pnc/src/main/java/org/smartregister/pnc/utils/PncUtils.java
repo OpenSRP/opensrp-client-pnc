@@ -426,10 +426,9 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        String query = "SELECT prd.delivery_date, pb.dob AS baby_dob, prd.hiv_status_previous, prd.hiv_status_current, pb.complications AS baby_complications FROM ec_client AS ec \n" +
+        String query = "SELECT prd.delivery_date, prd.hiv_status_previous, prd.hiv_status_current FROM ec_client AS ec \n" +
                 "LEFT JOIN pnc_registration_details AS prd ON prd.base_entity_id = ec.base_entity_id \n" +
-                "LEFT JOIN pnc_baby AS pb ON pb.mother_base_entity_id = ec.base_entity_id \n" +
-                "WHERE ec.base_entity_id = '" + baseEntityId + "' and (pb.discharged_alive == 'yes' or pb.discharged_alive == 'Yes')";
+                "WHERE ec.base_entity_id = '" + baseEntityId + "'";
 
         Map<String, String> detailMap = getMergedData(query);
 
@@ -459,10 +458,6 @@ public class PncUtils extends org.smartregister.util.Utils {
 
             if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT)) {
                 defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT));
-            }
-
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
-                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
             }
 
             form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);

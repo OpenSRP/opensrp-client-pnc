@@ -18,8 +18,8 @@ import java.util.List;
 public class PncChildRepository extends BaseRepository implements PncGenericDao<PncChild> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_BABY + "("
-            + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " VARCHAR NOT NULL PRIMARY KEY, "
-            + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
+            + PncDbConstants.Column.PncBaby.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_RECORD + " VARCHAR NULL, "
@@ -39,28 +39,28 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncDbConstants.Column.PncBaby.REF_LOCATION + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BF_FIRST_HOUR + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.NVP_ADMINISTRATION + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS + " VARCHAR NULL )";
+            + PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncBaby.EVENT_DATE + " VARCHAR NULL )";
 
 
-    private static final String INDEX_MOTHER_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
-            + "_" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
-            "(" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
+    private static final String INDEX_MEDIC_INFO_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
+            + "_" + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
+            "(" + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + " COLLATE NOCASE);";
 
-    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
-            + "_" + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
-            "(" + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " COLLATE NOCASE);";
+    private static final String INDEX_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY
+            + "_" + PncDbConstants.Column.PncBaby.ID + "_index ON " + PncDbConstants.Table.PNC_BABY +
+            "(" + PncDbConstants.Column.PncBaby.ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL(INDEX_BASE_ENTITY_ID);
-        database.execSQL(INDEX_MOTHER_BASE_ENTITY_ID);
+        database.execSQL(INDEX_MEDIC_INFO_ID);
+        database.execSQL(INDEX_ID);
     }
 
     @Override
     public boolean saveOrUpdate(PncChild pncChild) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID, pncChild.getBaseEntityId());
-        contentValues.put(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID, pncChild.getMotherBaseEntityId());
+        contentValues.put(PncDbConstants.Column.PncBaby.MEDIC_INFO_ID, pncChild.getMedicInfoId());
         contentValues.put(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE, pncChild.getDischargedAlive());
         contentValues.put(PncDbConstants.Column.PncBaby.CHILD_REGISTERED, pncChild.getChildRegistered());
         contentValues.put(PncDbConstants.Column.PncBaby.BIRTH_RECORD, pncChild.getBirthRecordDate());
@@ -81,6 +81,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         contentValues.put(PncDbConstants.Column.PncBaby.BF_FIRST_HOUR, pncChild.getBfFirstHour());
         contentValues.put(PncDbConstants.Column.PncBaby.NVP_ADMINISTRATION, pncChild.getNvpAdministration());
         contentValues.put(PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS, pncChild.getChildHivStatus());
+        contentValues.put(PncDbConstants.Column.PncBaby.EVENT_DATE, pncChild.getEventDate());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_BABY, null, contentValues);
         return rows != -1;
@@ -101,10 +102,10 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         throw new NotImplementedException("");
     }
 
-    public List<PncChild> findAll(@NonNull String baseEntityId) {
+    public List<PncChild> findAll(@NonNull String medicInfoId) {
         List<PncChild> data = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "='" + baseEntityId + "'", null)) {
+        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_BABY + " WHERE " + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + "='" + medicInfoId + "'", null)) {
             while (cursor.moveToNext()) {
                 data.add(fillUp(cursor));
             }
@@ -113,14 +114,14 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         return data;
     }
 
-    public int countBaby28DaysOld(String baseEntityId, int howBabyOldInDays) {
+    public int countBaby28DaysOld(String medicInfoId, int howBabyOldInDays) {
         int count;
         String deliveryDays = "delivery_date";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
         String query = "SELECT CAST(julianday('now') - julianday(datetime(substr(" + PncDbConstants.Column.PncBaby.DOB + ", 7, 4) || '-' || substr(" + PncDbConstants.Column.PncBaby.DOB + ", 4, 2) || '-' || substr(" + PncDbConstants.Column.PncBaby.DOB + ", 1, 2))) AS INTEGER) AS " + deliveryDays + " " +
                 "FROM " + PncDbConstants.Table.PNC_BABY + " " +
-                "WHERE " + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " = '" + baseEntityId + "' AND " + deliveryDays + " <= " + howBabyOldInDays + " ";
+                "WHERE " + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + " = '" + medicInfoId + "' AND " + deliveryDays + " <= " + howBabyOldInDays + " ";
 
         try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
             count = cursor.getCount();
@@ -132,7 +133,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
     private PncChild fillUp(Cursor cursor) {
         PncChild pncChild = new PncChild();
 
-        pncChild.setMotherBaseEntityId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID)));
+        pncChild.setMedicInfoId(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.MEDIC_INFO_ID)));
         pncChild.setDischargedAlive(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE)));
         pncChild.setChildRegistered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_REGISTERED)));
         pncChild.setBirthRecordDate(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_RECORD)));
@@ -153,6 +154,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         pncChild.setBfFirstHour(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BF_FIRST_HOUR)));
         pncChild.setNvpAdministration(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.NVP_ADMINISTRATION)));
         pncChild.setChildHivStatus(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_HIV_STATUS)));
+        pncChild.setEventDate(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.EVENT_DATE)));
 
         return pncChild;
     }

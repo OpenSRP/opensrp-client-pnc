@@ -12,10 +12,12 @@ import org.json.JSONObject;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +39,11 @@ public class PncVisitFormProcessing implements PncFormProcessingTask {
         List<Event> eventList = new ArrayList<>();
 
         JSONObject jsonFormObject = new JSONObject(jsonString);
+
+        HashMap<String, String> injectedFields = new HashMap<>();
+        injectedFields.put(PncDbConstants.Column.PncVisitInfo.VISIT_DATE, PncUtils.convertDate(new Date(), PncDbConstants.DATE_FORMAT));
+
+        PncJsonFormUtils.populateInjectedFields(jsonFormObject, injectedFields);
 
         String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
 
