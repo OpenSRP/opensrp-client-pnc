@@ -1,14 +1,6 @@
 {
     "fields": [
         {
-            "key": "child_relation_id_",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": "",
-            "type": "hidden",
-            "value": "{child_relation_id}"
-        },
-        {
             "key": "baby_first_name_",
             "openmrs_entity_parent": "",
             "openmrs_entity": "",

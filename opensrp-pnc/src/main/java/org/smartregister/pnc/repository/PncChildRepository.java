@@ -23,9 +23,9 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.CHILD_REGISTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_RECORD + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncBaby.FIRST_NAME + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncBaby.LAST_NAME + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncBaby.DOB + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncBaby.BABY_FIRST_NAME + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncBaby.BABY_LAST_NAME + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncBaby.BABY_DOB + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.GENDER + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_WEIGTH_ENTERED + " VARCHAR NULL, "
             + PncDbConstants.Column.PncBaby.BIRTH_WEIGHT + " VARCHAR NULL, "
@@ -64,9 +64,9 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         contentValues.put(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE, pncChild.getDischargedAlive());
         contentValues.put(PncDbConstants.Column.PncBaby.CHILD_REGISTERED, pncChild.getChildRegistered());
         contentValues.put(PncDbConstants.Column.PncBaby.BIRTH_RECORD, pncChild.getBirthRecordDate());
-        contentValues.put(PncDbConstants.Column.PncBaby.FIRST_NAME, pncChild.getFirstName());
-        contentValues.put(PncDbConstants.Column.PncBaby.LAST_NAME, pncChild.getLastName());
-        contentValues.put(PncDbConstants.Column.PncBaby.DOB, pncChild.getDob());
+        contentValues.put(PncDbConstants.Column.PncBaby.BABY_FIRST_NAME, pncChild.getFirstName());
+        contentValues.put(PncDbConstants.Column.PncBaby.BABY_LAST_NAME, pncChild.getLastName());
+        contentValues.put(PncDbConstants.Column.PncBaby.BABY_DOB, pncChild.getDob());
         contentValues.put(PncDbConstants.Column.PncBaby.GENDER, pncChild.getGender());
         contentValues.put(PncDbConstants.Column.PncBaby.BIRTH_WEIGTH_ENTERED, pncChild.getWeightEntered());
         contentValues.put(PncDbConstants.Column.PncBaby.BIRTH_WEIGHT, pncChild.getWeight());
@@ -119,7 +119,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         String deliveryDays = "delivery_date";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        String query = "SELECT CAST(julianday('now') - julianday(datetime(substr(" + PncDbConstants.Column.PncBaby.DOB + ", 7, 4) || '-' || substr(" + PncDbConstants.Column.PncBaby.DOB + ", 4, 2) || '-' || substr(" + PncDbConstants.Column.PncBaby.DOB + ", 1, 2))) AS INTEGER) AS " + deliveryDays + " " +
+        String query = "SELECT CAST(julianday('now') - julianday(datetime(substr(" + PncDbConstants.Column.PncBaby.BABY_DOB + ", 7, 4) || '-' || substr(" + PncDbConstants.Column.PncBaby.BABY_DOB + ", 4, 2) || '-' || substr(" + PncDbConstants.Column.PncBaby.BABY_DOB + ", 1, 2))) AS INTEGER) AS " + deliveryDays + " " +
                 "FROM " + PncDbConstants.Table.PNC_BABY + " " +
                 "WHERE " + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + " = '" + medicInfoId + "' AND " + deliveryDays + " <= " + howBabyOldInDays + " ";
 
@@ -137,9 +137,9 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         pncChild.setDischargedAlive(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DISCHARGED_ALIVE)));
         pncChild.setChildRegistered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.CHILD_REGISTERED)));
         pncChild.setBirthRecordDate(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_RECORD)));
-        pncChild.setFirstName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.FIRST_NAME)));
-        pncChild.setLastName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.LAST_NAME)));
-        pncChild.setDob(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.DOB)));
+        pncChild.setFirstName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BABY_FIRST_NAME)));
+        pncChild.setLastName(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BABY_LAST_NAME)));
+        pncChild.setDob(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BABY_DOB)));
         pncChild.setGender(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.GENDER)));
         pncChild.setWeightEntered(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_WEIGTH_ENTERED)));
         pncChild.setWeight(cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncBaby.BIRTH_WEIGHT)));

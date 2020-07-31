@@ -60,13 +60,13 @@ public class PncFormActivity extends BasePncFormActivity {
             HashMap<String, String> motherData = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(motherBaseEntityId);
 
             Set<String> possibleJsonArrayKeys = new HashSet<>();
-            possibleJsonArrayKeys.add("child_relation_id");
             possibleJsonArrayKeys.add("baby_first_name");
             possibleJsonArrayKeys.add("baby_last_name");
 
-            String query = "SELECT base_entity_id AS child_relation_id, first_name AS baby_first_name, last_name AS baby_last_name, dob, CAST(julianday('now') - julianday(datetime(substr(pnc_baby.dob, 7, 4) || '-' || substr(pnc_baby.dob, 4, 2) || '-' || substr(pnc_baby.dob, 1, 2))) AS INTEGER) AS delivery_days " +
-                    "FROM pnc_baby " +
-                    "WHERE mother_base_entity_id = '" + motherBaseEntityId + "' AND delivery_days <= " + PncConstants.HOW_BABY_OLD_IN_DAYS;
+            String query = "SELECT baby_first_name, baby_last_name, dob, CAST(julianday('now') - julianday(datetime(substr(pnc_baby.dob, 7, 4) || '-' || substr(pb.dob, 4, 2) || '-' || substr(pb.dob, 1, 2))) AS INTEGER) AS delivery_days " +
+                    "FROM pnc_baby AS pb " +
+                    "LEFT JOIN pnc_registration_detail AS prd " +
+                    "WHERE pb.medic_info_id = prd._id AND base_entity_id = '" + motherBaseEntityId + "' AND delivery_days <= " + PncConstants.HOW_BABY_OLD_IN_DAYS;
 
             ArrayList<HashMap<String, String>> childData = getData(query);
 
@@ -83,7 +83,7 @@ public class PncFormActivity extends BasePncFormActivity {
                         value = value == null ? "" : value;
 
                         if (possibleJsonArrayKeys.contains(entry.getKey())) {
-                            if (key.equals("child_relation_id") || key.equals("baby_first_name") || key.equals("baby_last_name")) {
+                            if (key.equals("baby_first_name") || key.equals("baby_last_name")) {
                                 jsonString = jsonString.replace("{" + entry.getKey() + "}", value);
                             }
                         }

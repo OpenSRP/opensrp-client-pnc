@@ -10,7 +10,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.dao.PncGenericDao;
 import org.smartregister.pnc.utils.PncDbConstants;
-import org.smartregister.pnc.utils.PncDbConstants.Column.PncBaby;
 import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitChildStatus;
 import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitInfo;
 import org.smartregister.pnc.utils.PncDbConstants.Table;
@@ -23,6 +22,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
+
+import static org.smartregister.pnc.utils.PncConstants.CHILD_RECORDS;
 
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
@@ -142,7 +143,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             String joinedIds = "'" + StringUtils.join(visitIds, "','") + "'";
 
             String query = "SELECT * FROM " + Table.PNC_VISIT_INFO + " " +
-                    " WHERE " + PncVisitInfo.PARENT_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.BASE_ENTITY_ID + " IN (" + joinedIds + ") " +
+                    " WHERE " + PncVisitInfo.MOTHER_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.BASE_ENTITY_ID + " IN (" + joinedIds + ") " +
                     " ORDER BY " + PncVisitInfo.CREATED_AT + " DESC";
 
             cursor = getReadableDatabase().rawQuery(query, null);
@@ -155,9 +156,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
                     List<Map<String, String>> childData = new ArrayList<>();
                     record.put(CHILD_RECORDS, childData);
 
-                    String subQuery = "SELECT pb.first_name, pb.last_name, pb.dob, pvcs.* FROM pnc_visit_child_status AS pvcs " +
-                            "LEFT JOIN " + Table.PNC_BABY + " AS pb ON pb." + PncBaby.BASE_ENTITY_ID + " = pvcs." + PncVisitChildStatus.CHILD_RELATION_ID + " " +
-                            "WHERE pvcs." + PncVisitInfo.PARENT_BASE_ENTITY_ID + " = '" + record.get(PncVisitInfo.BASE_ENTITY_ID) + "'";
+                    String subQuery = "SELECT * FROM pnc_visit_child_status " +
+                            "WHERE " + PncVisitChildStatus.VISIT_ID + " = '" + record.get(PncVisitInfo.ID) + "'";
 
                     subCursor = getReadableDatabase().rawQuery(subQuery, null);
 
@@ -166,11 +166,9 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
                         while (subCursor.moveToNext()) {
 
                             Map<String, String> childRecord = new HashMap<>();
-                            childRecord.put(PncDbConstants.Column.PncBaby.FIRST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.FIRST_NAME)));
-                            childRecord.put(PncDbConstants.Column.PncBaby.LAST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.LAST_NAME)));
-                            childRecord.put(PncDbConstants.Column.PncBaby.DOB, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncBaby.DOB)));
-                            childRecord.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.CHILD_RELATION_ID)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME)));
+                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
                             childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS)));
                             childRecord.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY)));
                             childRecord.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY)));
@@ -218,9 +216,9 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             SQLiteDatabase db = getReadableDatabase();
 
             String query = String.format("SELECT count(%s) FROM %s WHERE %s = '%s'"
-                    , PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID
+                    , PncVisitInfo.ID
                     , PncDbConstants.Table.PNC_VISIT_INFO
-                    , PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID
+                    , PncVisitInfo.MOTHER_BASE_ENTITY_ID
                     , baseEntityId
             );
 
@@ -254,11 +252,11 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             int offset = pageNo * 10;
 
             String query = String.format(Locale.getDefault(), "SELECT %s FROM %s WHERE %s = '%s' ORDER BY %s DESC LIMIT 10 OFFSET %d "
-                    , PncVisitInfo.BASE_ENTITY_ID
+                    , PncVisitInfo.ID
                     , Table.PNC_VISIT_INFO
-                    , PncVisitInfo.PARENT_BASE_ENTITY_ID
+                    , PncVisitInfo.MOTHER_BASE_ENTITY_ID
                     , motherBaseEntityId
-                    , PncVisitInfo.CREATED_AT
+                    , PncVisitInfo.VISIT_DATE
                     , offset
             );
 
@@ -285,7 +283,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
     private Map<String, Object> convert(Cursor cursor) {
         Map<String, Object> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.PARENT_BASE_ENTITY_ID)));
+        data.put(PncDbConstants.Column.PncVisitInfo.ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.ID)));
+        data.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID)));
         data.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
         data.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.CREATED_AT)));
         data.put(PncDbConstants.Column.PncVisitInfo.PERIOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.PERIOD)));

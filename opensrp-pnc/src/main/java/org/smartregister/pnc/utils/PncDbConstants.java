@@ -60,9 +60,9 @@ public interface PncDbConstants {
             String DISCHARGED_ALIVE = "discharged_alive";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
-            String FIRST_NAME = "first_name";
-            String LAST_NAME = "last_name";
-            String DOB = "dob";
+            String BABY_FIRST_NAME = "baby_first_name";
+            String BABY_LAST_NAME = "baby_last_name";
+            String BABY_DOB = "dob";
             String GENDER = "gender";
             String BIRTH_WEIGTH_ENTERED = "birth_weight_entered";
             String BIRTH_WEIGHT = "birth_weight";

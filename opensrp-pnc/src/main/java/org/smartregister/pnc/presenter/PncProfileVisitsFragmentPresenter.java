@@ -245,8 +245,8 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
             for (int i = 0; i < childRecords.size(); i++) {
                 Map<String, String> record = childRecords.get(i);
 
-                String firstName = record.get(PncDbConstants.Column.PncBaby.FIRST_NAME);
-                String lastName = record.get(PncDbConstants.Column.PncBaby.LAST_NAME);
+                String firstName = record.get(PncDbConstants.Column.PncBaby.BABY_FIRST_NAME);
+                String lastName = record.get(PncDbConstants.Column.PncBaby.BABY_LAST_NAME);
                 String heading = String.format(Locale.getDefault(), "%s %s", firstName, lastName);
                 items.add(new Pair<>(new YamlConfigWrapper(null, heading, null), facts));
 
