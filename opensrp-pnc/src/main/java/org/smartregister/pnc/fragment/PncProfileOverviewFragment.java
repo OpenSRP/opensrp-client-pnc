@@ -35,7 +35,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     private PncProfileOverviewFragmentContract.Presenter presenter;
     private CommonPersonObjectClient commonPersonObjectClient;
 
-    private LinearLayout pncOutcomeSectionLayout;
+    private LinearLayout pncProfileOverviewLayout;
     private Button recordOutcomeBtn;
 
     public static PncProfileOverviewFragment newInstance(Bundle bundle) {
@@ -88,7 +88,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
             commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED, clientDetail.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED));
             commonPersonObjectClient.getColumnmaps().put("latest_visit_date", clientDetail.get("latest_visit_date"));
             PncUtils.setVisitButtonStatus(recordOutcomeBtn, commonPersonObjectClient);
-            pncOutcomeSectionLayout.setVisibility(View.VISIBLE);
+            pncProfileOverviewLayout.setVisibility(View.VISIBLE);
             recordOutcomeBtn.setOnClickListener(v -> {
                 Object buttonType = v.getTag(R.id.BUTTON_TYPE);
                 if (buttonType != null) {
@@ -107,7 +107,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.pnc_fragment_profile_overview, container, false);
-        pncOutcomeSectionLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
+        pncProfileOverviewLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
         recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
         return view;
     }

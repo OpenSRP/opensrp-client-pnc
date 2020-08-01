@@ -21,7 +21,6 @@ import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
 import org.smartregister.pnc.repository.PncChildRepository;
-import org.smartregister.pnc.repository.PncOtherDetailsRepository;
 import org.smartregister.pnc.repository.PncOtherVisitRepository;
 import org.smartregister.pnc.repository.PncPartialFormRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
@@ -76,7 +75,6 @@ public class PncLibrary {
     private PncVisitChildStatusRepository pncVisitChildStatusRepository;
     private PncPartialFormRepository pncPartialFormRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
-    private PncOtherDetailsRepository pncOtherDetailsRepository;
     private AppExecutors appExecutors;
 
     private Compressor compressor;
@@ -186,14 +184,6 @@ public class PncLibrary {
             pncPartialFormRepository = new PncPartialFormRepository();
         }
         return pncPartialFormRepository;
-    }
-
-    @NonNull
-    public PncOtherDetailsRepository getPncOtherDetailsRepository() {
-        if (pncOtherDetailsRepository == null) {
-            pncOtherDetailsRepository = new PncOtherDetailsRepository();
-        }
-        return pncOtherDetailsRepository;
     }
 
     @NonNull

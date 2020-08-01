@@ -1,0 +1,52 @@
+---
+subGroup: "{baby_first_name} {baby_last_name}"
+fields:
+
+  - template: "Current Baby's Status: {baby_status}"
+    relevance: "baby_status != ''"
+    isRedFont: "baby_status != '' || baby_status != 'alive'"
+
+  - template: "Date of death: {date_of_death_baby}"
+    relevance: "date_of_death_baby != ''"
+
+  - template: "Place of death: {place_of_death_baby}"
+    relevance: "place_of_death_baby != ''"
+
+  - template: "Cause of death: {cause_of_death_baby}"
+    relevance: "cause_of_death_baby != ''"
+
+  - template: "Was the follow up of death conducted by health workers?: {death_follow_up_baby}"
+    relevance: "death_follow_up_baby != ''"
+
+  - template: "Breastfeeding status of the baby: {breastfeeding}"
+    relevance: "breastfeeding != ''"
+
+  - template: "Not breastfeeding reason: {not_breastfeeding_reason}"
+    relevance: "not_breastfeeding_reason != ''"
+    isRedFont: "(baby_danger_signs != '' || baby_danger_signs_other != '') && (baby_danger_signs != 'none' || baby_danger_signs_other != 'none')"
+
+  - template: "Danger signs and complications at visit: {baby_danger_signs}{baby_danger_signs_other}"
+    relevance: "baby_danger_signs != '' || baby_danger_signs_other != ''"
+
+  - template: "Baby referred out?: {baby_referred_out}"
+    relevance: "baby_referred_out != ''"
+
+  - template: "Baby exposed to HIV?: {baby_hiv_exposed}"
+    relevance: "baby_hiv_exposed != ''"
+    isRedFont: "baby_hiv_exposed == 'yes'"
+
+  - template: "HIV treatment: {}"
+    relevance: "baby_hiv_treatment != ''"
+
+  - template: "Referred to the ART clinic for mother/infant pairing?: {mother_baby_pairing}"
+    relevance: "mother_baby_pairing != ''"
+
+  - template: "Mother not referred to the ART clinic for mother/infant pairing reason: {not_art_pairing_reason}{not_art_pairing_reason_other}"
+    relevance: "not_art_pairing_reason != '' || not_art_pairing_reason_other != ''"
+    isRedFont: "not_art_pairing_reason != '' || not_art_pairing_reason_other != ''"
+
+  - template: "Baby tested at 6 weeks using DBS (Dry Blood Sample)?: {baby_dbs}"
+    relevance: "baby_dbs != ''"
+
+  - template: "Newborn care & management: {baby_care_mgt}"
+    relevance: "baby_care_mgt != ''"

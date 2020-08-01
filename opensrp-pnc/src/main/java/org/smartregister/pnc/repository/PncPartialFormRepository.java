@@ -21,6 +21,7 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
             + PncDbConstants.Column.PncPartialForm.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
             + PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncPartialForm.FORM + " TEXT NOT NULL, "
+            + PncDbConstants.Column.PncPartialForm.FORM_TYPE + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncPartialForm.CREATED_AT + " INTEGER NOT NULL ," +
             "UNIQUE(" + PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + ") ON CONFLICT REPLACE)";
 
@@ -32,6 +33,7 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
             PncDbConstants.Column.PncPartialForm.ID,
             PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID,
             PncDbConstants.Column.PncPartialForm.FORM,
+            PncDbConstants.Column.PncPartialForm.FORM_TYPE,
             PncDbConstants.Column.PncPartialForm.CREATED_AT};
 
     public static void createTable(@NonNull SQLiteDatabase database) {
@@ -44,6 +46,7 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
         ContentValues contentValues = new ContentValues();
         contentValues.put(PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID, pncPartialForm.getBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncPartialForm.FORM, pncPartialForm.getForm());
+        contentValues.put(PncDbConstants.Column.PncPartialForm.FORM_TYPE, pncPartialForm.getFormType());
         contentValues.put(PncDbConstants.Column.PncPartialForm.CREATED_AT, pncPartialForm.getCreatedAt());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_PARTIAL_FORM, null, contentValues);
@@ -56,13 +59,13 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(PncDbConstants.Table.PNC_PARTIAL_FORM
                 , columns
-                , PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + " = ? "
-                , new String[]{pncPartialForm.getBaseEntityId()}
+                , PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + " = ? AND " + PncDbConstants.Column.PncPartialForm.FORM_TYPE + " = ?"
+                , new String[]{pncPartialForm.getBaseEntityId(), pncPartialForm.getFormType()}
                 , null
                 , null
                 , null);
 
-        if (cursor.getCount() == 0) {
+        if (cursor == null) {
             return null;
         }
 
@@ -72,6 +75,7 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
                     cursor.getInt(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.ID)),
                     cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID)),
                     cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.FORM)),
+                    cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.FORM_TYPE)),
                     cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.CREATED_AT)));
             cursor.close();
         }
@@ -83,8 +87,8 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
     public boolean delete(@NonNull PncPartialForm pncPartialForm) {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         int rows = sqLiteDatabase.delete(PncDbConstants.Table.PNC_PARTIAL_FORM
-                , PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + " = ? "
-                , new String[]{pncPartialForm.getBaseEntityId()});
+                , PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID + " = ? AND " + PncDbConstants.Column.PncPartialForm.FORM_TYPE + " = ?"
+                , new String[]{pncPartialForm.getBaseEntityId(), pncPartialForm.getFormType()});
 
         return rows > 0;
     }

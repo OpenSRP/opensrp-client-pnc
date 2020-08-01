@@ -129,29 +129,6 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         }
     }
 
-    /*@Override
-    public void savePncCloseForm(@NonNull String eventType, @Nullable Intent data) {
-        String jsonString = null;
-        PncEventUtils maternityEventUtils = new PncEventUtils();
-        if (data != null) {
-            jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-        }
-
-        if (jsonString == null) {
-            Timber.e(new Exception("PNC Close form JSON is null"));
-            return;
-        }
-
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
-            try {
-                List<Event> maternityCloseEvents = PncLibrary.getInstance().processPncCloseForm(eventType, jsonString, data);
-                maternityEventUtils.saveEvents(maternityCloseEvents);
-            } catch (JSONException e) {
-                Timber.e(e);
-            }
-        }
-    }*/
-
     @Override
     public void refreshProfileTopSection(@NonNull Map<String, String> client, String baseEntityId) {
         PncProfileActivityContract.View profileView = getProfileView();
@@ -192,7 +169,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
                 if (formName.equals(PncConstants.Form.PNC_MEDIC_INFORMATION) || formName.equals(PncConstants.Form.PNC_VISIT)) {
-                    mProfileInteractor.fetchSavedForm(caseId, entityTable, this);
+                    mProfileInteractor.fetchSavedForm(formName, caseId, entityTable, this);
                     return;
                 }
 
@@ -251,7 +228,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             try {
                 List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 mProfileInteractor.saveEvents(pncOutcomeAndCloseEvent, this);
-                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID))));
+                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), eventType)));
             } catch (JSONException e) {
                 Timber.e(e);
             }

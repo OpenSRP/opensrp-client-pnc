@@ -109,7 +109,7 @@ public interface PncProfileActivityContract {
 
     interface Interactor {
 
-        void fetchSavedForm(final @NonNull String baseEntityId, final @Nullable String entityTable, @NonNull final PncProfileActivityContract.InteractorCallBack interactorCallBack);
+        void fetchSavedForm(final @NonNull String formType, final @NonNull String baseEntityId, final @Nullable String entityTable, @NonNull final PncProfileActivityContract.InteractorCallBack interactorCallBack);
 
         void saveRegistration(@NonNull PncEventClient pncEventClient, @NonNull String jsonString, RegisterParams registerParams, @NonNull PncProfileActivityContract.InteractorCallBack callBack);
 

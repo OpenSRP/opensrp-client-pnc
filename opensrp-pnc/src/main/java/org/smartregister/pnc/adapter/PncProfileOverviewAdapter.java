@@ -79,7 +79,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
                 holder.sectionDetails.setText(output);//Perhaps refactor to use Json Form Parser Implementation
             }
 
-            if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null && libraryHelper.getPncLibraryInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
+            if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null || libraryHelper.getPncLibraryInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
                 holder.sectionDetailTitle.setTextColor(context.getResources().getColor(R.color.overview_font_red));
                 holder.sectionDetails.setTextColor(context.getResources().getColor(R.color.overview_font_red));
             } else {

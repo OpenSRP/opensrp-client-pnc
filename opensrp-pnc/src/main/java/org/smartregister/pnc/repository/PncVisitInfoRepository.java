@@ -143,7 +143,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             String joinedIds = "'" + StringUtils.join(visitIds, "','") + "'";
 
             String query = "SELECT * FROM " + Table.PNC_VISIT_INFO + " " +
-                    " WHERE " + PncVisitInfo.MOTHER_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.BASE_ENTITY_ID + " IN (" + joinedIds + ") " +
+                    " WHERE " + PncVisitInfo.MOTHER_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.ID + " IN (" + joinedIds + ") " +
                     " ORDER BY " + PncVisitInfo.CREATED_AT + " DESC";
 
             cursor = getReadableDatabase().rawQuery(query, null);
@@ -157,7 +157,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
                     record.put(CHILD_RECORDS, childData);
 
                     String subQuery = "SELECT * FROM pnc_visit_child_status " +
-                            "WHERE " + PncVisitChildStatus.VISIT_ID + " = '" + record.get(PncVisitInfo.ID) + "'";
+                            "WHERE " + PncVisitChildStatus.VISIT_ID + " = '" + record.get(PncVisitInfo.BASE_ENTITY_ID) + "'";
 
                     subCursor = getReadableDatabase().rawQuery(subQuery, null);
 

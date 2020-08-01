@@ -12,15 +12,16 @@ public class PncPartialForm {
     public PncPartialForm() {
     }
 
-    public PncPartialForm(String baseEntityId) {
+    public PncPartialForm(@NonNull String baseEntityId, @NonNull String formType) {
         this.baseEntityId = baseEntityId;
         this.formType = formType;
     }
 
-    public PncPartialForm(int id, @NonNull String baseEntityId, @NonNull String form, @NonNull String createdAt) {
+    public PncPartialForm(int id, @NonNull String baseEntityId, @NonNull String form, @NonNull String formType, @NonNull String createdAt) {
         this.id = id;
         this.baseEntityId = baseEntityId;
         this.form = form;
+        this.formType = formType;
         this.createdAt = createdAt;
     }
 
@@ -46,6 +47,14 @@ public class PncPartialForm {
 
     public void setForm(String form) {
         this.form = form;
+    }
+
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 
     public String getCreatedAt() {

@@ -63,9 +63,9 @@ public class PncFormActivity extends BasePncFormActivity {
             possibleJsonArrayKeys.add("baby_first_name");
             possibleJsonArrayKeys.add("baby_last_name");
 
-            String query = "SELECT baby_first_name, baby_last_name, dob, CAST(julianday('now') - julianday(datetime(substr(pnc_baby.dob, 7, 4) || '-' || substr(pb.dob, 4, 2) || '-' || substr(pb.dob, 1, 2))) AS INTEGER) AS delivery_days " +
+            String query = "SELECT baby_first_name, baby_last_name, dob, CAST(julianday('now') - julianday(datetime(substr(pb.dob, 7, 4) || '-' || substr(pb.dob, 4, 2) || '-' || substr(pb.dob, 1, 2))) AS INTEGER) AS delivery_days " +
                     "FROM pnc_baby AS pb " +
-                    "LEFT JOIN pnc_registration_detail AS prd " +
+                    "LEFT JOIN pnc_registration_details AS prd " +
                     "WHERE pb.medic_info_id = prd._id AND base_entity_id = '" + motherBaseEntityId + "' AND delivery_days <= " + PncConstants.HOW_BABY_OLD_IN_DAYS;
 
             ArrayList<HashMap<String, String>> childData = getData(query);

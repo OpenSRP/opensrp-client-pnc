@@ -87,7 +87,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         setSendActionListenerToVisitsFragment(profileVisitsFragment);
 
         adapter.addFragment(profileOverviewFragment, this.getString(R.string.overview));
-        adapter.addFragment(profileVisitsFragment, this.getString(R.string.visits));
+        adapter.addFragment(profileVisitsFragment, this.getString(R.string.pnc_visits));
 
         viewPager.setAdapter(adapter);
         return viewPager;

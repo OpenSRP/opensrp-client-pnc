@@ -51,12 +51,12 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     }
 
     @Override
-    public void fetchSavedForm(@NonNull String baseEntityId, @Nullable String entityTable, @NonNull PncProfileActivityContract.InteractorCallBack interactorCallBack) {
+    public void fetchSavedForm(final @NonNull String formType, @NonNull String baseEntityId, @Nullable String entityTable, @NonNull PncProfileActivityContract.InteractorCallBack interactorCallBack) {
         appExecutors.diskIO().execute(() -> {
             final PncPartialForm partialForm = PncLibrary
                     .getInstance()
                     .getPncPartialFormRepository()
-                    .findOne(new PncPartialForm(baseEntityId));
+                    .findOne(new PncPartialForm(baseEntityId, formType));
 
             appExecutors.mainThread().execute(() -> interactorCallBack.onFetchedSavedForm(partialForm, baseEntityId, entityTable));
         });

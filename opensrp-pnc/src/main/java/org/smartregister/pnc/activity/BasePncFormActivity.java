@@ -105,12 +105,12 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
                 AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                         .setMessage(getString(R.string.save_form_fill_session))
                         .setNegativeButton(R.string.yes, (dialog1, which) -> {
-                            saveFormFillSession();
+                            saveFormFillSession(formType);
                             BasePncFormActivity.this.finish();
                         })
                         .setPositiveButton(R.string.no, (dialog12, which) -> Timber.d("No button on dialog in %s", JsonFormActivity.class.getCanonicalName()))
                         .setNeutralButton(getString(R.string.end_session), (dialog13, which) -> {
-                            deleteSession();
+                            deleteSession(formType);
                             BasePncFormActivity.this.finish();
                         }).create();
 
@@ -125,16 +125,16 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
         }
     }
 
-    private void saveFormFillSession() {
+    private void saveFormFillSession(String formType) {
         JSONObject jsonObject = getmJSONObject();
         final PncPartialForm pncPartialForm = new PncPartialForm(0, PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID),
-                jsonObject.toString(), Utils.convertDateFormat(new DateTime()));
+                jsonObject.toString(), formType, Utils.convertDateFormat(new DateTime()));
 
         PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().saveOrUpdate(pncPartialForm));
     }
 
-    private void deleteSession() {
-        final PncPartialForm pncPartialForm = new PncPartialForm( PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID));
+    private void deleteSession(String formType) {
+        final PncPartialForm pncPartialForm = new PncPartialForm( PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID), formType);
 
         PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(pncPartialForm));
     }

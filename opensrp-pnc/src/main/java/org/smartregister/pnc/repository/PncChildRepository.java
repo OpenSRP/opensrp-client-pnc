@@ -10,10 +10,15 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.smartregister.pnc.dao.PncGenericDao;
 import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncBaby;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncDetails;
 import org.smartregister.repository.BaseRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class PncChildRepository extends BaseRepository implements PncGenericDao<PncChild> {
 
@@ -109,6 +114,21 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             while (cursor.moveToNext()) {
                 data.add(fillUp(cursor));
             }
+        }
+
+        return data;
+    }
+
+    public List<HashMap<String, String>> findAllByBaseEntityId(@NonNull String baseEntityId) {
+        List<HashMap<String, String>> data = new ArrayList<>();
+        try {
+            String query = "SELECT pb.* FROM " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd " +
+                    "LEFT JOIN " + PncDbConstants.Table.PNC_BABY + " AS pb ON pb." + PncBaby.MEDIC_INFO_ID + " = prd." + PncDetails.ID + " " +
+                    "WHERE prd." + PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'";
+            data = rawQuery(getReadableDatabase(), query);
+        }
+        catch (Exception ex) {
+            Timber.e(ex);
         }
 
         return data;

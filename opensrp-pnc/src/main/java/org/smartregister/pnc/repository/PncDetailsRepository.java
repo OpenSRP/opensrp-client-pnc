@@ -69,7 +69,8 @@ public abstract class PncDetailsRepository extends BaseRepository implements Pnc
 
             Cursor cursor = sqLiteDatabase.query(getTableName(), getColumns(), PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = ?",
                     new String[]{pncDetails.getBaseEntityId()}, null, null, null, "1");
-            if (cursor.getCount() == 0) {
+
+            if (cursor == null) {
                 return null;
             }
 

@@ -26,7 +26,6 @@ import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
-import org.smartregister.util.JsonFormUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,6 +145,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
         keyValues.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, motherBaseEntityId);
+        keyValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, baseEntityId);
 
         String strOtherVisit = keyValues.get(PncConstants.JsonFormKeyConstants.OTHER_VISIT_MAP);
         processOtherVisits(strOtherVisit, baseEntityId);

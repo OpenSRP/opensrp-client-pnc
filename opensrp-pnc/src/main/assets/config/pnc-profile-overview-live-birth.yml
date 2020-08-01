@@ -1,0 +1,40 @@
+---
+subGroup: live_births
+fields:
+
+  - template: "Baby discharges status: {discharged_alive}"
+    relevance: "discharged_alive != ''"
+
+  - template: "Baby Name: {baby_first_name} {baby_last_name}"
+    relevance: "baby_first_name != '' || baby_last_name != ''"
+
+  - template: "Child's gender: {baby_gender}"
+    relevance: "baby_gender != ''"
+
+  - template: "Birth weight (gm): {birth_weight_entered}"
+    relevance: "birth_weight_entered != ''"
+
+  - template: "Birth length (cm): {birth_height_entered}"
+    relevance: "birth_height_entered != ''"
+
+  - template: "APGAR score: {apgar}"
+    relevance: "apgar != ''"
+
+  - template: "Newborn care complications: {baby_complications}{baby_complications_other}"
+    relevance: "baby_complications != '' || baby_complications_other != ''"
+    isRedFont: "baby_complications != 'none'"
+
+  - template: "Newborn Routine Care & Management: {baby_care_mgt}{baby_care_mgt_specify}"
+    relevance: "baby_care_mgt != '' || baby_care_mgt_specify != ''"
+
+  - template: "Referral location: {baby_referral_location}"
+    relevance: "baby_referral_location != ''"
+
+  - template: "Breastfeeding initiated within 60 mins: {bf_first_hour}"
+    relevance: "bf_first_hour != ''"
+
+  - template: "Child's HIV status: {child_hiv_status}"
+    relevance: "child_hiv_status != ''"
+
+  - template: "NVP Administration Started: {nvp_administration}"
+    relevance: "nvp_administration != ''"

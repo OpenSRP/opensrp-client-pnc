@@ -26,7 +26,7 @@
     <string name="contact_number_due">Contact %1$d &#183; due %2$s</string>
 
     <string name="overview">OVERVIEW</string>
-    <string name="visits">VISITS</string>
+    <string name="pnc_visits">VISITS</string>
     <string name="anc_history">ANC HISTORY</string>
     <string name="pnc">PNC</string>
     <string name="pnc_overview">PNC Overview</string>

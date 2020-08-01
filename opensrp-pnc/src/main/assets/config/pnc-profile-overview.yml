@@ -74,15 +74,3 @@ fields:
 
   - template: "Is the woman on ART treatment?: {on_art_treatment}"
     relevance: "on_art_treatment != ''"
-
----
-subGroup: live_births
-fields:
-
----
-subGroup: stillbirths
-fields:
-
-
-
-

@@ -58,11 +58,16 @@ public class PncStillBornRepository extends BaseRepository implements PncGeneric
         throw new NotImplementedException("");
     }
 
-    public int count(String medicInfoId) {
+    public int count(@NonNull String baseEntityId) {
         int count = 0;
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        try (Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + PncDbConstants.Table.PNC_STILL_BORN + " WHERE " + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + "='" + medicInfoId + "'", null)) {
-            count = cursor.getCount();
+        String query = "SELECT COUNT(psb." + PncDbConstants.Column.PncStillBorn.ID + ") AS count FROM " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd " +
+                "LEFT JOIN " + PncDbConstants.Table.PNC_STILL_BORN + " AS psb ON psb." + PncDbConstants.Column.PncStillBorn.MEDIC_INFO_ID + " = prd." + PncDbConstants.Column.PncDetails.ID + " " +
+                "WHERE prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'";
+        try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
         }
         return count;
     }

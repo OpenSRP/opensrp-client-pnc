@@ -424,7 +424,8 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         }
 
-        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId()));
+        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.EventTypeConstants.PNC_OUTCOME : PncConstants.EventTypeConstants.PNC_VISIT;
+        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId(), formType));
         if (pncPartialForm != null) {
             button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
         }
