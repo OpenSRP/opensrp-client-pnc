@@ -20,6 +20,7 @@ import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.presenter.PncProfileOverviewFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.fragment.BaseProfileFragment;
 
@@ -84,9 +85,9 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
 
     private void showOutcomeBtn() {
         if (getActivity() != null) {
-            HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
-            commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED, clientDetail.get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED));
-            commonPersonObjectClient.getColumnmaps().put("latest_visit_date", clientDetail.get("latest_visit_date"));
+            HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncMedicInfoRepository().findByBaseEntityId(baseEntityId);
+            commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID, clientDetail.get(PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID));
+            commonPersonObjectClient.getColumnmaps().put(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE, clientDetail.get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
             PncUtils.setVisitButtonStatus(recordOutcomeBtn, commonPersonObjectClient);
             pncProfileOverviewLayout.setVisibility(View.VISIBLE);
             recordOutcomeBtn.setOnClickListener(v -> {

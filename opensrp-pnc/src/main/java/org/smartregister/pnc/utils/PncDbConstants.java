@@ -54,9 +54,15 @@ public interface PncDbConstants {
             String CREATED_AT = "created_at";
         }
 
+        interface PncMedicInfo{
+            String ID = "_id";
+            String BASE_ENTITY_ID = "base_entity_id";
+        }
+
         interface PncBaby {
             String ID = "_id";
-            String MEDIC_INFO_ID = "medic_info_id";
+            String BASE_ENTITY_ID = "base_entity_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String DISCHARGED_ALIVE = "discharged_alive";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
@@ -83,6 +89,7 @@ public interface PncDbConstants {
         interface PncVisitInfo {
             String ID = "_id";
             String VISIT_DATE = "visit_date";
+            String VISIT_ID = "visit_id";
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
             String CREATED_AT = "created_at";
@@ -110,6 +117,7 @@ public interface PncDbConstants {
             String FP_COUNSEL = "fp_counsel";
             String FP_METHOD = "fp_method";
             String FP_METHOD_OTHER = "fp_method_other";
+            String LATEST_VISIT_DATE = "latest_visit_date";
         }
 
         interface PncVisitChildStatus {
@@ -140,13 +148,14 @@ public interface PncDbConstants {
 
         interface PncOtherVisit {
             String ID = "_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String VISIT_ID = "visit_id";
             String VISIT_DATE = "visit_date";
         }
 
         interface PncStillBorn {
             String ID = "_id";
-            String MEDIC_INFO_ID = "medic_info_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String STILL_BIRTH_CONDITION = "still_birth_condition";
             String EVENT_DATE = "event_date";
         }
@@ -162,8 +171,8 @@ public interface PncDbConstants {
 
     interface Table {
         String EC_CLIENT = "ec_client";
-        String PNC_DETAILS = "pnc_details";
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
+        String PNC_MEDIC_INFO = "pnc_medic_info";
         String PNC_BABY = "pnc_baby";
         String PNC_STILL_BORN = "pnc_still_born";
         String PNC_VISIT_INFO = "pnc_visit_info";

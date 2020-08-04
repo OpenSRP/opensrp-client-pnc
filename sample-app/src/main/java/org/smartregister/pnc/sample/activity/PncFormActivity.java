@@ -6,7 +6,6 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.activity.BasePncFormActivity;
 import org.smartregister.pnc.sample.R;
 import org.smartregister.pnc.sample.fragment.PncFormFragment;
@@ -57,16 +56,13 @@ public class PncFormActivity extends BasePncFormActivity {
         try {
             String motherBaseEntityId = getIntent().getStringExtra(PncDbConstants.KEY.BASE_ENTITY_ID);
 
-            HashMap<String, String> motherData = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(motherBaseEntityId);
-
             Set<String> possibleJsonArrayKeys = new HashSet<>();
             possibleJsonArrayKeys.add("baby_first_name");
             possibleJsonArrayKeys.add("baby_last_name");
 
             String query = "SELECT baby_first_name, baby_last_name, dob, CAST(julianday('now') - julianday(datetime(substr(pb.dob, 7, 4) || '-' || substr(pb.dob, 4, 2) || '-' || substr(pb.dob, 1, 2))) AS INTEGER) AS delivery_days " +
                     "FROM pnc_baby AS pb " +
-                    "LEFT JOIN pnc_registration_details AS prd " +
-                    "WHERE pb.medic_info_id = prd._id AND base_entity_id = '" + motherBaseEntityId + "' AND delivery_days <= " + PncConstants.HOW_BABY_OLD_IN_DAYS;
+                    "WHERE pb.mother_base_entity_id = '" + motherBaseEntityId + "' AND delivery_days <= " + PncConstants.HOW_BABY_OLD_IN_DAYS;
 
             ArrayList<HashMap<String, String>> childData = getData(query);
 

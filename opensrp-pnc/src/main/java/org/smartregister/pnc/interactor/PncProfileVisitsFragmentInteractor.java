@@ -6,10 +6,8 @@ import android.support.annotation.Nullable;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 import org.smartregister.pnc.utils.AppExecutors;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -39,9 +37,9 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
     @Override
     public void fetchVisits(@NonNull final String baseEntityId, final int pageNo, @NonNull final PncProfileVisitsFragmentContract.Presenter.OnVisitsLoadedCallback onVisitsLoadedCallback) {
         appExecutors.diskIO().execute(() -> {
-            final List<Map<String, Object>> summaries = PncLibrary.getInstance().getPncVisitInfoRepository().getPncVisitSummaries(baseEntityId, pageNo);
+            final PncVisitSummary summary = PncLibrary.getInstance().getPncVisitInfoRepository().getPncVisitSummaries(baseEntityId, pageNo);
 
-            appExecutors.mainThread().execute(() -> onVisitsLoadedCallback.onVisitsLoaded(summaries));
+            appExecutors.mainThread().execute(() -> onVisitsLoadedCallback.onVisitsLoaded(summary));
         });
     }
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragmentContract.Model {
 
     private AppExecutors appExecutors;
-    private HashMap<String, String> pncDetails = null;
+    private HashMap<String, String> pncMedicInfo = null;
 
     public PncProfileOverviewFragmentModel() {
         this.appExecutors = PncLibrary.getInstance().getAppExecutors();
@@ -26,10 +26,10 @@ public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragme
     @Override
     public void fetchPncOverviewDetails(final @NonNull String baseEntityId, @NonNull final OnFetchedCallback onFetchedCallback) {
         appExecutors.diskIO().execute(() -> {
-            pncDetails = new HashMap<>();
-            pncDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
+            pncMedicInfo = new HashMap<>();
+            pncMedicInfo = PncLibrary.getInstance().getPncMedicInfoRepository().findByBaseEntityId(baseEntityId);
 
-            appExecutors.mainThread().execute(() -> onFetchedCallback.onFetched(pncDetails));
+            appExecutors.mainThread().execute(() -> onFetchedCallback.onFetched(pncMedicInfo));
         });
     }
 }

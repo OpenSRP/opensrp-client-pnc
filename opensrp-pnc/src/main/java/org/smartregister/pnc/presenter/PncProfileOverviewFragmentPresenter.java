@@ -12,7 +12,7 @@ import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.model.PncProfileOverviewFragmentModel;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
+import org.smartregister.pnc.repository.PncMedicInfoRepository;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncFactsUtil;
@@ -42,26 +42,26 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     @Override
     public void loadOverviewFacts(@NonNull String baseEntityId, @NonNull final OnFinishedCallback onFinishedCallback) {
-        model.fetchPncOverviewDetails(baseEntityId, pncDetails -> {
-            loadOverviewDataAndDisplay(pncDetails, onFinishedCallback);
+        model.fetchPncOverviewDetails(baseEntityId, pncMedicInfo -> {
+            loadOverviewDataAndDisplay(pncMedicInfo, onFinishedCallback);
 
             // Update the client map
             CommonPersonObjectClient commonPersonObjectClient = getProfileView().getActivityClientMap();
             if (commonPersonObjectClient != null) {
-                commonPersonObjectClient.getColumnmaps().putAll(pncDetails);
-                commonPersonObjectClient.getDetails().putAll(pncDetails);
+                commonPersonObjectClient.getColumnmaps().putAll(pncMedicInfo);
+                commonPersonObjectClient.getDetails().putAll(pncMedicInfo);
             }
         });
     }
 
     @Override
-    public void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncDetails, @NonNull final OnFinishedCallback onFinishedCallback) {
+    public void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncMedicInfo, @NonNull final OnFinishedCallback onFinishedCallback) {
         List<YamlConfigWrapper> yamlConfigListGlobal = new ArrayList<>();
         Facts facts = new Facts();
-        setDataFromRegistration(pncDetails, facts);
+        setDataFromRegistration(pncMedicInfo, facts);
 
         try {
-            generateYamlConfigList(pncDetails.get("mother_base_entity_id"), facts, yamlConfigListGlobal);
+            generateYamlConfigList(pncMedicInfo.get("mother_base_entity_id"), facts, yamlConfigListGlobal);
         } catch (IOException ioException) {
             Timber.e(ioException);
         }
@@ -108,19 +108,19 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         generateLiveBirths(motherBaseEntityId, yamlConfigListGlobal, facts);
 
         yamlConfigListGlobal.add(new YamlConfigWrapper(null, "stillbirths", null));
-        int count = PncLibrary.getInstance().getPncStillBornRepository().count(motherBaseEntityId);
+        int count = PncLibrary.getInstance().getPncStillBornRepository().countBabyStillBorn(motherBaseEntityId);
         facts.put("baby_count_stillborn", String.valueOf(count));
         yamlConfigListGlobal.add(getConfigItem("Number of babies stillborn: {baby_count_stillborn}", count > 0));
     }
 
     @Override
-    public void setDataFromRegistration(@NonNull HashMap<String, String> pncDetails, @NonNull Facts facts) {
-        for (String property: pncDetails.keySet()) {
-            PncFactsUtil.putNonNullFact(facts, property, pncDetails.get(property));
+    public void setDataFromRegistration(@NonNull HashMap<String, String> pncMedicInfo, @NonNull Facts facts) {
+        for (String property: pncMedicInfo.keySet()) {
+            PncFactsUtil.putNonNullFact(facts, property, pncMedicInfo.get(property));
         }
 
-        String prevHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_previous.name());
-        String currentHivStatus = pncDetails.get(PncRegistrationDetails.Property.hiv_status_current.name());
+        String prevHivStatus = pncMedicInfo.get(PncMedicInfoRepository.Property.hiv_status_previous.name());
+        String currentHivStatus = pncMedicInfo.get(PncMedicInfoRepository.Property.hiv_status_current.name());
         String hivStatus = StringUtils.isNotBlank(currentHivStatus) ? currentHivStatus : prevHivStatus;
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.HIV_STATUS, hivStatus);
     }
@@ -129,7 +129,7 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
         try {
 
-            List<HashMap<String, String>> childRecords = PncLibrary.getInstance().getPncChildRepository().findAllByBaseEntityId(motherBaseEntityId);
+            List<HashMap<String, String>> childRecords = PncLibrary.getInstance().getPncChildRepository().findAllByMotherBaseEntityId(motherBaseEntityId);
 
             for (HashMap<String, String> record : childRecords) {
 

@@ -17,7 +17,7 @@ public class PncVisitInfoSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(4);
 
-        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
@@ -31,7 +31,7 @@ public class PncVisitInfoSchedulerTest {
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(5);
 
-        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
@@ -44,7 +44,7 @@ public class PncVisitInfoSchedulerTest {
 
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(61);
-        PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
         pncVisitScheduler.setDeliveryDate(deliveryDate);
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.setLatestVisitDateInMills(String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));

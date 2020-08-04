@@ -384,14 +384,14 @@ public class PncUtils extends org.smartregister.util.Utils {
         button.setText(R.string.start_pnc);
         button.setBackgroundResource(R.drawable.pnc_outcome_bg);
 
-        if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.OUTCOME_SUBMITTED) != null) {
+        if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) != null) {
 
             String deliveryDateStr = client.getColumnmaps().get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
             if (StringUtils.isNotBlank(deliveryDateStr)) {
                 LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
-                PncVisitScheduler pncVisitScheduler = PncVisitScheduler.getInstance();
+                PncVisitScheduler pncVisitScheduler = PncLibrary.getInstance().getPncConfiguration().getPncVisitScheduler();
                 pncVisitScheduler.setDeliveryDate(deliveryDate);
-                pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get("latest_visit_date"));
+                pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
 
                 if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
                     button.setText(R.string.pnc_due);
@@ -473,11 +473,10 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
     }
 
-    public static int getDeliveryDays(String baseEntityId) {
-        Map<String, String> detailMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
-        if (detailMap != null && StringUtils.isNotBlank(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE))) {
-            LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
-            return Days.daysBetween(deliveryDate, LocalDate.now()).getDays();
+    public static int getDeliveryDays(@Nullable String deliveryDate) {
+        if (deliveryDate != null) {
+            LocalDate date = LocalDate.parse(deliveryDate, DateTimeFormat.forPattern("dd-MM-yyyy"));
+            return Days.daysBetween(date, LocalDate.now()).getDays();
         } else {
             return 0;
         }
@@ -525,7 +524,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, PncConstants.HOW_BABY_OLD_IN_DAYS);
+        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBabyOldDays(baseEntityId, PncConstants.HOW_BABY_OLD_IN_DAYS);
         PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
     }
 

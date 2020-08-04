@@ -22,8 +22,7 @@ public interface PncRegisterProviderMetadata {
     @NonNull
     String getDob(@NonNull Map<String, String> columnMaps);
 
-    @NonNull
-    String getGA(@NonNull Map<String, String> columnMaps);
+    int getDeliveryDays(@NonNull Map<String, String> columnMaps);
 
     @NonNull
     String getPatientID(@NonNull Map<String, String> columnMaps);

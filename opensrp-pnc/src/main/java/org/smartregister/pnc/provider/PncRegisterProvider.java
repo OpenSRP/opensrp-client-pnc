@@ -1,5 +1,6 @@
 package org.smartregister.pnc.provider;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -167,8 +168,9 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterView
 
         fillValue(viewHolder.tvAge, String.format(context.getString(R.string.patient_age_holder), WordUtils.capitalize(PncUtils.getClientAge(dobString, translatedYearInitial))));
         //String ga = pncRegisterProviderMetadata.getGA(patientColumnMaps);
-        int deliveryDays = PncUtils.getDeliveryDays(commonPersonObjectClient.getCaseId());
-        String deliveryDaysStr = deliveryDays > -1 ? String.format("P%s", deliveryDays) : "";
+        int deliveryDays = pncRegisterProviderMetadata.getDeliveryDays(commonPersonObjectClient.getColumnmaps());
+        @SuppressLint("StringFormatMatches")
+        String deliveryDaysStr = String.format(context.getString(R.string.delivery_days), deliveryDays);
         fillValue(viewHolder.textViewDeliveryDays, deliveryDaysStr);
 
         String patientId = pncRegisterProviderMetadata.getPatientID(patientColumnMaps);

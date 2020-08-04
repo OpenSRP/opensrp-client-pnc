@@ -11,20 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 public class PncVisitScheduler extends VisitScheduler {
 
-    private static PncVisitScheduler INSTANCE;
-
     private LocalDate deliveryDate;
     private List<VisitBlock> visitBlocks;
-    private LocalDate currentDate;
+    private LocalDate currentDate = LocalDate.now();
     private String latestVisitDateInMills;
-
-    private PncVisitScheduler() {
-        this.currentDate = LocalDate.now();
-    }
-
-    public static PncVisitScheduler getInstance() {
-        return INSTANCE == null ? INSTANCE = new PncVisitScheduler() : INSTANCE;
-    }
 
     public void buildStatusTable() {
         visitBlocks = new ArrayList<>();

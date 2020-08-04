@@ -25,8 +25,8 @@ import org.smartregister.pnc.pojo.OngoingTask;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.pojo.PncPartialForm;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.RegisterParams;
+import org.smartregister.pnc.repository.PncMedicInfoRepository;
 import org.smartregister.pnc.tasks.FetchRegistrationDataTask;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
@@ -145,7 +145,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             profileView.setProfileID(Utils.getValue(client, PncDbConstants.KEY.REGISTER_ID, false));
             profileView.setProfileImage(Utils.getValue(client, PncDbConstants.KEY.ID, false));
 
-            profileView.setProfileGender(profileView.getString(R.string.day_p) + PncUtils.getDeliveryDays(baseEntityId));
+            profileView.setProfileGender(profileView.getString(R.string.day_p) + PncUtils.getDeliveryDays(client.get(PncConstants.FormGlobalConstants.DELIVERY_DATE)));
         }
     }
 
@@ -154,7 +154,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         Map<String, String> clientMap = commonPersonObjectClient.getColumnmaps();
         HashMap<String, String> injectedValues = new HashMap<>();
 
-        injectedValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, clientMap.get(PncRegistrationDetails.Property.hiv_status_current.name()));
+        injectedValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, clientMap.get(PncMedicInfoRepository.Property.hiv_status_current.name()));
         String entityTable = clientMap.get(PncConstants.IntentKey.ENTITY_TABLE);
 
         startFormActivity(formName, commonPersonObjectClient.getCaseId(), entityTable, injectedValues);

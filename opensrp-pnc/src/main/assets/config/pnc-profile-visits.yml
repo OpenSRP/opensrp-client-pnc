@@ -57,12 +57,3 @@ fields:
 
   - template: "Family planning methods chosen: {fp_method}{fp_method_other}"
     relevance: "fp_method != '' || fp_method_other != ''"
-
----
-subGroup: child_status
-fields:
-
-
-
-
-

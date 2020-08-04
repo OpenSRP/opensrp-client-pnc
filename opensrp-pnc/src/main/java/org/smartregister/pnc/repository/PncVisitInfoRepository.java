@@ -9,6 +9,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.dao.PncGenericDao;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitChildStatus;
 import org.smartregister.pnc.utils.PncDbConstants.Column.PncVisitInfo;
@@ -20,17 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import timber.log.Timber;
-
-import static org.smartregister.pnc.utils.PncConstants.CHILD_RECORDS;
 
 public class PncVisitInfoRepository extends BaseRepository implements PncGenericDao<Map<String, String>> {
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_VISIT_INFO + "("
             + PncDbConstants.Column.PncVisitInfo.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.VISIT_ID + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.CREATED_AT + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.VISIT_DATE + " DATETIME NOT NULL,"
             + PncDbConstants.Column.PncVisitInfo.PERIOD + " VARCHAR NULL, "
@@ -72,9 +72,9 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
     public boolean saveOrUpdate(Map<String, String> data) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID));
-        contentValues.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID));
-        contentValues.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, System.currentTimeMillis());
+        contentValues.put(PncDbConstants.Column.PncVisitInfo.VISIT_ID, data.get(PncDbConstants.Column.PncVisitInfo.VISIT_ID));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.VISIT_DATE, data.get(PncDbConstants.Column.PncVisitInfo.VISIT_DATE));
+        contentValues.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, System.currentTimeMillis());
         contentValues.put(PncDbConstants.Column.PncVisitInfo.PERIOD, data.get(PncDbConstants.Column.PncVisitInfo.PERIOD));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK, data.get(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY, data.get(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY));
@@ -133,80 +133,44 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
     }
 
     @NonNull
-    public List<Map<String, Object>> getPncVisitSummaries(@NonNull String motherBaseEntityId, int pageNo) {
-        List<Map<String, Object>> data = new ArrayList<>();
+    public PncVisitSummary getPncVisitSummaries(@NonNull String motherBaseEntityId, int pageNo) {
 
-        Cursor cursor = null;
-        Cursor subCursor = null;
+        Map<String, Map<String, String>> visitInfoMap = new HashMap<>();
+        Map<String, List<Map<String, String>>> visitChildStatusMap = new HashMap<>();
+        PncVisitSummary pncVisitSummary = new PncVisitSummary(visitInfoMap, visitChildStatusMap);
+
         try {
             String[] visitIds = getVisitIds(motherBaseEntityId, pageNo);
             String joinedIds = "'" + StringUtils.join(visitIds, "','") + "'";
 
-            String query = "SELECT * FROM " + Table.PNC_VISIT_INFO + " " +
-                    " WHERE " + PncVisitInfo.MOTHER_BASE_ENTITY_ID + " ='" + motherBaseEntityId + "'  AND " + PncVisitInfo.ID + " IN (" + joinedIds + ") " +
-                    " ORDER BY " + PncVisitInfo.CREATED_AT + " DESC";
+            String query = "SELECT *, pvcs._id AS baby_row_id FROM " + Table.PNC_VISIT_INFO + " AS pvi \n" +
+                    "LEFT JOIN " + Table.PNC_VISIT_CHILD_STATUS + " AS pvcs ON pvcs." + PncVisitChildStatus.VISIT_ID + " = pvi." + PncVisitInfo.VISIT_ID + " \n" +
+                    "WHERE pvi." + PncVisitInfo.ID + " IN (" + joinedIds + ")";
 
-            cursor = getReadableDatabase().rawQuery(query, null);
+            ArrayList<HashMap<String, String>> data = rawQuery(getReadableDatabase(), query);
 
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
+            for (HashMap<String, String> record : data) {
 
-                    Map<String, Object> record = convert(cursor);
+                if (!visitInfoMap.containsKey(record.get(PncVisitInfo.VISIT_ID))) {
+                    visitInfoMap.put(record.get(PncVisitInfo.VISIT_ID), record);
 
-                    List<Map<String, String>> childData = new ArrayList<>();
-                    record.put(CHILD_RECORDS, childData);
-
-                    String subQuery = "SELECT * FROM pnc_visit_child_status " +
-                            "WHERE " + PncVisitChildStatus.VISIT_ID + " = '" + record.get(PncVisitInfo.BASE_ENTITY_ID) + "'";
-
-                    subCursor = getReadableDatabase().rawQuery(subQuery, null);
-
-                    if (subCursor.getCount() > 0) {
-
-                        while (subCursor.moveToNext()) {
-
-                            Map<String, String> childRecord = new HashMap<>();
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.CAUSE_OF_DEATH_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.CAUSE_OF_DEATH_BABY)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.DEATH_FOLLOW_UP_BABY, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.DEATH_FOLLOW_UP_BABY)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_BREAST_FEEDING, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_BREAST_FEEDING)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_NOT_BREAST_FEEDING_REASON, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_NOT_BREAST_FEEDING_REASON)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS_OTHER, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DANGER_SIGNS_OTHER)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_REFERRED_OUT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_REFERRED_OUT)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_EXPOSED, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_EXPOSED)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.MOTHER_BABY_PAIRING, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.MOTHER_BABY_PAIRING)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_TREATMENT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_HIV_TREATMENT)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON_OTHER, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON_OTHER)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_DBS, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_DBS)));
-                            childRecord.put(PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT, subCursor.getString(subCursor.getColumnIndex(PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT)));
-
-                            childData.add(childRecord);
-                        }
+                    if (record.get("baby_row_id") != null) {
+                        List<Map<String, String>> childList = new ArrayList<>();
+                        childList.add(record);
+                        visitChildStatusMap.put(record.get(PncVisitInfo.VISIT_ID), childList);
                     }
-
-                    data.add(record);
+                }
+                else {
+                    List<Map<String, String>> childList = visitChildStatusMap.get(record.get(PncVisitInfo.VISIT_ID));
+                    Objects.requireNonNull(childList).add(record);
                 }
             }
 
         } catch (Exception e) {
             Timber.e(e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (subCursor != null) {
-                subCursor.close();
-            }
         }
 
-        return data;
+        return pncVisitSummary;
     }
 
     public int getVisitPageCount(@NonNull String baseEntityId) {

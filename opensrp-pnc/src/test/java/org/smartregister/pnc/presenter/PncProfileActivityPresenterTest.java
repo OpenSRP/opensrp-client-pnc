@@ -18,7 +18,7 @@ import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
@@ -57,7 +57,6 @@ public class PncProfileActivityPresenterTest extends BaseTest {
 
         PncRegistrationDetailsRepository pncRegistrationDetailsRepository = mock(PncRegistrationDetailsRepository.class);
         when(pncLibrary.getPncRegistrationDetailsRepository()).thenReturn(pncRegistrationDetailsRepository);
-        when(pncRegistrationDetailsRepository.findByBaseEntityId(anyString())).thenReturn(new HashMap<>());
     }
 
     @Test
@@ -88,7 +87,7 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         form.put("question", "What is happening?");
 
         ReflectionHelpers.setField(presenter, "form", form);
-        presenter.onFetchedSavedDiagnosisAndTreatmentForm(null, "caseId", "ec_child");
+        presenter.onFetchedSavedForm(null, "caseId", "ec_child");
         Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), anyString(), Mockito.nullable(String.class));
 
         Assert.assertEquals("", formCaptor.getValue().get("value"));
@@ -108,8 +107,8 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         prefilledForm.put("value", "I Don't Know");
         prefilledForm.put("question", "What is happening?");
 
-        presenter.onFetchedSavedDiagnosisAndTreatmentForm(
-                new PncOutcomeForm(8923, "bei", prefilledForm.toString(), "2019-05-01 11:11:11")
+        presenter.onFetchedSavedForm(
+                new PncPartialForm(8923, "bei", prefilledForm.toString(), PncConstants.EventTypeConstants.PNC_OUTCOME, "2019-05-01 11:11:11")
                 , "caseId"
                 , "ec_child");
         Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), anyString(), Mockito.nullable(String.class));

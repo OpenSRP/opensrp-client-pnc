@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.scheduler.PncVisitScheduler;
+import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.utils.PncConstants;
 
 import java.util.HashMap;
@@ -28,6 +30,11 @@ public class PncConfiguration {
     }
 
     private void setDefaults() {
+
+        if (builder.visitScheduler == null) {
+            builder.visitScheduler = new PncVisitScheduler();
+        }
+
         if (builder.pncRegisterProviderMetadata == null) {
             builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
         }
@@ -43,6 +50,11 @@ public class PncConfiguration {
         if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_CLOSE)) {
             builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_CLOSE, PncCloseFormProcessing.class);
         }
+    }
+
+    @NonNull
+    public <T extends VisitScheduler> T getPncVisitScheduler() {
+        return (T) builder.visitScheduler;
     }
 
     @Nullable
@@ -85,6 +97,9 @@ public class PncConfiguration {
     public static class Builder {
 
         @Nullable
+        private VisitScheduler visitScheduler;
+
+        @Nullable
         private Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata;
 
         @Nullable
@@ -106,6 +121,11 @@ public class PncConfiguration {
 
         public Builder(@NonNull Class<? extends PncRegisterQueryProviderContract> pncRegisterQueryProvider) {
             this.pncRegisterQueryProvider = pncRegisterQueryProvider;
+        }
+
+        public Builder setPncVisitScheduler(@Nullable VisitScheduler visitScheduler) {
+            this.visitScheduler = visitScheduler;
+            return this;
         }
 
         public Builder setPncRegisterProviderMetadata(@Nullable Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata) {

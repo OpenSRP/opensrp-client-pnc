@@ -22,7 +22,7 @@ public class RepeatingGroupGeneratorTest extends BaseTest {
     public void testInitShouldGenerateRepeatingGrpFields() throws JSONException {
         JSONObject step = new JSONObject(sampleStep);
         String repeatingGrpkey = "baby_alive_group";
-        String uniqueKey = PncDbConstants.Column.PncBaby.MEDIC_INFO_ID;
+        String uniqueKey = PncDbConstants.Column.PncBaby.BASE_ENTITY_ID;
         Map<String, String> columnMap = new HashMap<>();
         columnMap.put("baby_first_name","first_name");
         columnMap.put("baby_last_name","last_name");

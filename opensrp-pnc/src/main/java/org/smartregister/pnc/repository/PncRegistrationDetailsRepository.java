@@ -4,13 +4,8 @@ import android.support.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncDbConstants;
-
-import java.util.HashMap;
-
-import timber.log.Timber;
 
 
 /**
@@ -61,20 +56,5 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
         }
 
         return propertyNames;
-    }
-
-    public HashMap<String, String> findByBaseEntityId(@NonNull String baseEntityId) {
-        try {
-            if (StringUtils.isNotBlank(baseEntityId)) {
-                return rawQuery(getReadableDatabase(),
-                        "SELECT *, pvi.created_at AS latest_visit_date, prd.base_entity_id as base_entity_id, prd._id AS _id FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
-                                "LEFT JOIN " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd ON prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
-                                "LEFT JOIN " + PncDbConstants.Table.PNC_VISIT_INFO + " AS pvi ON pvi." + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " = prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
-                                "WHERE ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
-            }
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            Timber.e(e);
-        }
-        return null;
     }
 }

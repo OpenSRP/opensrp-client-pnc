@@ -19,12 +19,12 @@ import org.smartregister.pnc.adapter.PncProfileVisitsAdapter;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 import org.smartregister.pnc.presenter.PncProfileVisitsFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.view.fragment.BaseProfileFragment;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -129,7 +129,7 @@ public class PncProfileVisitsFragment extends BaseProfileFragment implements Pnc
     }
 
     @Override
-    public void displayVisits(@NonNull List<Map<String, Object>> ancVisitSummaries, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
+    public void displayVisits(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
         if (getActivity() != null) {
             PncProfileVisitsAdapter adapter = new PncProfileVisitsAdapter(getActivity(), items);
             adapter.notifyDataSetChanged();

@@ -18,24 +18,24 @@ public class PncStillBornRepository extends BaseRepository implements PncGeneric
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE " + PncDbConstants.Table.PNC_STILL_BORN + "("
             + PncDbConstants.Column.PncStillBorn.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + PncDbConstants.Column.PncStillBorn.MEDIC_INFO_ID + " VARCHAR NOT NULL, "
+            + PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncStillBorn.STILL_BIRTH_CONDITION + " VARCHAR NULL, "
             + PncDbConstants.Column.PncStillBorn.EVENT_DATE + " VARCHAR NULL )";
 
 
-    private static final String INDEX_MEDIC_INFO_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_STILL_BORN
-            + "_" + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + "_index ON " + PncDbConstants.Table.PNC_STILL_BORN +
-            "(" + PncDbConstants.Column.PncBaby.MEDIC_INFO_ID + " COLLATE NOCASE);";
+    private static final String INDEX_MOTHER_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_STILL_BORN
+            + "_" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_STILL_BORN +
+            "(" + PncDbConstants.Column.PncBaby.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL(INDEX_MEDIC_INFO_ID);
+        database.execSQL(INDEX_MOTHER_BASE_ENTITY_ID);
     }
 
     @Override
     public boolean saveOrUpdate(PncStillBorn stillBorn) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PncDbConstants.Column.PncBaby.MEDIC_INFO_ID, stillBorn.getMedicInfoId());
+        contentValues.put(PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID, stillBorn.getMotherBaseEntityId());
         contentValues.put(PncDbConstants.Column.PncStillBorn.STILL_BIRTH_CONDITION, stillBorn.getStillBirthCondition());
         contentValues.put(PncDbConstants.Column.PncStillBorn.EVENT_DATE, stillBorn.getEventDate());
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -58,12 +58,11 @@ public class PncStillBornRepository extends BaseRepository implements PncGeneric
         throw new NotImplementedException("");
     }
 
-    public int count(@NonNull String baseEntityId) {
+    public int countBabyStillBorn(@NonNull String motherBaseEntityId) {
         int count = 0;
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        String query = "SELECT COUNT(psb." + PncDbConstants.Column.PncStillBorn.ID + ") AS count FROM " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd " +
-                "LEFT JOIN " + PncDbConstants.Table.PNC_STILL_BORN + " AS psb ON psb." + PncDbConstants.Column.PncStillBorn.MEDIC_INFO_ID + " = prd." + PncDbConstants.Column.PncDetails.ID + " " +
-                "WHERE prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'";
+        String query = "SELECT COUNT(psb." + PncDbConstants.Column.PncStillBorn.ID + ") AS count FROM " + PncDbConstants.Table.PNC_STILL_BORN + " AS psb " +
+                "WHERE psb." + PncDbConstants.Column.PncStillBorn.MOTHER_BASE_ENTITY_ID + " = '" + motherBaseEntityId + "'";
         try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
             if (cursor.moveToFirst()) {
                 count = cursor.getInt(0);

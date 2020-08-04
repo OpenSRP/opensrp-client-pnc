@@ -42,6 +42,7 @@ public class PncVisitFormProcessing implements PncFormProcessingTask {
 
         HashMap<String, String> injectedFields = new HashMap<>();
         injectedFields.put(PncDbConstants.Column.PncVisitInfo.VISIT_DATE, PncUtils.convertDate(new Date(), PncDbConstants.DATE_FORMAT));
+        injectedFields.put(PncDbConstants.Column.PncVisitInfo.VISIT_ID, PncJsonFormUtils.generateRandomUUIDString());
 
         PncJsonFormUtils.populateInjectedFields(jsonFormObject, injectedFields);
 

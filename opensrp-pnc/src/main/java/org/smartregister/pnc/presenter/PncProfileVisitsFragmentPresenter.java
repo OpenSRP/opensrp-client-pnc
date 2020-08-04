@@ -14,8 +14,8 @@ import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.interactor.PncProfileVisitsFragmentInteractor;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 import org.smartregister.pnc.utils.FilePath;
-import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncFactsUtil;
 
 import java.io.IOException;
@@ -94,14 +94,14 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     }
 
     @Override
-    public void populateWrapperDataAndFacts(@NonNull List<Map<String, Object>> pncVisitSummaries, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
+    public void populateWrapperDataAndFacts(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
 
         try {
-            for (Map<String, Object> pncVisitSummary: pncVisitSummaries) {
+            for (Map.Entry<String, Map<String, String>> entry: pncVisitSummary.getVisitInfoMap().entrySet()) {
 
                 Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT);
 
-                Facts facts = generateVisiInfoAndWomanFacts(pncVisitSummary);
+                Facts facts = generateVisitInfoAndWomanFacts(entry.getValue());
 
                 for (Object ruleObject : ruleObjects) {
 
@@ -127,7 +127,9 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     }
                 }
 
-                generateChild(pncVisitSummary, items);
+                if (pncVisitSummary.getVisitChildStatusMap().containsKey(entry.getKey())) {
+                    generateChild(pncVisitSummary.getVisitChildStatusMap().get(entry.getKey()), items);
+                }
             }
         }
         catch (IOException e) {
@@ -135,58 +137,53 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         }
     }
 
-    private Facts generateVisiInfoAndWomanFacts(Map<String, Object> pncVisitMap) {
+    private Facts generateVisitInfoAndWomanFacts(Map<String, String> pncVisitMap) {
         Facts facts = new Facts();
 
-        for (Map.Entry<String, Object> entry: pncVisitMap.entrySet()) {
-            if (!PncConstants.CHILD_RECORDS.equals(entry.getKey())) {
-                PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
-            }
+        for (Map.Entry<String, String> entry: pncVisitMap.entrySet()) {
+            PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
         }
 
         return facts;
     }
 
-    private void generateChild(Map<String, Object> data, List<Pair<YamlConfigWrapper, Facts>> items) {
-        if (data.containsKey(PncConstants.CHILD_RECORDS)) {
-            try {
+    private void generateChild(List<Map<String, String>> data, List<Pair<YamlConfigWrapper, Facts>> items) {
+        try {
 
-                List<Map<String, String>> childRecords = (List<Map<String, String>>) data.get(PncConstants.CHILD_RECORDS);
-                for (Map<String, String> childData: childRecords) {
+            for (Map<String, String> childData: data) {
 
-                    Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT_ROW);
+                Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT_ROW);
 
-                    Facts facts = new Facts();
+                Facts facts = new Facts();
 
-                    for (Map.Entry<String, String> entry : childData.entrySet()) {
-                        PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
+                for (Map.Entry<String, String> entry : childData.entrySet()) {
+                    PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
+                }
+
+                for (Object ruleObject : ruleObjects) {
+
+                    YamlConfig yamlConfig = (YamlConfig) ruleObject;
+
+                    if (yamlConfig.getSubGroup() != null) {
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null), facts));
                     }
 
-                    for (Object ruleObject : ruleObjects) {
+                    List<YamlConfigItem> configItems = yamlConfig.getFields();
 
-                        YamlConfig yamlConfig = (YamlConfig) ruleObject;
-
-                        if (yamlConfig.getSubGroup() != null) {
-                            items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null), facts));
-                        }
-
-                        List<YamlConfigItem> configItems = yamlConfig.getFields();
-
-                        if (configItems != null) {
-                            for (YamlConfigItem configItem : configItems) {
-                                String relevance = configItem.getRelevance();
-                                if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
-                                    items.add(new Pair<>( new YamlConfigWrapper(null, null, configItem), facts));
-                                }
+                    if (configItems != null) {
+                        for (YamlConfigItem configItem : configItems) {
+                            String relevance = configItem.getRelevance();
+                            if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
+                                items.add(new Pair<>( new YamlConfigWrapper(null, null, configItem), facts));
                             }
                         }
                     }
-
                 }
 
-            } catch (IOException ex) {
-                Timber.e(ex);
             }
+
+        } catch (IOException ex) {
+            Timber.e(ex);
         }
     }
 
