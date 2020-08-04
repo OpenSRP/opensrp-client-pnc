@@ -105,10 +105,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             try {
-                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
-                interactor.saveEvents(pncOutcomeAndCloseEvent, this);
+                List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
+                interactor.saveEvents(pncFormEvent, this);
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -139,12 +139,12 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
 
         try {
             String formPath = formName;
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) formPath = PncConstants.Form.PNC_MEDIC_INFORMATION;
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) formPath = PncConstants.Form.PNC_MEDIC_INFORMATION;
             if (formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) formPath = PncConstants.Form.PNC_VISIT;
 
             form = model.getFormAsJson(formPath, entityId, locationId, injectedFieldValues);
 
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            if (formName.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                 interactor.fetchSavedForm(formName, entityId, entityTable, this);
                 return;
             }

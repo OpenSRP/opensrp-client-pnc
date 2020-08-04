@@ -17,8 +17,6 @@ public interface PncDbConstants {
 
         String REGISTER_ID = "register_id";
         String BASE_ENTITY_ID = "base_entity_id";
-        String GA = "ga";
-        String CONCEPTION_DATE = "conception_date";
 
         String TABLE = "ec_client";
         String OPENSRP_ID = "opensrp_id";
@@ -44,12 +42,6 @@ public interface PncDbConstants {
         interface PncDetails {
             String ID = "_id";
             String BASE_ENTITY_ID = "base_entity_id";
-            String PENDING_OUTCOME = "pending_outcome";
-            String PARA = "para";
-            String GRAVIDA = "gravida";
-            String RECORDED_AT = "recorded_at";
-            String CONCEPTION_DATE = "conception_date";
-            String HIV_STATUS = "hiv_status";
             String EVENT_DATE = "event_date";
             String CREATED_AT = "created_at";
         }
@@ -57,6 +49,8 @@ public interface PncDbConstants {
         interface PncMedicInfo{
             String ID = "_id";
             String BASE_ENTITY_ID = "base_entity_id";
+            String EVENT_DATE = "event_date";
+            String CREATED_AT = "created_at";
         }
 
         interface PncBaby {

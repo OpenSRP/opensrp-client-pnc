@@ -108,7 +108,7 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         prefilledForm.put("question", "What is happening?");
 
         presenter.onFetchedSavedForm(
-                new PncPartialForm(8923, "bei", prefilledForm.toString(), PncConstants.EventTypeConstants.PNC_OUTCOME, "2019-05-01 11:11:11")
+                new PncPartialForm(8923, "bei", prefilledForm.toString(), PncConstants.EventTypeConstants.PNC_MEDIC_INFO, "2019-05-01 11:11:11")
                 , "caseId"
                 , "ec_child");
         Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), anyString(), Mockito.nullable(String.class));

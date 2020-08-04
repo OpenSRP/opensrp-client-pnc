@@ -6,6 +6,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncDbConstants.Column.PncMedicInfo;
 
 import java.util.HashMap;
 
@@ -20,27 +21,34 @@ public class PncMedicInfoRepository extends PncDetailsRepository {
 
     private static final String TABLE = PncDbConstants.Table.PNC_MEDIC_INFO;
 
+    private static String CREATE_TABLE_SQL = "CREATE TABLE " + TABLE + "("
+            + PncMedicInfo.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + PncMedicInfo.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
+            + PncMedicInfo.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
+            + PncMedicInfo.EVENT_DATE + " DATETIME NOT NULL, ";
+
     private String[] propertyNames;
 
-    public static void createTable(@NonNull SQLiteDatabase database) {
-        String CREATE_TABLE_SQL = "CREATE TABLE " + TABLE + "("
-                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-                + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
-                + PncDbConstants.Column.PncDetails.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
-                + PncDbConstants.Column.PncDetails.EVENT_DATE + " DATETIME NOT NULL, ";
-
-        for (Property column: Property.values()) {
+    static {
+        for (Property column : Property.values()) {
             CREATE_TABLE_SQL += column.name() + " VARCHAR, ";
         }
 
-        CREATE_TABLE_SQL += "UNIQUE(" + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + ") ON CONFLICT REPLACE)";
+        CREATE_TABLE_SQL += "UNIQUE(" + PncMedicInfo.BASE_ENTITY_ID + ") ON CONFLICT REPLACE)";
+    }
 
+    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + TABLE
+            + "_" + PncMedicInfo.BASE_ENTITY_ID + "_index ON " + TABLE +
+            "(" + PncMedicInfo.BASE_ENTITY_ID + " COLLATE NOCASE);";
+
+    private static final String INDEX_EVENT_DATE = "CREATE INDEX " + TABLE
+            + "_" + PncMedicInfo.EVENT_DATE + "_index ON " + TABLE +
+            "(" + PncMedicInfo.EVENT_DATE + " COLLATE NOCASE);";
+
+    public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL("CREATE INDEX " + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + "_" + TABLE
-                + " ON " + TABLE + " (" + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + ")");
-
-        database.execSQL("CREATE INDEX " + PncDbConstants.Column.PncDetails.EVENT_DATE + "_" + TABLE
-                + " ON " + TABLE + " (" + PncDbConstants.Column.PncDetails.EVENT_DATE + ")");
+        database.execSQL(INDEX_BASE_ENTITY_ID);
+        database.execSQL(INDEX_EVENT_DATE);
     }
 
     @Override
@@ -66,10 +74,24 @@ public class PncMedicInfoRepository extends PncDetailsRepository {
         try {
             if (StringUtils.isNotBlank(baseEntityId)) {
                 return rawQuery(getReadableDatabase(),
-                        "SELECT *, pvi.created_at AS latest_visit_date, pmi.base_entity_id as base_entity_id, pmi._id AS _id FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
-                                "LEFT JOIN " + PncDbConstants.Table.PNC_MEDIC_INFO + " AS pmi ON pmi." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
-                                "LEFT JOIN " + PncDbConstants.Table.PNC_VISIT_INFO + " AS pvi ON pvi." + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " \n" +
-                                "WHERE ec." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
+                        "SELECT *, pmi.base_entity_id as base_entity_id, pmi._id AS _id FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
+                                "LEFT JOIN " + PncDbConstants.Table.PNC_MEDIC_INFO + " AS pmi ON pmi." + PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.Client.BASE_ENTITY_ID + " \n" +
+                                "WHERE ec." + PncDbConstants.Column.Client.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+    public HashMap<String, String> findWithVisitInfoByBaseEntityId(@NonNull String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "SELECT *, MAX(pvi.created_at) AS latest_visit_date, pmi.base_entity_id as base_entity_id, pmi._id AS _id FROM " + PncDbConstants.KEY.TABLE + " AS ec \n" +
+                                "LEFT JOIN " + PncDbConstants.Table.PNC_MEDIC_INFO + " AS pmi ON pmi." + PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.Client.BASE_ENTITY_ID + " \n" +
+                                "LEFT JOIN " + PncDbConstants.Table.PNC_VISIT_INFO + " AS pvi ON pvi." + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " = ec." + PncDbConstants.Column.Client.BASE_ENTITY_ID + " \n" +
+                                "WHERE ec." + PncDbConstants.Column.Client.BASE_ENTITY_ID + " = '" + baseEntityId + "'").get(0);
             }
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             Timber.e(e);

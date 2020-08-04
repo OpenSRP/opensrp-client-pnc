@@ -57,49 +57,4 @@ public class PncRegisterActivityPresenter extends BasePncRegisterActivityPresent
             getView().hideProgressDialog();
         }
     }
-/*
-    @Override
-    public void onUniqueIdFetched(@NonNull Triple<String, String, String> triple, @NonNull String entityId) {
-        try {
-            startForm(triple.getLeft(), entityId, triple.getMiddle(), triple.getRight(), null, null);
-        } catch (Exception e) {
-            Timber.e(e);
-            if (getView() != null) {
-                getView().displayToast(R.string.error_unable_to_start_form);
-            }
-        }
-    }
-
-    @Nullable
-    private PncRegisterActivityContract.View getView() {
-        if (viewReference != null) {
-            return viewReference.get();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void saveLanguage(String language) {
-        model.saveLanguage(language);
-
-        if (getView() != null) {
-            getView().displayToast(language + " selected");
-        }
-    }
-
-    @Override
-    public void registerViewConfigurations(List<String> viewIdentifiers) {
-        model.registerViewConfigurations(viewIdentifiers);
-    }
-
-    @Override
-    public void unregisterViewConfiguration(List<String> viewIdentifiers) {
-        model.unregisterViewConfiguration(viewIdentifiers);
-    }
-
-    public void setModel(PncRegisterActivityContract.Model model) {
-        this.model = model;
-    }
-    */
 }

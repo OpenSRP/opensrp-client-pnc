@@ -21,7 +21,6 @@ import org.smartregister.pnc.sample.processor.PncSampleClientProcessorForJava;
 import org.smartregister.pnc.sample.repository.SampleRepository;
 import org.smartregister.pnc.sample.utils.Constants;
 import org.smartregister.pnc.sample.utils.Utils;
-import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
@@ -112,7 +111,6 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
                 ,true);
         PncConfiguration pncConfiguration = new PncConfiguration
                 .Builder(PncRegisterQueryProvider.class)
-                .setPncVisitScheduler(new PncVisitScheduler())
                 .setPncMetadata(pncMetadata)
                 .build();
         PncLibrary.init(context, getRepository(), pncConfiguration, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);

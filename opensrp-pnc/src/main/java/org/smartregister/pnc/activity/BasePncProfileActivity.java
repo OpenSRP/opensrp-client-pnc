@@ -279,7 +279,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
            if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
                 } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {

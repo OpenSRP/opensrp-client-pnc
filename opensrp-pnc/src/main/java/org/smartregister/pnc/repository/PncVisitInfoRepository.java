@@ -59,13 +59,18 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             + PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER + " VARCHAR NULL )";
 
 
-    private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
-            + "_" + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
-            "(" + PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
+    private static final String INDEX_MOTHER_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
+            + "_" + PncVisitInfo.MOTHER_BASE_ENTITY_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
+            "(" + PncVisitInfo.MOTHER_BASE_ENTITY_ID + " COLLATE NOCASE);";
+
+    private static final String INDEX_VISIT_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
+            + "_" + PncVisitInfo.VISIT_ID + "_index ON " + PncDbConstants.Table.PNC_VISIT_INFO +
+            "(" + PncVisitInfo.VISIT_ID + " COLLATE NOCASE);";
 
     public static void createTable(@NonNull SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL(INDEX_BASE_ENTITY_ID);
+        database.execSQL(INDEX_MOTHER_BASE_ENTITY_ID);
+        database.execSQL(INDEX_VISIT_ID);
     }
 
     @Override

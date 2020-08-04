@@ -28,6 +28,7 @@ import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
 import org.smartregister.pnc.repository.PncVisitInfoRepository;
+import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
@@ -77,6 +78,7 @@ public class PncLibrary {
     private PncPartialFormRepository pncPartialFormRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
     private PncMedicInfoRepository pncMedicInfoRepository;
+    private PncVisitScheduler pncVisitScheduler;
     private AppExecutors appExecutors;
 
     private Compressor compressor;
@@ -153,6 +155,13 @@ public class PncLibrary {
         }
 
         return pncMedicInfoRepository;
+    }
+
+    public PncVisitScheduler getPncVisitScheduler() {
+        if (pncVisitScheduler == null) {
+            pncVisitScheduler = ConfigurationInstancesHelper.newInstance(getPncConfiguration().getPncVisitScheduler());
+        }
+        return pncVisitScheduler;
     }
 
     public PncChildRepository getPncChildRepository() {

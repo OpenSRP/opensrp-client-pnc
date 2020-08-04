@@ -186,7 +186,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
                                 performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.EventTypeConstants.PNC_VISIT);
                             }
                             else if (buttonType.equals(R.string.start_pnc)){
-                                performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.EventTypeConstants.PNC_OUTCOME);
+                                performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.EventTypeConstants.PNC_MEDIC_INFO);
                             }
                         }
                     }

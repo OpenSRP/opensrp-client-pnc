@@ -124,7 +124,7 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:textAppearance="?android:textAppearanceSmall"
             android:textSize="15sp"
-            android:background="@drawable/pnc_outcome_bg"
+            android:background="@drawable/pnc_status_btn_bg"
             android:typeface="normal" />
 
     </LinearLayout>

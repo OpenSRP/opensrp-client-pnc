@@ -101,7 +101,7 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     public void onBackPressed() {
         if (enableOnCloseDialog) {
             String formType = mJSONObject.optString(PncJsonFormUtils.ENCOUNTER_TYPE);
-            if (formType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || formType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            if (formType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || formType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                 AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                         .setMessage(getString(R.string.save_form_fill_session))
                         .setNegativeButton(R.string.yes, (dialog1, which) -> {

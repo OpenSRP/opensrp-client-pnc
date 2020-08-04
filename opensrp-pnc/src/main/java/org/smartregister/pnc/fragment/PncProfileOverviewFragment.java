@@ -37,7 +37,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     private CommonPersonObjectClient commonPersonObjectClient;
 
     private LinearLayout pncProfileOverviewLayout;
-    private Button recordOutcomeBtn;
+    private Button recordFormBtn;
 
     public static PncProfileOverviewFragment newInstance(Bundle bundle) {
         Bundle args = bundle;
@@ -69,7 +69,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
         if (baseEntityId != null) {
             presenter.loadOverviewFacts(baseEntityId, (facts, yamlConfigListGlobal) -> {
                 if (getActivity() != null && facts != null && yamlConfigListGlobal != null) {
-                    showOutcomeBtn();
+                    showRecordFormBtn();
 
                     PncProfileOverviewAdapter adapter = new PncProfileOverviewAdapter(getActivity(), yamlConfigListGlobal, facts);
                     adapter.notifyDataSetChanged();
@@ -83,14 +83,14 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
         }
     }
 
-    private void showOutcomeBtn() {
+    private void showRecordFormBtn() {
         if (getActivity() != null) {
-            HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncMedicInfoRepository().findByBaseEntityId(baseEntityId);
+            HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncMedicInfoRepository().findWithVisitInfoByBaseEntityId(baseEntityId);
             commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID, clientDetail.get(PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID));
             commonPersonObjectClient.getColumnmaps().put(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE, clientDetail.get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
-            PncUtils.setVisitButtonStatus(recordOutcomeBtn, commonPersonObjectClient);
+            PncUtils.setVisitButtonStatus(recordFormBtn, commonPersonObjectClient);
             pncProfileOverviewLayout.setVisibility(View.VISIBLE);
-            recordOutcomeBtn.setOnClickListener(v -> {
+            recordFormBtn.setOnClickListener(v -> {
                 Object buttonType = v.getTag(R.id.BUTTON_TYPE);
                 if (buttonType != null) {
                     BasePncProfileActivity profileActivity = (BasePncProfileActivity) getActivity();
@@ -108,8 +108,8 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.pnc_fragment_profile_overview, container, false);
-        pncProfileOverviewLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_outcomeLayout);
-        recordOutcomeBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_outcome);
+        pncProfileOverviewLayout = view.findViewById(R.id.ll_pncFragmentProfileOverview_medicInfoLayout);
+        recordFormBtn = view.findViewById(R.id.btn_pncFragmentProfileOverview_medicInfo);
         return view;
     }
 

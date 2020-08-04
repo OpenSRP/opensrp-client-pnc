@@ -220,7 +220,7 @@ public class PncUtils extends org.smartregister.util.Utils {
             form.setHideNextButton(false);
             form.setHidePreviousButton(false);
 
-            if (PncConstants.EventTypeConstants.PNC_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
                 form.setSaveLabel(context.getString(R.string.submit_and_close_pnc));
             }
 
@@ -382,14 +382,14 @@ public class PncUtils extends org.smartregister.util.Utils {
     public static void setVisitButtonStatus(Button button, CommonPersonObjectClient client) {
         button.setTag(R.id.BUTTON_TYPE, R.string.start_pnc);
         button.setText(R.string.start_pnc);
-        button.setBackgroundResource(R.drawable.pnc_outcome_bg);
+        button.setBackgroundResource(R.drawable.pnc_status_btn_bg);
 
         if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) != null) {
 
             String deliveryDateStr = client.getColumnmaps().get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
             if (StringUtils.isNotBlank(deliveryDateStr)) {
                 LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
-                PncVisitScheduler pncVisitScheduler = PncLibrary.getInstance().getPncConfiguration().getPncVisitScheduler();
+                PncVisitScheduler pncVisitScheduler = PncLibrary.getInstance().getPncVisitScheduler();
                 pncVisitScheduler.setDeliveryDate(deliveryDate);
                 pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
 
@@ -424,7 +424,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         }
 
-        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.EventTypeConstants.PNC_OUTCOME : PncConstants.EventTypeConstants.PNC_VISIT;
+        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.EventTypeConstants.PNC_MEDIC_INFO : PncConstants.EventTypeConstants.PNC_VISIT;
         PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId(), formType));
         if (pncPartialForm != null) {
             button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
@@ -433,9 +433,8 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static void addGlobals(String baseEntityId, JSONObject form) {
 
-        String query = "SELECT prd.delivery_date, prd.hiv_status_previous, prd.hiv_status_current FROM ec_client AS ec \n" +
-                "LEFT JOIN pnc_registration_details AS prd ON prd.base_entity_id = ec.base_entity_id \n" +
-                "WHERE ec.base_entity_id = '" + baseEntityId + "'";
+        String query = "SELECT pmi.delivery_date, pmi.hiv_status_previous, pmi.hiv_status_current FROM pnc_medic_info AS pmi \n" +
+                "WHERE pmi.base_entity_id = '" + baseEntityId + "'";
 
         Map<String, String> detailMap = getMergedData(query);
 
@@ -496,7 +495,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     }
 
-    public static void saveOutcomeAndVisitFormSilent(String jsonString, Intent data, PncEventActionCallBack callBack) {
+    public static void saveMedicInfoAndVisitFormSilent(String jsonString, Intent data, PncEventActionCallBack callBack) {
 
         PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()) {
             @Override
@@ -515,17 +514,11 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
             PncUtils.addGlobals(entityId, jsonForm);
-            PncUtils.addNumberOfBabyCount(entityId, jsonForm);
         }
 
-        if (PncConstants.EventTypeConstants.PNC_OUTCOME.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+        if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
             PncUtils.putDataOnField(jsonForm, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS, PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT, intentData.get(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT));
         }
-    }
-
-    public static void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBabyOldDays(baseEntityId, PncConstants.HOW_BABY_OLD_IN_DAYS);
-        PncUtils.putDataOnField(form, PncConstants.JsonFormKeyConstants.CHILD_STATUS_GROUP, PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, String.valueOf(numberOfCount));
     }
 
     public static void putDataOnField(JSONObject form, String fieldKey, String key, String value) {

@@ -134,22 +134,6 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         return data;
     }
 
-    public int countBabyOldDays(String motherBaseEntityId, int howBabyOldInDays) {
-        int count;
-        String deliveryDays = "delivery_date";
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-
-        String query = "SELECT CAST(julianday('now') - julianday(datetime(substr(" + PncBaby.BABY_DOB + ", 7, 4) || '-' || substr(" + PncBaby.BABY_DOB + ", 4, 2) || '-' || substr(" + PncBaby.BABY_DOB + ", 1, 2))) AS INTEGER) AS " + deliveryDays + " " +
-                "FROM " + PncDbConstants.Table.PNC_BABY + " " +
-                "WHERE " + PncBaby.MOTHER_BASE_ENTITY_ID + " = '" + motherBaseEntityId + "' AND " + deliveryDays + " <= " + howBabyOldInDays + " ";
-
-        try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
-            count = cursor.getCount();
-        }
-
-        return count;
-    }
-
     private PncChild fillUp(Cursor cursor) {
         PncChild pncChild = new PncChild();
 

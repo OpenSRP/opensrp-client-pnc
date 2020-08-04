@@ -34,18 +34,18 @@ import timber.log.Timber;
 import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
 import static org.smartregister.util.JsonFormUtils.gson;
 
-public class PncOutcomeFormProcessing implements PncFormProcessingTask {
+public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
 
 
     @Override
     public List<Event> processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-            return processPncOutcomeForm(jsonString, data);
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+            return processPncMedicInfoForm(jsonString, data);
         }
         return new ArrayList<>();
     }
 
-    public List<Event> processPncOutcomeForm(@NonNull String jsonString, @NonNull Intent data) throws JSONException {
+    public List<Event> processPncMedicInfoForm(@NonNull String jsonString, @NonNull Intent data) throws JSONException {
         List<Event> eventList = new ArrayList<>();
 
         JSONObject jsonFormObject = new JSONObject(jsonString);
@@ -100,10 +100,10 @@ public class PncOutcomeFormProcessing implements PncFormProcessingTask {
 
         FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
 
-        Event pncOutcomeEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_OUTCOME, "");
-        PncJsonFormUtils.tagSyncMetadata(pncOutcomeEvent);
-        eventList.add(pncOutcomeEvent);
+        Event pncMedicInfoEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
+                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_MEDIC_INFO, "");
+        PncJsonFormUtils.tagSyncMetadata(pncMedicInfoEvent);
+        eventList.add(pncMedicInfoEvent);
 
 
         /*Event closePncEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),

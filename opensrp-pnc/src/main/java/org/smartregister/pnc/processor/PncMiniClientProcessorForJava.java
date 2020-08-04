@@ -55,7 +55,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             eventTypes = new HashSet<>();
             eventTypes.add(PncConstants.EventTypeConstants.PNC_REGISTRATION);
             eventTypes.add(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION);
-            eventTypes.add(PncConstants.EventTypeConstants.PNC_OUTCOME);
+            eventTypes.add(PncConstants.EventTypeConstants.PNC_MEDIC_INFO);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_VISIT);
         }
@@ -100,7 +100,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
                 unsyncEvents.add(event);
                 break;
-            case PncConstants.EventTypeConstants.PNC_OUTCOME:
+            case PncConstants.EventTypeConstants.PNC_MEDIC_INFO:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 processPncMedicInfo(eventClient);
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
@@ -313,7 +313,32 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     }
 
     private void generateKeyValuesFromEvent(@NonNull Event event, HashMap<String, String> keyValues) {
-        generateKeyValuesFromEvent(event, keyValues, false);
+        List<Obs> obs = event.getObs();
+        for (Obs observation : obs) {
+            String key = observation.getFormSubmissionField();
+            List<Object> humanReadableValues = observation.getHumanReadableValues();
+            if (humanReadableValues.size() > 0) {
+                String value = (String) humanReadableValues.get(0);
+                if (!TextUtils.isEmpty(value)) {
+                    if (humanReadableValues.size() > 1) {
+                        value = humanReadableValues.toString();
+                    }
+                    keyValues.put(key, value);
+                    continue;
+                }
+            }
+            List<Object> values = observation.getValues();
+            if (values.size() > 0) {
+                String value = (String) values.get(0);
+                if (!TextUtils.isEmpty(value)) {
+                    if (values.size() > 1) {
+                        value = values.toString();
+                    }
+                    keyValues.put(key, value);
+                    continue;
+                }
+            }
+        }
     }
 
     @Override

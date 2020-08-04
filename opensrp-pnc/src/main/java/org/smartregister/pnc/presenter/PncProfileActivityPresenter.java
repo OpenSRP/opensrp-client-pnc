@@ -224,10 +224,10 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             return;
         }
 
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT) || eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT) || eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
             try {
-                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
-                mProfileInteractor.saveEvents(pncOutcomeAndCloseEvent, this);
+                List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
+                mProfileInteractor.saveEvents(pncFormEvent, this);
                 PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), eventType)));
             } catch (JSONException e) {
                 Timber.e(e);

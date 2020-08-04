@@ -24,7 +24,6 @@ import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.pnc.utils.SampleConstants;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
 import timber.log.Timber;
@@ -52,8 +51,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
     @Override
     protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
-        //TODO: Continue fixing pnc outcome form from here
-        // After filling in the form, we need to process it, create event(s) and process the event(s) (probably)
+
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
                 String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
@@ -68,7 +66,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
 
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().saveForm(jsonString, registerParam);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     presenter().savePncForm(encounterType, data);
                 }
@@ -91,10 +89,6 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
     @Override
     public void startFormActivity(JSONObject jsonForm) {
         Intent intent = new Intent(this, PncLibrary.getInstance().getPncConfiguration().getPncMetadata().getPncFormActivity());
-        if (jsonForm.has(SampleConstants.KEY.ENCOUNTER_TYPE) && jsonForm.optString(SampleConstants.KEY.ENCOUNTER_TYPE).equals(
-                SampleConstants.KEY.PNC_REGISTRATION)) {
-//            PncJsonFormUtils.addRegLocHierarchyQuestions(jsonForm, GizConstants.KeyConstants.REGISTRATION_HOME_ADDRESS, LocationHierarchy.ENTIRE_TREE);
-        }
 
         intent.putExtra(PncConstants.JsonFormExtraConstants.JSON, jsonForm.toString());
 

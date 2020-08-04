@@ -3,11 +3,11 @@ package org.smartregister.pnc.config;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
 
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.R;
+import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.Utils;
 
 import java.util.Map;
@@ -45,26 +45,9 @@ public class BasePncRegisterProviderMetadata implements PncRegisterProviderMetad
         return Utils.getValue(columnMaps, PncDbConstants.KEY.DOB, false);
     }
 
-    @NonNull
     @Override
-    public String getGA(@NonNull Map<String, String> columnMaps) {
-        String gaInWeeks = getString(R.string.zero_weeks);
-        String conceptionDateString = Utils.getValue(columnMaps, PncDbConstants.KEY.CONCEPTION_DATE, false);
-
-        if (!TextUtils.isEmpty(conceptionDateString)) {
-            int intWeeks = PncLibrary.getGestationAgeInWeeks(conceptionDateString);
-            String weekString;
-
-            if (intWeeks != 1) {
-                weekString = getString(R.string.weeks);
-            } else {
-                weekString = getString(R.string.week);
-            }
-
-            gaInWeeks =  intWeeks + " " + weekString;
-        }
-
-        return gaInWeeks;
+    public int getDeliveryDays(@NonNull Map<String, String> columnMaps) {
+        return PncUtils.getDeliveryDays(columnMaps.get(PncConstants.FormGlobalConstants.DELIVERY_DATE));
     }
 
     @NonNull

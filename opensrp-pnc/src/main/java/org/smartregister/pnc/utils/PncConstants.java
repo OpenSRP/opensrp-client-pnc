@@ -87,7 +87,6 @@ public class PncConstants extends AllConstants {
         public static final String OTHER_VISIT_MAP = "other_visit_map";
         public static final String CHILD_STATUS_MAP = "child_status_map";
         public static final String PMI_BASE_ENTITY_ID = "pmi_base_entity_id";
-        public static final String BABY_COUNT_ALIVE = "baby_count_alive";
         public static final String CHILD_REGISTERED_COUNT = "child_registered_count";
 
 
@@ -161,7 +160,7 @@ public class PncConstants extends AllConstants {
 
     public static final class EventTypeConstants {
         public static final String PNC_REGISTRATION = "PNC Registration";
-        public static final String PNC_OUTCOME = "PNC Medic Information";
+        public static final String PNC_MEDIC_INFO = "PNC Medic Information";
         public static final String UPDATE_PNC_REGISTRATION = "Update PNC Registration";
         public static final String PNC_CLOSE = "PNC Close";
         public static final String BIRTH_REGISTRATION = "Birth Registration";
@@ -170,7 +169,6 @@ public class PncConstants extends AllConstants {
 
     public interface ColumnMapKey {
         String REGISTER_ID = "register_id";
-        String PENDING_OUTCOME = "pending_outcome";
     }
 
     public interface DateFormat {

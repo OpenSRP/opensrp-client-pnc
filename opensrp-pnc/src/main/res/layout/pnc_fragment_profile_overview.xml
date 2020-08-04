@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/ll_pncFragmentProfileOverview_outcomeLayout"
+        android:id="@+id/ll_pncFragmentProfileOverview_medicInfoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_pncFragmentProfileOverview_outcomeTitle"
+            android:id="@+id/tv_pncFragmentProfileOverview_medicInfoTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/overview_sub_header_bg"
@@ -31,7 +31,7 @@
             android:textColor="@color/overview_font_right"/>
 
         <Button
-            android:id="@+id/btn_pncFragmentProfileOverview_outcome"
+            android:id="@+id/btn_pncFragmentProfileOverview_medicInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:foregroundGravity="top"
-        app:layout_constraintTop_toBottomOf="@id/ll_pncFragmentProfileOverview_outcomeLayout"
+        app:layout_constraintTop_toBottomOf="@id/ll_pncFragmentProfileOverview_medicInfoLayout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
-import org.smartregister.pnc.scheduler.VisitScheduler;
 import org.smartregister.pnc.utils.PncConstants;
 
 import java.util.HashMap;
@@ -31,16 +30,16 @@ public class PncConfiguration {
 
     private void setDefaults() {
 
-        if (builder.visitScheduler == null) {
-            builder.visitScheduler = new PncVisitScheduler();
+        if (builder.pncVisitScheduler == null) {
+            builder.pncVisitScheduler = PncVisitScheduler.class;
         }
 
         if (builder.pncRegisterProviderMetadata == null) {
             builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
         }
 
-        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_OUTCOME, PncOutcomeFormProcessing.class);
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_MEDIC_INFO, PncMedicInfoFormProcessing.class);
         }
 
         if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_VISIT)) {
@@ -53,8 +52,8 @@ public class PncConfiguration {
     }
 
     @NonNull
-    public <T extends VisitScheduler> T getPncVisitScheduler() {
-        return (T) builder.visitScheduler;
+    public Class<? extends PncVisitScheduler> getPncVisitScheduler() {
+        return builder.pncVisitScheduler;
     }
 
     @Nullable
@@ -97,7 +96,7 @@ public class PncConfiguration {
     public static class Builder {
 
         @Nullable
-        private VisitScheduler visitScheduler;
+        private Class<? extends PncVisitScheduler> pncVisitScheduler;
 
         @Nullable
         private Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata;
@@ -123,8 +122,8 @@ public class PncConfiguration {
             this.pncRegisterQueryProvider = pncRegisterQueryProvider;
         }
 
-        public Builder setPncVisitScheduler(@Nullable VisitScheduler visitScheduler) {
-            this.visitScheduler = visitScheduler;
+        public Builder setPncVisitScheduler(@Nullable Class<? extends PncVisitScheduler> pncVisitScheduler) {
+            this.pncVisitScheduler = pncVisitScheduler;
             return this;
         }
 
