@@ -249,7 +249,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         }
     }
 
-    private void onActivityResultExtended(Intent data) {
+    protected void onActivityResultExtended(Intent data) {
 
         try {
             String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
