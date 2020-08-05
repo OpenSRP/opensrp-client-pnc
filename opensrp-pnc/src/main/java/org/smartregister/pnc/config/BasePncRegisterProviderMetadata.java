@@ -2,9 +2,7 @@ package org.smartregister.pnc.config;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncUtils;
@@ -59,10 +57,5 @@ public class BasePncRegisterProviderMetadata implements PncRegisterProviderMetad
     @NonNull
     public String getSafeValue(@Nullable String nullableString) {
         return nullableString == null ? "" : nullableString;
-    }
-
-    @NonNull
-    private String getString(@StringRes int stringResId) {
-        return PncLibrary.getInstance().context().applicationContext().getString(stringResId);
     }
 }

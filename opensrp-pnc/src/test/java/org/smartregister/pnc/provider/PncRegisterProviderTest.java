@@ -35,6 +35,8 @@ import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.config.PncRegisterRowOptions;
 import org.smartregister.pnc.holder.FooterViewHolder;
 import org.smartregister.pnc.holder.PncRegisterViewHolder;
+import org.smartregister.pnc.pojo.PncPartialForm;
+import org.smartregister.pnc.repository.PncPartialFormRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.contract.SmartRegisterClient;
@@ -52,6 +54,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PncRegisterProviderTest {
@@ -214,8 +217,13 @@ public class PncRegisterProviderTest {
         ReflectionHelpers.setField(pncRegisterViewHolder, "patientColumn", view);
         ReflectionHelpers.setField(pncRegisterViewHolder, "dueButton", button);
         ReflectionHelpers.setField(pncRegisterProvider, "onClickListener", onClickListener);
-        //PowerMockito.doNothing().when(view).setOnClickListener(onClickListener);
 
+        when(button.getTag(anyInt())).thenReturn("");
+
+        PncPartialFormRepository pncPartialFormRepository = mock(PncPartialFormRepository.class);
+        ReflectionHelpers.setField(PncLibrary.getInstance(), "pncPartialFormRepository", pncPartialFormRepository);
+
+        when(pncPartialFormRepository.findOne(any(PncPartialForm.class))).thenReturn(null);
 
         pncRegisterProvider.getView(cursor
                 , commonPersonObjectClient

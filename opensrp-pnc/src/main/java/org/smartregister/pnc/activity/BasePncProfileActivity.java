@@ -245,28 +245,11 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
-            /*try {
-                String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-                Timber.d("JSON-Result : %s", jsonString);
-
-                JSONObject form = new JSONObject(jsonString);
-                String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
-
-                OngoingTask ongoingTask = new OngoingTask();
-                ongoingTask.setTaskType(OngoingTask.TaskType.PROCESS_FORM);
-                ongoingTask.setTaskDetail(encounterType);
-
-                addOngoingTask(ongoingTask);
-
-
-            } catch (JSONException e) {
-                Timber.e(e);
-            }*/
-            onActivityResultExtended(requestCode, resultCode, data);
+            onActivityResultExtended(data);
         }
     }
 
-    private void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
+    private void onActivityResultExtended(Intent data) {
 
         try {
             String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);

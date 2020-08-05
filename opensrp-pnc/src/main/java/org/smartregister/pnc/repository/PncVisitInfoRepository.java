@@ -250,37 +250,4 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
         return visitIds.toArray(new String[0]);
     }
 
-    private Map<String, Object> convert(Cursor cursor) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(PncDbConstants.Column.PncVisitInfo.ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.ID)));
-        data.put(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.MOTHER_BASE_ENTITY_ID)));
-        data.put(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BASE_ENTITY_ID)));
-        data.put(PncDbConstants.Column.PncVisitInfo.CREATED_AT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.CREATED_AT)));
-        data.put(PncDbConstants.Column.PncVisitInfo.PERIOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.PERIOD)));
-        data.put(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FIRST_VISIT_CHECK)));
-        data.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY)));
-        data.put(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY_NUMBER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OUTSIDE_FACILITY_NUMBER)));
-        data.put(PncDbConstants.Column.PncVisitInfo.OTHER_VISIT_DATE, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.OTHER_VISIT_DATE)));
-        data.put(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS)));
-        data.put(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.COMPLICATIONS_OTHER)));
-        data.put(PncDbConstants.Column.PncVisitInfo.STATUS_C_SECTION, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.STATUS_C_SECTION)));
-        data.put(PncDbConstants.Column.PncVisitInfo.EPISOTOMY_TEAR_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.EPISOTOMY_TEAR_STATUS)));
-        data.put(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS)));
-        data.put(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.LOCHIA_STATUS_OTHER)));
-        data.put(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS)));
-        data.put(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER)));
-        data.put(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN)));
-        data.put(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT)));
-        data.put(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT)));
-        data.put(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY)));
-        data.put(PncDbConstants.Column.PncVisitInfo.BREAST_FEEDING, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.BREAST_FEEDING)));
-        data.put(PncDbConstants.Column.PncVisitInfo.NOT_BREAST_FEEDING_REASON, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.NOT_BREAST_FEEDING_REASON)));
-        data.put(PncDbConstants.Column.PncVisitInfo.VIT_A, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.VIT_A)));
-        data.put(PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON)));
-        data.put(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL)));
-        data.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_METHOD)));
-        data.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER, cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER)));
-
-        return data;
-    }
 }

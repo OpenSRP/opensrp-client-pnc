@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -187,14 +186,6 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         }
     }
 
-    private YamlConfigWrapper getConfigItem(String template) {
-        return getConfigItem(template, false);
-    }
-
-    private YamlConfigWrapper getConfigItem(String template, boolean isRedFont) {
-        return new YamlConfigWrapper(null, null, new YamlConfigItem(template, null, isRedFont ? "yes" : null));
-    }
-
     @Override
     public void onNextPageClicked() {
         if (currentPageNo < totalPages && getProfileView() != null && getProfileView().getClientBaseEntityId() != null) {
@@ -241,8 +232,4 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         return null;
     }
 
-    private <T extends Object> boolean  isNotEmpty(String key, Map<String, T> record) {
-        if (record.get(key) == null) return false;
-        return String.format(Locale.getDefault(), "%s", record.get(key)).length() > 0;
-    }
 }

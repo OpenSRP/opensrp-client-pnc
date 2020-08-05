@@ -19,15 +19,12 @@ import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
 import org.smartregister.pnc.pojo.PncPartialForm;
-import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 
 import java.util.HashMap;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PncProfileActivityPresenterTest extends BaseTest {
@@ -54,9 +51,6 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         interactor = Mockito.spy((PncProfileActivityContract.Interactor) ReflectionHelpers.getField(presenter, "mProfileInteractor"));
 
         ReflectionHelpers.setField(presenter, "mProfileInteractor", interactor);
-
-        PncRegistrationDetailsRepository pncRegistrationDetailsRepository = mock(PncRegistrationDetailsRepository.class);
-        when(pncLibrary.getPncRegistrationDetailsRepository()).thenReturn(pncRegistrationDetailsRepository);
     }
 
     @Test

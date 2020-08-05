@@ -222,6 +222,7 @@ public class PncJsonFormUtilsTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("metadata", new JSONObject());
+        jsonObject.put("count", 1);
         jsonObject.put(PncJsonFormUtils.STEP1, jsonObjectForFields);
 
         HashMap<String, String> injectableFields = new HashMap<>();

@@ -203,10 +203,6 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         return null;
     }
 
-    private YamlConfigWrapper getConfigItem(String template) {
-        return getConfigItem(template, false);
-    }
-
     private YamlConfigWrapper getConfigItem(String template, boolean isRedFont) {
         return new YamlConfigWrapper(null, null, new YamlConfigItem(template, null, isRedFont ? "yes" : null));
     }

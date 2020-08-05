@@ -17,12 +17,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.helper.LibraryHelper;
-import org.smartregister.pnc.helper.PncRulesEngineHelper;
-import org.smartregister.pnc.helper.TextUtilHelper;
 
 import java.util.List;
 
@@ -31,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -57,15 +52,6 @@ public class PncProfileOverviewAdapterTest {
     @Mock
     private Resources resources;
 
-    @Mock
-    private PncLibrary pncLibrary;
-
-    @Mock
-    private TextUtilHelper textUtilHelper;
-
-    @Mock
-    private LibraryHelper libraryHelper;
-
     private PncProfileOverviewAdapter adapter;
 
     @Before
@@ -75,13 +61,10 @@ public class PncProfileOverviewAdapterTest {
 
         adapter = new PncProfileOverviewAdapter(context, mData, facts);
         setField(adapter, "mInflater", mInflater);
-        setField(adapter, "textUtilHelper", textUtilHelper);
-        setField(adapter, "libraryHelper", libraryHelper);
-
     }
 
     @Test
-    public void onCreateViewHolderShouldReturnViewHolder() throws Exception {
+    public void onCreateViewHolderShouldReturnViewHolder() {
 
         PncProfileOverviewAdapter.ViewHolder viewHolder = mock(PncProfileOverviewAdapter.ViewHolder.class);
         View view = mock(View.class);
@@ -111,9 +94,7 @@ public class PncProfileOverviewAdapterTest {
 
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
-        PncRulesEngineHelper pncRulesEngineHelper = mock(PncRulesEngineHelper.class);
 
-        when(textUtilHelper.isEmpty(anyString())).thenReturn(false);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.RED);
         when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
@@ -122,9 +103,6 @@ public class PncProfileOverviewAdapterTest {
         when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
         when(yamlConfigItem.getTemplate()).thenReturn(template);
         when(yamlConfigItem.getIsRedFont()).thenReturn("yes");
-        when(libraryHelper.getPncLibraryInstance()).thenReturn(pncLibrary);
-        when(pncLibrary.getPncRulesEngineHelper()).thenReturn(pncRulesEngineHelper);
-        when(pncRulesEngineHelper.getRelevance(any(Facts.class), anyString())).thenReturn(true);
         when(facts.get("one")).thenReturn("two");
 
         adapter.onBindViewHolder(vh, 0);
@@ -137,44 +115,6 @@ public class PncProfileOverviewAdapterTest {
         verify(sectionDetails, times(1)).setText(": Two");
         verify(sectionDetailTitle, times(1)).setTextColor(Color.RED);
         verify(sectionDetails, times(1)).setTextColor(Color.RED);
-        verify(sectionDetailTitle, times(1)).setVisibility(View.VISIBLE);
-        verify(sectionDetails, times(1)).setVisibility(View.VISIBLE);
-    }
-
-    @Test
-    public void onBindViewHolderShouldVerifyScenarioTwo() {
-
-        String group = "";
-        String subGroup = "";
-
-        TextView sectionHeader = mock(TextView.class);
-        TextView subSectionHeader = mock(TextView.class);
-        TextView sectionDetailTitle = mock(TextView.class);
-        TextView sectionDetails = mock(TextView.class);
-        PncProfileOverviewAdapter.ViewHolder vh = mock(PncProfileOverviewAdapter.ViewHolder.class);
-
-        setField(vh, "sectionHeader", sectionHeader);
-        setField(vh, "subSectionHeader", subSectionHeader);
-        setField(vh, "sectionDetailTitle", sectionDetailTitle);
-        setField(vh, "sectionDetails", sectionDetails);
-
-        YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
-        YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
-
-        when(textUtilHelper.isEmpty(anyString())).thenReturn(true);
-        when(context.getResources()).thenReturn(resources);
-        when(resources.getColor(anyInt())).thenReturn(Color.BLACK);
-        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
-        when(yamlConfigWrapper.getGroup()).thenReturn(group);
-        when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
-        when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
-
-        adapter.onBindViewHolder(vh, 0);
-
-        verify(sectionHeader, times(1)).setVisibility(View.GONE);
-        verify(subSectionHeader, times(1)).setVisibility(View.GONE);
-        verify(sectionDetailTitle, times(1)).setTextColor(Color.BLACK);
-        verify(sectionDetails, times(1)).setTextColor(Color.BLACK);
         verify(sectionDetailTitle, times(1)).setVisibility(View.VISIBLE);
         verify(sectionDetails, times(1)).setVisibility(View.VISIBLE);
     }
