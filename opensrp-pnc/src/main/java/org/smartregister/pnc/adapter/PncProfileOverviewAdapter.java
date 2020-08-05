@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jeasy.rules.api.Facts;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.helper.LibraryHelper;
-import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.pnc.utils.PncUtils;
 
 import java.util.List;
@@ -27,8 +27,6 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
     private LayoutInflater mInflater;
     private Facts facts;
     private Context context;
-    private TextUtilHelper textUtilHelper;
-    private LibraryHelper libraryHelper;
 
     // data is passed into the constructor
     public PncProfileOverviewAdapter(@NonNull Context context, @NonNull List<YamlConfigWrapper> data, @NonNull Facts facts) {
@@ -36,8 +34,6 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
         this.mData = data;
         this.facts = facts;
         this.context = context;
-        this.textUtilHelper = new TextUtilHelper();
-        this.libraryHelper = new LibraryHelper();
     }
 
     // inflates the row layout from xml when needed
@@ -52,7 +48,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String group = mData.get(position).getGroup();
-        if (!textUtilHelper.isEmpty(group)) {
+        if (StringUtils.isNotBlank(group)) {
             holder.sectionHeader.setText(processUnderscores(group));
             holder.sectionHeader.setVisibility(View.VISIBLE);
         } else {
@@ -60,7 +56,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
         }
 
         String subGroup = mData.get(position).getSubGroup();
-        if (!textUtilHelper.isEmpty(subGroup)) {
+        if (StringUtils.isNotBlank(subGroup)) {
             holder.subSectionHeader.setText(processUnderscores(subGroup));
             holder.subSectionHeader.setVisibility(View.VISIBLE);
         } else {
@@ -79,7 +75,7 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
                 holder.sectionDetails.setText(output);//Perhaps refactor to use Json Form Parser Implementation
             }
 
-            if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null || libraryHelper.getPncLibraryInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
+            if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null || PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
                 holder.sectionDetailTitle.setTextColor(context.getResources().getColor(R.color.overview_font_red));
                 holder.sectionDetails.setTextColor(context.getResources().getColor(R.color.overview_font_red));
             } else {

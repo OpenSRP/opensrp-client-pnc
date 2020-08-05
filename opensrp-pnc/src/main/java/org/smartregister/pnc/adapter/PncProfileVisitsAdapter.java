@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jeasy.rules.api.Facts;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.util.StringUtil;
 
@@ -30,14 +30,12 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
     private Context context;
     private LayoutInflater mInflater;
     private List<Pair<YamlConfigWrapper, Facts>> items;
-    private TextUtilHelper textUtilHelper;
 
     // data is passed into the constructor
     public PncProfileVisitsAdapter(@NonNull Context context, List<Pair<YamlConfigWrapper, Facts>> items) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.items = items;
-        textUtilHelper = new TextUtilHelper();
     }
 
     // inflates the row layout from xml when needed
@@ -59,7 +57,7 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
         if (yamlConfigWrapper != null && facts != null) {
             String group = yamlConfigWrapper.getGroup();
 
-            if (!textUtilHelper.isEmpty(group)) {
+            if (StringUtils.isNotBlank(group)) {
                 holder.sectionHeader.setText(StringUtil.humanize(group));
                 holder.sectionHeader.setVisibility(View.VISIBLE);
             } else {
@@ -67,7 +65,7 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
             }
 
             String subGroup = yamlConfigWrapper.getSubGroup();
-            if (!textUtilHelper.isEmpty(subGroup)) {
+            if (StringUtils.isNotBlank(subGroup)) {
                 if (PncUtils.isTemplate(subGroup)) {
                     subGroup = PncUtils.fillTemplate(subGroup, facts);
                 }
