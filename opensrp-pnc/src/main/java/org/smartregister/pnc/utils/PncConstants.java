@@ -92,8 +92,6 @@ public class PncConstants extends AllConstants {
 
         public static final String CHILD_REGISTERED = "child_registered";
         public static final String BIRTH_RECORD = "birth_record_date";
-        public static final String BABY_FIRST_NAME = "baby_first_name";
-        public static final String BABY_LAST_NAME = "baby_last_name";
         public static final String BABY_DOB = "baby_dob";
         public static final String BABY_GENDER = "baby_gender";
         public static final String BIRTH_WEIGHT_ENTERED = "birth_weight_entered";

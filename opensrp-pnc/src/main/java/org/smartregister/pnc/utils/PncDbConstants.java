@@ -64,7 +64,7 @@ public interface PncDbConstants {
             String BABY_LAST_NAME = "baby_last_name";
             String BABY_DOB = "dob";
             String GENDER = "gender";
-            String BIRTH_WEIGTH_ENTERED = "birth_weight_entered";
+            String BIRTH_WEIGHT_ENTERED = "birth_weight_entered";
             String BIRTH_WEIGHT = "birth_weight";
             String BIRTH_HEIGHT_ENTERED = "birth_height_entered";
             String APGAR = "apgar";
@@ -150,7 +150,7 @@ public interface PncDbConstants {
         interface PncStillBorn {
             String ID = "_id";
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
-            String STILL_BIRTH_CONDITION = "still_birth_condition";
+            String STILL_BIRTH_CONDITION = "stillbirth_condition";
             String EVENT_DATE = "event_date";
         }
 

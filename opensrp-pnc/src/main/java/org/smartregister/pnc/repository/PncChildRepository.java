@@ -32,7 +32,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncBaby.BABY_LAST_NAME + " VARCHAR NULL, "
             + PncBaby.BABY_DOB + " VARCHAR NULL, "
             + PncBaby.GENDER + " VARCHAR NULL, "
-            + PncBaby.BIRTH_WEIGTH_ENTERED + " VARCHAR NULL, "
+            + PncBaby.BIRTH_WEIGHT_ENTERED + " VARCHAR NULL, "
             + PncBaby.BIRTH_WEIGHT + " VARCHAR NULL, "
             + PncBaby.BIRTH_HEIGHT_ENTERED + " VARCHAR NULL, "
             + PncBaby.APGAR + " VARCHAR NULL, "
@@ -74,7 +74,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         contentValues.put(PncBaby.BABY_LAST_NAME, pncChild.getLastName());
         contentValues.put(PncBaby.BABY_DOB, pncChild.getDob());
         contentValues.put(PncBaby.GENDER, pncChild.getGender());
-        contentValues.put(PncBaby.BIRTH_WEIGTH_ENTERED, pncChild.getWeightEntered());
+        contentValues.put(PncBaby.BIRTH_WEIGHT_ENTERED, pncChild.getWeightEntered());
         contentValues.put(PncBaby.BIRTH_WEIGHT, pncChild.getWeight());
         contentValues.put(PncBaby.BIRTH_HEIGHT_ENTERED, pncChild.getHeightEntered());
         contentValues.put(PncBaby.APGAR, pncChild.getApgar());
@@ -146,7 +146,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
         pncChild.setLastName(cursor.getString(cursor.getColumnIndex(PncBaby.BABY_LAST_NAME)));
         pncChild.setDob(cursor.getString(cursor.getColumnIndex(PncBaby.BABY_DOB)));
         pncChild.setGender(cursor.getString(cursor.getColumnIndex(PncBaby.GENDER)));
-        pncChild.setWeightEntered(cursor.getString(cursor.getColumnIndex(PncBaby.BIRTH_WEIGTH_ENTERED)));
+        pncChild.setWeightEntered(cursor.getString(cursor.getColumnIndex(PncBaby.BIRTH_WEIGHT_ENTERED)));
         pncChild.setWeight(cursor.getString(cursor.getColumnIndex(PncBaby.BIRTH_WEIGHT)));
         pncChild.setHeightEntered(cursor.getString(cursor.getColumnIndex(PncBaby.BIRTH_HEIGHT_ENTERED)));
         pncChild.setApgar(cursor.getString(cursor.getColumnIndex(PncBaby.APGAR)));

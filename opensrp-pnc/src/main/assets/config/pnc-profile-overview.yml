@@ -74,3 +74,11 @@ fields:
 
   - template: "Is the woman on ART treatment?: {on_art_treatment}"
     relevance: "on_art_treatment != ''"
+
+---
+subGroup: stillbirths
+fields:
+
+  - template: "Number of babies stillborn: {baby_count_stillborn}"
+    relevance: "baby_count_stillborn != ''"
+    isRedFont: "baby_count_stillborn > 0"

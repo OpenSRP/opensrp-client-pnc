@@ -71,6 +71,9 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     private void generateYamlConfigList(String motherBaseEntityId, @NonNull Facts facts, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal) throws IOException {
 
+        int count = PncLibrary.getInstance().getPncStillBornRepository().countBabyStillBorn(motherBaseEntityId);
+        facts.put("baby_count_stillborn", String.valueOf(count));
+
         Iterable<Object> ruleObjects = loadFile(FilePath.FILE.PNC_PROFILE_OVERVIEW);
 
         for (Object ruleObject : ruleObjects) {
@@ -78,6 +81,11 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
             int valueCount = 0;
 
             YamlConfig yamlConfig = (YamlConfig) ruleObject;
+
+            if ("stillbirths".equals(yamlConfig.getSubGroup())) {
+                generateLiveBirths(motherBaseEntityId, yamlConfigListGlobal, facts);
+            }
+
             if (yamlConfig.getGroup() != null) {
                 yamlConfigList.add(new YamlConfigWrapper(yamlConfig.getGroup(), null, null));
             }
@@ -104,13 +112,6 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
                 yamlConfigListGlobal.addAll(yamlConfigList);
             }
         }
-
-        generateLiveBirths(motherBaseEntityId, yamlConfigListGlobal, facts);
-
-        yamlConfigListGlobal.add(new YamlConfigWrapper(null, "stillbirths", null));
-        int count = PncLibrary.getInstance().getPncStillBornRepository().countBabyStillBorn(motherBaseEntityId);
-        facts.put("baby_count_stillborn", String.valueOf(count));
-        yamlConfigListGlobal.add(getConfigItem("Number of babies stillborn: {baby_count_stillborn}", count > 0));
     }
 
     @Override
