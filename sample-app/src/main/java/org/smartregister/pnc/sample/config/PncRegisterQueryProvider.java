@@ -41,10 +41,9 @@ public class PncRegisterQueryProvider extends PncRegisterQueryProviderContract {
     @NonNull
     @Override
     public String mainSelectWhereIDsIn() {
-        return "SELECT pmi.base_entity_id AS pmi_base_entity_id, ec_client.id AS _id, ec_client.base_entity_id, ec_client.first_name , ec_client.last_name , '' AS middle_name , ec_client.gender , ec_client.dob , '' AS home_address, pmi.hiv_status_current, ec_client.relationalid , ec_client.opensrp_id AS register_id , ec_client.last_interacted_with, 'ec_client' as entity_table, pmi.delivery_date, MAX(pvi.created_at) AS latest_visit_date " +
+        return "SELECT pmi.base_entity_id AS pmi_base_entity_id, ec_client.id AS _id, ec_client.base_entity_id, ec_client.first_name , ec_client.last_name , '' AS middle_name , ec_client.gender , ec_client.dob , '' AS home_address, pmi.hiv_status_current, ec_client.relationalid , ec_client.opensrp_id AS register_id , ec_client.last_interacted_with, 'ec_client' as entity_table, pmi.delivery_date, (SELECT MAX(pvi.created_at) FROM pnc_visit_info AS pvi WHERE pvi.mother_base_entity_id = ec_client.base_entity_id) AS latest_visit_date " +
                 "FROM ec_client " +
                 "LEFT JOIN pnc_medic_info AS pmi ON pmi.base_entity_id = ec_client.base_entity_id " +
-                "LEFT JOIN pnc_visit_info AS pvi ON pvi.mother_base_entity_id = ec_client.base_entity_id " +
                 "WHERE ec_client.id IN (%s) " +
                 "ORDER BY ec_client.last_interacted_with DESC";
     }
