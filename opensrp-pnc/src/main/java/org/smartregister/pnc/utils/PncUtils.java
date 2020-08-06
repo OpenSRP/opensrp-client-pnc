@@ -31,13 +31,9 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
-import org.smartregister.pnc.listener.PncEventActionCallBack;
-import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.pojo.PncPartialForm;
-import org.smartregister.pnc.pojo.RegisterParams;
-import org.smartregister.pnc.presenter.PncRegisterActivityPresenter;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
 import org.smartregister.repository.BaseRepository;
@@ -479,34 +475,6 @@ public class PncUtils extends org.smartregister.util.Utils {
         } else {
             return 0;
         }
-    }
-
-    public static void saveRegistrationFormSilent(String jsonString, RegisterParams registerParams, PncEventActionCallBack callBack) {
-
-        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()) {
-            @Override
-            public void onRegistrationSaved(boolean isEdit) {
-                super.onRegistrationSaved(isEdit);
-                callBack.onPncEventSaved();
-            }
-        };
-
-        presenter.saveForm(jsonString, registerParams);
-
-    }
-
-    public static void saveMedicInfoAndVisitFormSilent(String jsonString, Intent data, PncEventActionCallBack callBack) {
-
-        PncRegisterActivityPresenter presenter = new PncRegisterActivityPresenter(null, new PncRegisterActivityModel()) {
-            @Override
-            public void onEventSaved() {
-                super.onEventSaved();
-                callBack.onPncEventSaved();
-            }
-        };
-
-        presenter.savePncForm(jsonString, data);
-
     }
 
     public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
