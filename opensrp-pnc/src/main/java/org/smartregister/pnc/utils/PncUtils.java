@@ -556,6 +556,9 @@ public class PncUtils extends org.smartregister.util.Utils {
             case PncConstants.EventTypeConstants.PNC_CLOSE:
                 formType = PncConstants.Form.PNC_CLOSE;
                 break;
+
+            default:
+                break;
         }
 
         return formType;
