@@ -168,7 +168,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
 
                 form = model.getFormAsJson(formName, caseId, locationId, injectedValues);
 
-                if (formName.equals(PncConstants.Form.PNC_MEDIC_INFORMATION) || formName.equals(PncConstants.Form.PNC_VISIT)) {
+                if (formName.equals(PncConstants.Form.PNC_MEDIC_INFO) || formName.equals(PncConstants.Form.PNC_VISIT)) {
                     mProfileInteractor.fetchSavedForm(formName, caseId, entityTable, this);
                     return;
                 }
@@ -228,7 +228,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             try {
                 List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 mProfileInteractor.saveEvents(pncFormEvent, this);
-                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), eventType)));
+                PncUtils.deleteSavedPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), PncUtils.getFormType(eventType));
             } catch (JSONException e) {
                 Timber.e(e);
             }

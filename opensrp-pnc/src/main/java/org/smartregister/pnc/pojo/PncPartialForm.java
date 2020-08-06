@@ -9,9 +9,6 @@ public class PncPartialForm {
     private String form;
     private String createdAt;
 
-    public PncPartialForm() {
-    }
-
     public PncPartialForm(@NonNull String baseEntityId, @NonNull String formType) {
         this.baseEntityId = baseEntityId;
         this.formType = formType;

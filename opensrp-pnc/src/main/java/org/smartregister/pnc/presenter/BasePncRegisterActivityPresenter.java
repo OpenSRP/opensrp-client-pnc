@@ -16,6 +16,7 @@ import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
 import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -109,6 +110,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             try {
                 List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 interactor.saveEvents(pncFormEvent, this);
+                PncUtils.deleteSavedPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), PncUtils.getFormType(eventType));
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -138,13 +140,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
 
 
         try {
-            String formPath = formName;
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) formPath = PncConstants.Form.PNC_MEDIC_INFORMATION;
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) formPath = PncConstants.Form.PNC_VISIT;
 
-            form = model.getFormAsJson(formPath, entityId, locationId, injectedFieldValues);
+            form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
 
-            if (formName.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || formName.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            if (formName.equals(PncConstants.Form.PNC_MEDIC_INFO) || formName.equals(PncConstants.Form.PNC_VISIT)) {
                 interactor.fetchSavedForm(formName, entityId, entityTable, this);
                 return;
             }

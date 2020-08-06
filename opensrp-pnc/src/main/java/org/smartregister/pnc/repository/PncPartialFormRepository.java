@@ -69,9 +69,9 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
             return null;
         }
 
-        PncPartialForm diagnosisAndTreatmentForm = null;
+        PncPartialForm partialForm = null;
         if (cursor.moveToNext()) {
-            diagnosisAndTreatmentForm = new PncPartialForm(
+            partialForm = new PncPartialForm(
                     cursor.getInt(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.ID)),
                     cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.BASE_ENTITY_ID)),
                     cursor.getString(cursor.getColumnIndex(PncDbConstants.Column.PncPartialForm.FORM)),
@@ -80,7 +80,7 @@ public class PncPartialFormRepository extends BaseRepository implements PncGener
             cursor.close();
         }
 
-        return diagnosisAndTreatmentForm;
+        return partialForm;
     }
 
     @Override

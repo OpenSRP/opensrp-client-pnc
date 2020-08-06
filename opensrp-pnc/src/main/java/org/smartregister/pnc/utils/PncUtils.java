@@ -536,4 +536,28 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
         return strIds;
     }
+
+    public static void deleteSavedPartialForm(String baseEntityId, String formType) {
+        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(baseEntityId, formType)));
+    }
+
+    public static String getFormType(String eventType) {
+        String formType = "";
+
+        switch (eventType) {
+            case PncConstants.EventTypeConstants.PNC_MEDIC_INFO:
+                formType = PncConstants.Form.PNC_MEDIC_INFO;
+                break;
+
+            case PncConstants.EventTypeConstants.PNC_VISIT:
+                formType = PncConstants.Form.PNC_VISIT;
+                break;
+
+            case PncConstants.EventTypeConstants.PNC_CLOSE:
+                formType = PncConstants.Form.PNC_CLOSE;
+                break;
+        }
+
+        return formType;
+    }
 }

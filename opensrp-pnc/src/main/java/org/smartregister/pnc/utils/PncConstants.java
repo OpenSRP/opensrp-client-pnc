@@ -175,7 +175,7 @@ public class PncConstants extends AllConstants {
 
     public interface Form {
         String PNC_REGISTRATION = "pnc_registration";
-        String PNC_MEDIC_INFORMATION = "pnc_medic_information";
+        String PNC_MEDIC_INFO = "pnc_medic_information";
         String PNC_VISIT = "pnc_visit";
         String PNC_CLOSE = "pnc_close";
     }
