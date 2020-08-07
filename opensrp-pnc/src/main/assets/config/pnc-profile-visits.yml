@@ -1,5 +1,5 @@
 ---
-group:
+group: "{visit_date}"
 subGroup: pnc_visit_information
 fields:
 

@@ -58,6 +58,10 @@ public class PncProfileVisitsAdapter extends RecyclerView.Adapter<PncProfileVisi
             String group = yamlConfigWrapper.getGroup();
 
             if (StringUtils.isNotBlank(group)) {
+                if (PncUtils.isTemplate(group)) {
+                    group = PncUtils.fillTemplate(group, facts);
+                }
+
                 holder.sectionHeader.setText(StringUtil.humanize(group));
                 holder.sectionHeader.setVisibility(View.VISIBLE);
             } else {
