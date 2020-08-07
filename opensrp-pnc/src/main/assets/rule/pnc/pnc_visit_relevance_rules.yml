@@ -20,6 +20,13 @@ condition: "step1_visits_outside_facility_number > 0"
 actions:
   - "isRelevant = true"
 ---
+name: step2_intervention_given_text
+description: intervention_given_text
+priority: 1
+condition: "step2_intervention_given == 'yes'"
+actions:
+  - "isRelevant = true"
+---
 name: step2_pnc_complications_other
 description: Provide details of other complications
 priority: 1
@@ -55,6 +62,13 @@ condition: "!step2_pnc_complications.contains('none')"
 actions:
   - "isRelevant = true"
 ---
+name: step2_referred_out_specify
+description: referred_out_specify
+priority: 1
+condition: "step2_referred_out == 'yes'"
+actions:
+  - "isRelevant = true"
+---
 name: step2_vit_a_not_given_reason
 description: vit_a_not_given_reason
 priority: 1
@@ -65,7 +79,14 @@ actions:
 name: step2_fp_method_other
 description: Provide details of other family planning method
 priority: 1
-condition: "step2_fp_method_other == 'other'"
+condition: "step2_fp_method == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step2_itn_given_notdone_other
+description: Specify any other reason why the treatment was not prescribed.
+priority: 1
+condition: "step2_itn_given_notdone == 'other'"
 actions:
   - "isRelevant = true"
 ---

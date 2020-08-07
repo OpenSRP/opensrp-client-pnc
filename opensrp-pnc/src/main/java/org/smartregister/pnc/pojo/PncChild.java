@@ -4,6 +4,7 @@ public class PncChild {
     private String id;
     private String baseEntityId;
     private String motherBaseEntityId;
+    private long createdAt;
     private String dischargedAlive;
     private String childRegistered;
     private String birthRecordDate;
@@ -41,6 +42,14 @@ public class PncChild {
 
     public void setMotherBaseEntityId(String motherBaseEntityId) {
         this.motherBaseEntityId = motherBaseEntityId;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
     }
 
     public String getChildRegistered() {

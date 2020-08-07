@@ -86,17 +86,11 @@
                     "value": "true",
                     "err": "Enter valid Para"
                 },
-                "relevance": {
-                    "step1:gravidity": {
-                        "type": "numeric",
-                        "ex": "greaterThan(., \"1\")"
-                    }
-                },
                 "constraints": [
                     {
                         "type": "numeric",
-                        "ex": "lessThan(., step1:gravidity)",
-                        "err": "Para needs to be less than gravidity"
+                        "ex": "lessThanEqualTo(., step1:gravidity)",
+                        "err": "Para needs to be less than or equal to gravidity"
                     }
                 ]
             },
@@ -106,8 +100,8 @@
                 "openmrs_entity": "",
                 "openmrs_entity_id": "",
                 "type": "check_box",
-                "hint": "Last menstrual period unknown checkbox",
-                "label": "",
+                "label": "Last menstrual period unknown checkbox",
+                "label_text_style": "bold",
                 "options": [
                     {
                         "key": "lmp_unknown",
@@ -209,7 +203,8 @@
                 "openmrs_entity": "",
                 "openmrs_entity_id": "",
                 "type": "label",
-                "hint": "When did labour begin? (Onset of Labour)"
+                "hint": "When did labour begin? (Onset of Labour)",
+                "label_text_style": "bold"
             },
             {
                 "key": "onset_labour",
@@ -244,6 +239,7 @@
                 "openmrs_entity_id": "1430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Any past pregnancy problems?",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:parity": {
                         "type": "numeric",
@@ -406,6 +402,7 @@
                 "openmrs_entity_id": "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Modes of delivery in past pregnancies",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:parity": {
                         "type": "numeric",
@@ -417,12 +414,6 @@
                     "err": "Select at least one delivery mode"
                 },
                 "options": [
-                    {
-                        "key": "vaginal_birth",
-                        "text": "Vaginal Birth",
-                        "openmrs_entity": "concept",
-                        "openmrs_entity_id": "162595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                    },
                     {
                         "key": "spontaneous_vertex",
                         "text": "Spontaneous Vertex (SVD)",
@@ -459,9 +450,10 @@
                 "key": "previous_pregnancy_outcomes",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "concept",
-                "openmrs_entity_id": "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "openmrs_entity_id": "161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Outcomes of previous pregnancies",
+                "label_text_style": "bold",
                 "relevance": {
                     "step1:gravidity": {
                         "type": "numeric",
@@ -477,7 +469,7 @@
                         "key": "alive",
                         "text": "Alive",
                         "openmrs_entity": "concept",
-                        "openmrs_entity_id": ""
+                        "openmrs_entity_id": "151849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                     },
                     {
                         "key": "stillbirth_fresh",
@@ -518,6 +510,7 @@
                 "openmrs_entity_id": "160592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Family medical history",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Select at least one medical condition OR None"
@@ -613,7 +606,7 @@
                 "openmrs_entity": "concept",
                 "openmrs_entity_id": "165225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "native_radio",
-                "label": "How many does of TDV did the mother receive?",
+                "label": "How many doses of TDV did the mother receive?",
                 "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
@@ -907,6 +900,7 @@
                 "openmrs_entity_id": "1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Obstetric complications",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
@@ -1059,6 +1053,7 @@
                 "openmrs_entity_id": "1669AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "type": "check_box",
                 "label": "Obstetric care",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
@@ -1494,17 +1489,13 @@
         "next": "step5",
         "fields": [
             {
-                "key": "baby_not_discharged_alive",
+                "key": "neonatal_death",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "concept",
                 "openmrs_entity_id": "",
                 "type": "native_radio",
                 "label": "Was there any neonatal death?",
                 "label_text_style": "bold",
-                "v_required": {
-                    "value": "true",
-                    "err": "Field required"
-                },
                 "options": [
                     {
                         "key": "yes",
@@ -1523,7 +1514,7 @@
                 ]
             },
             {
-                "key": "baby_not_discharged_alive_count",
+                "key": "neonatal_death_count",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "",
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -1545,7 +1536,57 @@
                     }
                 ],
                 "relevance": {
-                    "step4:baby_not_discharged_alive": {
+                    "step4:neonatal_death": {
+                        "type": "string",
+                        "ex": "equalTo(., \"yes\")"
+                    }
+                }
+            },
+            {
+                "key": "surviving_child",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "concept",
+                "openmrs_entity_id": "",
+                "type": "native_radio",
+                "label": "Are there  any surviving infants in this pregnancy?",
+                "label_text_style": "bold",
+                "options": [
+                    {
+                        "key": "yes",
+                        "text": "Yes",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    },
+                    {
+                        "key": "no",
+                        "text": "No",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    }
+                ]
+            },
+            {
+                "key": "surviving_child_count",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "type": "edit_text",
+                "hint": "surviving infants in this pregnancy",
+                "v_numeric": {
+                    "value": "true",
+                    "err": "Enter valid number"
+                },
+                "constraints": [
+                    {
+                        "type": "numeric",
+                        "ex": "greaterThanEqualTo(., \"0\")",
+                        "err": "count must be greater than or equal to 0"
+                    }
+                ],
+                "relevance": {
+                    "step4:surviving_child": {
                         "type": "string",
                         "ex": "equalTo(., \"yes\")"
                     }
@@ -1559,6 +1600,8 @@
                 "openmrs_entity_id": "164894AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 "reference_edit_text_hint": "#Total baby born alive",
                 "repeating_group_label": "Baby born alive",
+                "reference_edit_text": "Number of babies born alive",
+                "label_text_style": "bold",
                 "value": [
                     {
                         "key": "discharged_alive",
@@ -1720,10 +1763,6 @@
                             "value": "true",
                             "err": "Enter valid agpar"
                         },
-                        "v_required": {
-                            "value": "true",
-                            "err": "Enter valid agpar"
-                        },
                         "constraints": [
                             {
                                 "type": "numeric",
@@ -1773,6 +1812,7 @@
                         "openmrs_entity_id": "164122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Newborn care complications",
+                        "label_text_style": "bold",
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
@@ -1845,6 +1885,7 @@
                         "openmrs_entity_id": "159839AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Newborn Routine Care & Management",
+                        "label_text_style": "bold",
                         "relevance": {
                             "step4:baby_complications": {
                                 "ex-checkbox": [
@@ -2004,16 +2045,10 @@
                         "openmrs_entity_id": "5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                         "type": "check_box",
                         "label": "Child's HIV status",
+                        "label_text_style": "bold",
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
-                        },
-                        "relevance": {
-                            "rules-engine": {
-                                "ex-rules": {
-                                    "rules-dynamic": "pnc/outcome_relevance_rules.yml"
-                                }
-                            }
                         },
                         "options": [
                             {
@@ -2052,8 +2087,13 @@
                         "label_text_style": "bold",
                         "relevance": {
                             "step4:child_hiv_status": {
-                                "type": "string",
-                                "ex": "equalTo(., \"[\"positive\",\"exposed\"]\")"
+                                "ex-checkbox": [
+                                    {
+                                        "or": [
+                                            "positive", "exposed"
+                                        ]
+                                    }
+                                ]
                             }
                         },
                         "v_required": {
@@ -2085,6 +2125,35 @@
         "title": "Still Births",
         "fields": [
             {
+                "key": "stillbirth",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "concept",
+                "openmrs_entity_id": "",
+                "type": "native_radio",
+                "label": "Were there any stillbirths?",
+                "label_text_style": "bold",
+                "v_required": {
+                    "value": "true",
+                    "err": "Field required"
+                },
+                "options": [
+                    {
+                        "key": "yes",
+                        "text": "Yes",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "1692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    },
+                    {
+                        "key": "no",
+                        "text": "No",
+                        "openmrs_entity_parent": "",
+                        "openmrs_entity": "concept",
+                        "openmrs_entity_id": "159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    }
+                ]
+            },
+            {
                 "key": "baby_stillborn_group",
                 "type": "repeating_group",
                 "openmrs_entity_parent": "",
@@ -2093,9 +2162,16 @@
                 "reference_edit_text_hint": "#Total baby stillborn",
                 "repeating_group_label": "Baby stillborn",
                 "reference_edit_text": "Number of babies stillborn",
+                "label_text_style": "bold",
                 "v_required": {
                     "value": "true",
                     "err": "Field required"
+                },
+                "relevance": {
+                    "step5:stillbirth": {
+                        "type": "string",
+                        "ex": "equalTo(., \"yes\")"
+                    }
                 },
                 "value": [
                     {
