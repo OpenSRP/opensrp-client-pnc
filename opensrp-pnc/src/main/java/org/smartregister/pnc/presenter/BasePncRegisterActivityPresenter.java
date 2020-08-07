@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONException;
@@ -110,7 +112,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             try {
                 List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 interactor.saveEvents(pncFormEvent, this);
-                PncUtils.deleteSavedPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), PncUtils.getFormType(eventType));
+                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), eventType)));
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -144,7 +146,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
 
             if (formName.equals(PncConstants.Form.PNC_MEDIC_INFO) || formName.equals(PncConstants.Form.PNC_VISIT)) {
-                interactor.fetchSavedForm(formName, entityId, entityTable, this);
+                interactor.fetchSavedForm(form.optString(JsonFormConstants.ENCOUNTER_TYPE), entityId, entityTable, this);
                 return;
             }
 

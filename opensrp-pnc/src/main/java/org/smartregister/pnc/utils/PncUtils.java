@@ -420,7 +420,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         }
 
-        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.Form.PNC_MEDIC_INFO : PncConstants.Form.PNC_VISIT;
+        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.EventTypeConstants.PNC_MEDIC_INFO : PncConstants.EventTypeConstants.PNC_VISIT;
         PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId(), formType));
         if (pncPartialForm != null) {
             button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
@@ -535,32 +535,5 @@ public class PncUtils extends org.smartregister.util.Utils {
             strIds[i] = JsonFormUtils.generateRandomUUIDString();
         }
         return strIds;
-    }
-
-    public static void deleteSavedPartialForm(String baseEntityId, String formType) {
-        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(baseEntityId, formType)));
-    }
-
-    public static String getFormType(String eventType) {
-        String formType = "";
-
-        switch (eventType) {
-            case PncConstants.EventTypeConstants.PNC_MEDIC_INFO:
-                formType = PncConstants.Form.PNC_MEDIC_INFO;
-                break;
-
-            case PncConstants.EventTypeConstants.PNC_VISIT:
-                formType = PncConstants.Form.PNC_VISIT;
-                break;
-
-            case PncConstants.EventTypeConstants.PNC_CLOSE:
-                formType = PncConstants.Form.PNC_CLOSE;
-                break;
-
-            default:
-                break;
-        }
-
-        return formType;
     }
 }
