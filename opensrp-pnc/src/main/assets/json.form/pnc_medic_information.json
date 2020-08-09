@@ -1602,6 +1602,10 @@
                 "repeating_group_label": "Baby born alive",
                 "reference_edit_text": "Number of babies born alive",
                 "label_text_style": "bold",
+                "v_required": {
+                    "value": true,
+                    "err": "Please enter number a babies born"
+                },
                 "value": [
                     {
                         "key": "discharged_alive",
@@ -1890,9 +1894,7 @@
                             "step4:baby_complications": {
                                 "ex-checkbox": [
                                     {
-                                        "or": [
-                                            "none"
-                                        ]
+                                        "or": ["premature", "asphyxia", "sepsis", "birth_defects"]
                                     }
                                 ]
                             }
@@ -2049,6 +2051,13 @@
                         "v_required": {
                             "value": "true",
                             "err": "Select at least one medical condition OR None"
+                        },
+                        "relevance": {
+                            "rules-engine": {
+                                "ex-rules": {
+                                    "rules-dynamic": "pnc/medic_relevance_rules.yml"
+                                }
+                            }
                         },
                         "options": [
                             {

@@ -56,7 +56,7 @@
       "next": "step2",
       "fields": [
         {
-          "key": "wom_image",
+          "key": "photo",
           "openmrs_entity_parent": "",
           "openmrs_entity": "",
           "openmrs_entity_id": "",
@@ -456,7 +456,7 @@
               "openmrs_entity_id": "159613AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             },
             {
-              "key": "business",
+              "key": "oc_business",
               "text": "Business",
               "openmrs_entity_parent": "",
               "openmrs_entity": "",

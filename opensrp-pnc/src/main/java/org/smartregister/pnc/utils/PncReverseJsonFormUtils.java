@@ -52,8 +52,38 @@ public class PncReverseJsonFormUtils {
 
                     JSONObject metadata = form.getJSONObject(PncJsonFormUtils.METADATA);
                     metadata.put(PncJsonFormUtils.ENCOUNTER_LOCATION, PncUtils.getAllSharedPreferences().fetchCurrentLocality());
+
                     JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
                     JSONArray jsonArray = stepOne.getJSONArray(PncJsonFormUtils.FIELDS);
+
+                    JSONObject stepTwo = form.getJSONObject(PncJsonFormUtils.STEP2);
+                    JSONArray jsonArrayStepTwo = stepTwo.getJSONArray(PncJsonFormUtils.FIELDS);
+
+                    for (int i = 0; i < jsonArrayStepTwo.length(); i++) {
+                        JSONObject obj = jsonArrayStepTwo.getJSONObject(i);
+                        String key = obj.optString(PncJsonFormUtils.KEY, "");
+                        String value = detailsMap.get(key);
+                        if (value != null && !value.equalsIgnoreCase("null")) {
+                            // Todo need to dicuss with @Benn
+                            /*if ("check_box".equals(obj.getString(JsonFormConstants.TYPE))) {
+                                if (value.contains("\n")) {
+                                    String[] values = value.split("\n");
+                                    value = "[";
+                                    for (int j = 0; j < values.length; j++) {
+                                        if (j > 0) value += ",";
+                                        value += "\"" + values[j] + "\"";
+                                    }
+                                    value += "]";
+                                }
+                                obj.put(PncJsonFormUtils.VALUE, "{occupation_value}");
+                                form = new JSONObject(form.toString().replace("\"{occupation_value}\"", value));
+                            }
+                            else {
+                                obj.put(PncJsonFormUtils.VALUE, value);
+                            }*/
+                            obj.put(PncJsonFormUtils.VALUE, value);
+                        }
+                    }
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);

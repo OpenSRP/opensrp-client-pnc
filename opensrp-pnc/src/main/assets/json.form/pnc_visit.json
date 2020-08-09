@@ -807,9 +807,10 @@
             "type": "time_picker",
             "hint": "When did the death occur?",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -822,9 +823,10 @@
             "label": "Place of death?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -859,9 +861,10 @@
             "type": "edit_text",
             "hint": "Cause of death",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -874,9 +877,10 @@
             "label": "Was the follow up of death conducted by health workers?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -936,9 +940,10 @@
             "type": "edit_text",
             "hint": "Provide reason for not breastfeeding",
             "relevance": {
-              "step3:breastfeeding": {
-                "type": "string",
-                "ex": "equalTo(., \"not_breastfeeding\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -1016,12 +1021,10 @@
             "type": "edit_text",
             "hint": "Specify",
             "relevance": {
-              "step3:baby_danger_signs": {
-                "ex-checkbox": [
-                  {
-                    "or": ["other"]
-                  }
-                ]
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -1034,12 +1037,10 @@
             "label": "Was the baby referred out?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_danger_signs": {
-                "ex-checkbox": [
-                  {
-                    "not": ["none"]
-                  }
-                ]
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1070,7 +1071,7 @@
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },
@@ -1100,9 +1101,10 @@
             "label": "Was the mother referred to the ART clinic for mother/infant pairing?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_hiv_exposed": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1133,7 +1135,7 @@
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },
@@ -1195,9 +1197,10 @@
             "type": "edit_text",
             "hint": "Specify",
             "relevance": {
-              "step3:not_art_pairing_reason": {
-                "type": "string",
-                "ex": "equalTo(., \"other\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -1210,9 +1213,10 @@
             "label": "Was the baby tested at 6 weeks using DBS (Dry Blood Sample)?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_hiv_exposed": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1243,7 +1247,7 @@
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },

@@ -120,7 +120,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
                 Client baseClient = pncEventClient.getClient();
                 Event baseEvent = pncEventClient.getEvent();
 
-                if (baseClient != null && params.isEditMode()) {
+                if (params.isEditMode()) {
                     try {
                         PncJsonFormUtils.mergeAndSaveClient(baseClient);
                     } catch (Exception e) {

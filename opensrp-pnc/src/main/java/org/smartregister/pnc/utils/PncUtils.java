@@ -337,7 +337,8 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static HashMap<String, String> getPncClient(String baseEntityId) {
         ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance().context().getEventClientRepository().rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
-                "select * from " + metadata().getTableName() +
+                "select * from " + metadata().getTableName() + " " +
+                        "LEFT JOIN " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd ON prd.base_entity_id = " + metadata().getTableName() + ".base_entity_id " +
                         " where " + metadata().getTableName() + ".id = '" + baseEntityId + "' limit 1");
         if (!hashMap.isEmpty()) {
             return hashMap.get(0);
