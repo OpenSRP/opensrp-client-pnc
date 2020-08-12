@@ -42,7 +42,6 @@ public class PncReverseJsonFormUtils {
                 JSONObject form = new FormUtils(context).getFormJson(pncMetadata.getPncRegistrationFormName());
                 Timber.d("Original Form %s", form);
                 if (form != null) {
-                    PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKeyConstants.HOME_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
                     form.put(PncConstants.JsonFormKeyConstants.ENTITY_ID, detailsMap.get(PncConstants.KeyConstants.BASE_ENTITY_ID));
 
                     form.put(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE, pncMetadata.getUpdateEventType());
@@ -53,37 +52,7 @@ public class PncReverseJsonFormUtils {
                     JSONObject metadata = form.getJSONObject(PncJsonFormUtils.METADATA);
                     metadata.put(PncJsonFormUtils.ENCOUNTER_LOCATION, PncUtils.getAllSharedPreferences().fetchCurrentLocality());
 
-                    JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
-                    JSONArray jsonArray = stepOne.getJSONArray(PncJsonFormUtils.FIELDS);
-
-                    JSONObject stepTwo = form.getJSONObject(PncJsonFormUtils.STEP2);
-                    JSONArray jsonArrayStepTwo = stepTwo.getJSONArray(PncJsonFormUtils.FIELDS);
-
-                    for (int i = 0; i < jsonArrayStepTwo.length(); i++) {
-                        JSONObject obj = jsonArrayStepTwo.getJSONObject(i);
-                        String key = obj.optString(PncJsonFormUtils.KEY, "");
-                        String value = detailsMap.get(key);
-                        if (value != null && !value.equalsIgnoreCase("null")) {
-                            // Todo need to dicuss with @Benn
-                            /*if ("check_box".equals(obj.getString(JsonFormConstants.TYPE))) {
-                                if (value.contains("\n")) {
-                                    String[] values = value.split("\n");
-                                    value = "[";
-                                    for (int j = 0; j < values.length; j++) {
-                                        if (j > 0) value += ",";
-                                        value += "\"" + values[j] + "\"";
-                                    }
-                                    value += "]";
-                                }
-                                obj.put(PncJsonFormUtils.VALUE, "{occupation_value}");
-                                form = new JSONObject(form.toString().replace("\"{occupation_value}\"", value));
-                            }
-                            else {
-                                obj.put(PncJsonFormUtils.VALUE, value);
-                            }*/
-                            obj.put(PncJsonFormUtils.VALUE, value);
-                        }
-                    }
+                    JSONArray jsonArray = com.vijay.jsonwizard.utils.FormUtils.getMultiStepFormFields(form);
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -121,13 +90,28 @@ public class PncReverseJsonFormUtils {
                 jsonObject.put(PncJsonFormUtils.VALUE, Utils.getValue(pncDetails, jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID)
                         .toLowerCase(), false).replace("-", ""));
             }
-        } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.HOME_ADDRESS)) {
-            reverseHomeAddress(jsonObject, pncDetails.get(PncConstants.JsonFormKeyConstants.HOME_ADDRESS));
         } else if (fieldsWithLocationHierarchy != null && !fieldsWithLocationHierarchy.isEmpty()
                 && fieldsWithLocationHierarchy.contains(jsonObject.getString(PncJsonFormUtils.KEY))) {
             reverseLocationField(jsonObject, pncDetails.get(jsonObject.getString(PncJsonFormUtils.KEY)));
         } else {
-            jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), pncDetails));
+            String value = getMappedValue(jsonObject.optString(PncJsonFormUtils.KEY), pncDetails);
+            if (StringUtils.isNotBlank(value)) {
+                if (jsonObject.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.CHECK_BOX)) {
+                    try {
+                        jsonObject.put(PncJsonFormUtils.VALUE, new JSONArray(value));
+                    } catch (JSONException e) {
+                        if (!value.contains("[")) {
+                            JSONArray jsonArray = new JSONArray();
+                            jsonArray.put(getMappedValue(jsonObject.optString(PncJsonFormUtils.KEY), pncDetails).replaceAll(" ", "_").toLowerCase());
+                            jsonObject.put(PncJsonFormUtils.VALUE, jsonArray);
+                        }
+                    }
+                } else {
+                    jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.optString(PncJsonFormUtils.KEY), pncDetails));
+                }
+            } else {
+                jsonObject.put(PncJsonFormUtils.VALUE, getMappedValue(jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY_ID), pncDetails));
+            }
         }
         jsonObject.put(PncJsonFormUtils.READ_ONLY, nonEditableFields.contains(jsonObject.getString(PncJsonFormUtils.KEY)));
     }
@@ -180,25 +164,6 @@ public class PncReverseJsonFormUtils {
         Date date = Utils.dobStringToDate(dateString);
         if (StringUtils.isNotBlank(dateString) && date != null) {
             jsonObject.put(PncJsonFormUtils.VALUE, com.vijay.jsonwizard.widgets.DatePickerFactory.DATE_FORMAT.format(date));
-        }
-    }
-
-    private static void reverseHomeAddress(@NonNull JSONObject jsonObject, @Nullable String entity) throws JSONException {
-        List<String> entityHierarchy = null;
-        if (entity != null) {
-            if (entity.equalsIgnoreCase(PncConstants.FormValue.OTHER)) {
-                entityHierarchy = new ArrayList<>();
-                entityHierarchy.add(entity);
-            } else {
-                String locationId = LocationHelper.getInstance().getOpenMrsLocationId(entity);
-                entityHierarchy = LocationHelper.getInstance().getOpenMrsLocationHierarchy(locationId, true);
-            }
-        }
-
-        String facilityHierarchyString = AssetHandler.javaToJsonString(entityHierarchy, new TypeToken<List<String>>() {
-        }.getType());
-        if (StringUtils.isNotBlank(facilityHierarchyString)) {
-            jsonObject.put(PncJsonFormUtils.VALUE, facilityHierarchyString);
         }
     }
 

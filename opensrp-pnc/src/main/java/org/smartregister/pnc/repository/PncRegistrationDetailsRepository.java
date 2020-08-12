@@ -4,8 +4,13 @@ import android.support.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncDbConstants;
+
+import java.util.HashMap;
+
+import timber.log.Timber;
 
 
 /**
@@ -25,7 +30,7 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
                 + PncDbConstants.Column.PncDetails.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
                 + PncDbConstants.Column.PncDetails.EVENT_DATE + " DATETIME NOT NULL, ";
 
-        for (PncRegistrationDetails.Property column: PncRegistrationDetails.Property.values()) {
+        for (PncRegistrationDetails.Property column : PncRegistrationDetails.Property.values()) {
             CREATE_TABLE_SQL += column.name() + " VARCHAR, ";
         }
 
@@ -37,6 +42,19 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
 
         database.execSQL("CREATE INDEX " + PncDbConstants.Column.PncDetails.EVENT_DATE + "_" + TABLE
                 + " ON " + TABLE + " (" + PncDbConstants.Column.PncDetails.EVENT_DATE + ")");
+    }
+
+    public HashMap<String, String> findByBaseEntityId(@NonNull String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "select * from " + getTableName() +
+                                " where " + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "' limit 1").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
     }
 
     @Override

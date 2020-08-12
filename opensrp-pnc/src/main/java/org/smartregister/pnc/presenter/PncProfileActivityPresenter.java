@@ -202,15 +202,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
     @Nullable
     @Override
     public PncEventClient processRegistration(@NonNull String jsonString, @NonNull FormTag formTag) {
-        PncEventClient pncEventClient = PncJsonFormUtils.processPncRegistrationForm(jsonString, formTag);
-        //TODO: Show the user this error toast
-        //showErrorToast();
-
-        if (pncEventClient == null) {
-            return null;
-        }
-
-        return pncEventClient;
+        return PncJsonFormUtils.processPncRegistrationForm(jsonString, formTag);
     }
 
     @Override

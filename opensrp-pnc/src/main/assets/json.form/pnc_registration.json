@@ -253,25 +253,25 @@
         {
           "key": "home_address",
           "openmrs_entity_parent": "",
-          "openmrs_entity": "",
-          "openmrs_entity_id": "",
+          "openmrs_entity": "person_address",
+          "openmrs_entity_id": "address2",
           "type": "edit_text",
           "hint": "Home address",
           "v_required": {
-            "value": true,
+            "value": false,
             "err": "Please enter the Home Address"
           }
         },
         {
           "key": "village",
           "openmrs_entity_parent": "",
-          "openmrs_entity": "",
-          "openmrs_entity_id": "",
+          "openmrs_entity": "concept",
+          "openmrs_entity_id": "1354AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "type": "tree",
           "tree": [],
           "hint": "Village",
           "v_required": {
-            "value": false,
+            "value": true,
             "err": "Please enter the Woman's Village"
           }
         },
@@ -428,6 +428,7 @@
           "label": "Occupation",
           "hint": "Occupation",
           "label_text_style": "bold",
+          "combine_checkbox_option_values": "true",
           "options": [
             {
               "key": "student",

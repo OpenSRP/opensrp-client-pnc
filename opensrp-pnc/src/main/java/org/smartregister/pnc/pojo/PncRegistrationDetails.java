@@ -19,8 +19,6 @@ public class PncRegistrationDetails extends PncBaseDetails {
         age_entered,
         dob_calculated,
         age,
-        home_address,
-        village,
         phone_number,
         alt_name,
         alt_phone_number,

@@ -56,8 +56,6 @@ public class PncConstants extends AllConstants {
 
         public static final String AGE_ENTERED = "age_entered";
         public static final String DOB_ENTERED = "dob_entered";
-        public static final String HOME_ADDRESS_WIDGET_KEY = "home_address";
-        public static final String VILLAGE_ADDRESS_WIDGET_KEY = "village";
         public static final String REMINDERS = "reminders";
 
         public static final String SERVICE_FEE = "service_fee";
@@ -110,6 +108,7 @@ public class PncConstants extends AllConstants {
 
         public static final String STILL_BIRTH_CONDITION = "stillbirth_condition";
         public static final String VILLAGE = "village";
+        public static final String SEX = "Sex";
     }
 
     public static class JsonFormExtraConstants {

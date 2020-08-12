@@ -26,7 +26,6 @@ import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,12 +76,8 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         switch (eventType) {
             case PncConstants.EventTypeConstants.PNC_REGISTRATION:
             case PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION:
-                ArrayList<EventClient> eventClients = new ArrayList<>();
-                eventClients.add(eventClient);
-                processClient(eventClients);
-
                 HashMap<String, String> keyValues = new HashMap<>();
-                generateKeyValuesFromEvent(event, keyValues, true);
+                generateKeyValuesFromEvent(event, keyValues);
 
                 PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
                 pncDetails.setCreatedAt(new Date());
@@ -269,45 +264,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 }
             } catch (JSONException e) {
                 Timber.e(e);
-            }
-        }
-    }
-
-    private void generateKeyValuesFromEvent(@NonNull Event event, HashMap<String, String> keyValues, boolean appendOnNewline) {
-        List<Obs> obs = event.getObs();
-
-        for (Obs observation : obs) {
-            String key = observation.getFormSubmissionField();
-
-            List<Object> humanReadableValues = observation.getHumanReadableValues();
-            if (humanReadableValues.size() > 0) {
-                String value = (String) humanReadableValues.get(0);
-                value = value != null ? value.trim() : value;
-
-                if (!TextUtils.isEmpty(value)) {
-                    if (appendOnNewline && keyValues.containsKey(key)) {
-                        String currentValue = keyValues.get(key);
-                        keyValues.put(key, value + "\n" + currentValue);
-                    } else {
-                        keyValues.put(key, value);
-                    }
-                    continue;
-                }
-            }
-
-            List<Object> values = observation.getValues();
-            if (values.size() > 0) {
-                String value = (String) values.get(0);
-                value = value != null ? value.trim() : value;
-
-                if (!TextUtils.isEmpty(value)) {
-                    if (appendOnNewline && keyValues.containsKey(key)) {
-                        String currentValue = keyValues.get(key);
-                        keyValues.put(key, value + "\n" + currentValue);
-                    } else {
-                        keyValues.put(key, value);
-                    }
-                }
             }
         }
     }
