@@ -49,6 +49,7 @@ public class PncConstants extends AllConstants {
     }
 
     public static class JsonFormKeyConstants {
+        public static final String DEATH_DATE_APPROX = "deathdateApprox";
         public static final String OPTIONS = "options";
         public static final String LAST_INTERACTED_WITH = "last_interacted_with";
         public static final String DOB = "dob";
@@ -142,6 +143,8 @@ public class PncConstants extends AllConstants {
         public static final String OPENSRP_ID = "opensrp_id";
         public static final String RELATIONALID = "relationalid";
         public static final String GENDER = "gender";
+        public static final String DOD = "dod";
+        public static final String DATE_REMOVED = "date_removed";
     }
 
     public static class EntityConstants {
