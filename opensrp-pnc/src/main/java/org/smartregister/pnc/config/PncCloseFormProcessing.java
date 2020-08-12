@@ -1,25 +1,22 @@
 package org.smartregister.pnc.config;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 
-import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.FormEntityConstants;
 import org.smartregister.clientandeventmodel.Obs;
-import org.smartregister.commonregistry.AllCommonsRepository;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;
-import org.smartregister.pnc.utils.PncDbConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.repository.EventClientRepository;
@@ -28,11 +25,9 @@ import org.smartregister.util.JsonFormUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,19 +35,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
-import static org.smartregister.util.JsonFormUtils.CONCEPT;
-import static org.smartregister.util.JsonFormUtils.ENCOUNTER;
-import static org.smartregister.util.JsonFormUtils.KEY;
-import static org.smartregister.util.JsonFormUtils.OPENMRS_ENTITY;
-import static org.smartregister.util.JsonFormUtils.OPENMRS_ENTITY_ID;
-import static org.smartregister.util.JsonFormUtils.VALUE;
-import static org.smartregister.util.JsonFormUtils.addObservation;
-import static org.smartregister.util.JsonFormUtils.addToJSONObject;
-import static org.smartregister.util.JsonFormUtils.formatDate;
 import static org.smartregister.util.JsonFormUtils.generateRandomUUIDString;
 import static org.smartregister.util.JsonFormUtils.getFieldValue;
-import static org.smartregister.util.JsonFormUtils.getJSONObject;
-import static org.smartregister.util.JsonFormUtils.getString;
 
 public class PncCloseFormProcessing implements PncFormProcessingTask {
 
@@ -77,7 +61,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
             eventList.add(closePncEvent);
 
             if ("woman_died".equals(getFieldValue(fieldsArray, "pnc_close_reason"))) {
-                closePncEvent.setEventType("Death");
+                closePncEvent.setEventType(PncConstants.EventTypeConstants.DEATH);
 
 //                addSaveReportDeceasedObservations(fieldsArray, closePncEvent);
 //                updateMetadata(metadata, closePncEvent);
@@ -93,7 +77,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
 //                    }
 //                }
 
-                createDeathEventObject(PncLibrary.getInstance().context().applicationContext(), closePncEvent.getProviderId(), closePncEvent.getLocationId(), closePncEvent.getEntityType(), PncLibrary.getInstance().eventClientRepository(), encounterDate, encounterDateTimeString, closePncEvent, eventType, entityTable);
+                createDeathEventObject(PncLibrary.getInstance().context().applicationContext(), closePncEvent.getProviderId(), closePncEvent.getLocationId(), closePncEvent.getEntityType(), PncLibrary.getInstance().eventClientRepository(), closePncEvent, eventType, entityTable);
 
 //                ContentValues values = new ContentValues();
 //                values.put(PncConstants.KeyConstants.DOD, encounterDateField);
@@ -112,7 +96,32 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
         }
     }
 
-    private void addSaveReportDeceasedObservations(JSONArray fields, Event event) {
+    private void createDeathEventObject(Context context, String providerId, String locationId, String entityId, EventClientRepository db, Event event, String encounterType, String entityTable) throws JSONException {
+        JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(event));
+
+        //Update client to deceased
+        JSONObject client = db.getClientByBaseEntityId(eventJson.getString(ClientProcessor.baseEntityIdJSONKey));
+        //client.put(FormEntityConstants.Person.deathdate.name(), encounterDateTimeString);
+        client.put(FormEntityConstants.Person.deathdate_estimated.name(), false);
+        client.put(PncConstants.JsonFormKeyConstants.DEATH_DATE_APPROX, false);
+
+        db.addorUpdateClient(entityId, client);
+
+        //Add Death Event for child to flag for Server delete
+        db.addEvent(event.getBaseEntityId(), eventJson);
+
+        //Update Child Entity to include death date
+        //Event updateChildDetailsEvent = getEvent(providerId, locationId, entityId, encounterType, encounterDate, entityTable);
+        Event updateChildDetailsEvent = getEvent(providerId, locationId, entityId, encounterType, DateTime.now().toDate(), entityTable);
+
+        addMetaData(context, updateChildDetailsEvent, new Date());
+
+        JSONObject eventJsonUpdateChildEvent = new JSONObject(JsonFormUtils.gson.toJson(updateChildDetailsEvent));
+
+        db.addEvent(entityId, eventJsonUpdateChildEvent); //Add event to flag server update
+    }
+
+    /*private void addSaveReportDeceasedObservations(JSONArray fields, Event event) {
         for (int i = 0; i < fields.length(); i++) {
             JSONObject jsonObject = getJSONObject(fields, i);
             String value = getString(jsonObject, VALUE);
@@ -173,32 +182,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
             }
         }
     }
-
-    private void createDeathEventObject(Context context, String providerId, String locationId, String entityId, EventClientRepository db, Date encounterDate, String encounterDateTimeString, Event event, String encounterType, String entityTable) throws JSONException {
-        JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(event));
-
-
-        //Update client to deceased
-        JSONObject client = db.getClientByBaseEntityId(eventJson.getString(ClientProcessor.baseEntityIdJSONKey));
-        client.put(FormEntityConstants.Person.deathdate.name(), encounterDateTimeString);
-        client.put(FormEntityConstants.Person.deathdate_estimated.name(), false);
-        client.put(PncConstants.JsonFormKeyConstants.DEATH_DATE_APPROX, false);
-
-        db.addorUpdateClient(entityId, client);
-
-        //Add Death Event for child to flag for Server delete
-        db.addEvent(event.getBaseEntityId(), eventJson);
-
-        //Update Child Entity to include death date
-        Event updateChildDetailsEvent = getEvent(providerId, locationId, entityId, encounterType, encounterDate, entityTable);
-
-        addMetaData(context, updateChildDetailsEvent, new Date());
-
-        JSONObject eventJsonUpdateChildEvent = new JSONObject(JsonFormUtils.gson.toJson(updateChildDetailsEvent));
-
-        db.addEvent(entityId, eventJsonUpdateChildEvent); //Add event to flag server update
-    }
-
+*/
     @SuppressLint("MissingPermission")
     public static Event addMetaData(Context context, Event event, Date start) {
         Map<String, String> metaFields = new HashMap<>();
@@ -240,8 +224,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
         return event;
     }
 
-    private Event getEvent(String providerId, String locationId, String entityId, String
-            encounterType, Date encounterDate, String childType) {
+    private Event getEvent(String providerId, String locationId, String entityId, String encounterType, Date encounterDate, String childType) {
         Event event = (Event) new Event().withBaseEntityId(entityId) //should be different for main and subform
                 .withEventDate(encounterDate).withEventType(encounterType).withLocationId(locationId)
                 .withProviderId(providerId).withEntityType(childType)

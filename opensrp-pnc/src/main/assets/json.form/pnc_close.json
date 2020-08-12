@@ -114,7 +114,7 @@
         "relevance": {
           "step1:mother_status": {
             "type": "string",
-            "ex": "equalTo(., \"Dead\")"
+            "ex": "equalTo(., \"dead\")"
           }
         }
       },
@@ -147,7 +147,7 @@
         "relevance": {
           "step1:mother_status": {
             "type": "string",
-            "ex": "equalTo(., \"Dead\")"
+            "ex": "equalTo(., \"dead\")"
           }
         }
       },
@@ -189,7 +189,7 @@
         "relevance": {
           "step1:mother_status": {
             "type": "string",
-            "ex": "equalTo(., \"Dead\")"
+            "ex": "equalTo(., \"dead\")"
           }
         }
       },
@@ -225,7 +225,7 @@
         "relevance": {
           "step1:mother_status": {
             "type": "string",
-            "ex": "equalTo(., \"Dead\")"
+            "ex": "equalTo(., \"dead\")"
           }
         }
       }

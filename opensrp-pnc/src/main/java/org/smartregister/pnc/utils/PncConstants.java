@@ -166,6 +166,7 @@ public class PncConstants extends AllConstants {
         public static final String PNC_CLOSE = "PNC Close";
         public static final String BIRTH_REGISTRATION = "Birth Registration";
         public static final String PNC_VISIT = "PNC Visit";
+        public static final String DEATH = "Death";
     }
 
     public interface ColumnMapKey {
