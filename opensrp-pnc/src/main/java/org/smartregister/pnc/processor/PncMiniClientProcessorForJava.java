@@ -28,7 +28,6 @@ import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,8 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
-
-import static org.smartregister.util.JsonFormUtils.formatDate;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -149,7 +146,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
 
         // update date of removal
-        ContentValues contentValues = new ContentValues();
+        /*ContentValues contentValues = new ContentValues();
 
         String encounterDateTimeString = null;
         if (StringUtils.isNotBlank(encounterDateField)) {
@@ -164,7 +161,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             contentValues.put(PncConstants.KeyConstants.DATE_REMOVED, encounterDateTimeString);
         }
 
-        PncLibrary.getInstance().context().getEventClientRepository().getWritableDatabase().update(PncDbConstants.Table.EC_CLIENT, contentValues, PncConstants.KeyConstants.BASE_ENTITY_ID + " = ?", new String[]{entityId});
+        PncLibrary.getInstance().context().getEventClientRepository().getWritableDatabase().update(PncDbConstants.Table.EC_CLIENT, contentValues, PncConstants.KeyConstants.BASE_ENTITY_ID + " = ?", new String[]{entityId});*/
     }
 
     private void processPncMedicInfo(@NonNull EventClient eventClient) {
