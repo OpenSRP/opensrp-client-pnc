@@ -58,6 +58,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             eventTypes.add(PncConstants.EventTypeConstants.PNC_MEDIC_INFO);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_VISIT);
+            //add  death event
         }
 
         return eventTypes;
@@ -110,6 +111,35 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 processPncVisit(eventClient);
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
                 break;
+                //case death
+            //    public static void updateChildFTSTables(ContentValues values, String entityId) {
+            //        //Update REGISTER and FTS Tables
+            //        String tableName = PncDbConstants.Table.EC_CLIENT;
+            //        AllCommonsRepository allCommonsRepository = PncLibrary.getInstance().context().allCommonsRepositoryobjects(tableName);
+            //        if (allCommonsRepository != null) {
+            //            allCommonsRepository.update(tableName, values, entityId);
+            //            PncLibrary.getInstance().context().allCommonsRepositoryobjects(tableName).updateSearch(Arrays.asList(new String[]{entityId}));
+            //        }
+            //    }
+            //
+            //    private void updateDateOfRemoval(String baseEntityId, String dateOfRemovalString) {
+            //
+            //        ContentValues contentValues = new ContentValues();
+            //
+            //        if (dateOfRemovalString != null) {
+            //            contentValues.put(PncConstants.KeyConstants.DATE_REMOVED, dateOfRemovalString);
+            //        }
+            //
+            //        PncLibrary.getInstance().context().getEventClientRepository().getWritableDatabase()
+            //                .update(PncDbConstants.Table.EC_CLIENT, contentValues, PncConstants.KeyConstants.BASE_ENTITY_ID + " = ?",
+            //                        new String[]{baseEntityId});
+            //    }
+            //                ContentValues values = new ContentValues();
+            //                values.put(PncConstants.KeyConstants.DOD, encounterDateField);
+            //                values.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
+            //                updateChildFTSTables(values, baseEntityId);
+            //
+            //                updateDateOfRemoval(baseEntityId, encounterDateTimeString);
             default:
                 break;
         }

@@ -67,6 +67,13 @@
           "Wrong entry",
           "Other"
         ],
+        "keys": [
+          "woman_died",
+          "lost_to_follow_up",
+          "moved_away",
+          "wrong_entry",
+          "other"
+        ],
         "openmrs_choice_ids": {
           "Woman died": "160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           "Lost to follow-up": "5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",

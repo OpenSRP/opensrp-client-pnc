@@ -76,30 +76,31 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
             PncJsonFormUtils.tagSyncMetadata(closePncEvent);
             eventList.add(closePncEvent);
 
-            if ("Woman died".equals(getFieldValue(fieldsArray, "pnc_close_reason"))) {
+            if ("woman_died".equals(getFieldValue(fieldsArray, "pnc_close_reason"))) {
+                closePncEvent.setEventType("Death");
 
-                addSaveReportDeceasedObservations(fieldsArray, closePncEvent);
-                updateMetadata(metadata, closePncEvent);
-
-                String encounterDateField = getFieldValue(fieldsArray, "date_of_death");
-                Date encounterDate = new Date();
-                String encounterDateTimeString = null;
-                if (StringUtils.isNotBlank(encounterDateField)) {
-                    encounterDateTimeString = formatDate(encounterDateField);
-                    Date dateTime = formatDate(encounterDateField, false);
-                    if (dateTime != null) {
-                        encounterDate = dateTime;
-                    }
-                }
+//                addSaveReportDeceasedObservations(fieldsArray, closePncEvent);
+//                updateMetadata(metadata, closePncEvent);
+//
+//                String encounterDateField = getFieldValue(fieldsArray, "date_of_death");
+//                Date encounterDate = new Date();
+//                String encounterDateTimeString = null;
+//                if (StringUtils.isNotBlank(encounterDateField)) {
+//                    encounterDateTimeString = formatDate(encounterDateField);
+//                    Date dateTime = formatDate(encounterDateField, false);
+//                    if (dateTime != null) {
+//                        encounterDate = dateTime;
+//                    }
+//                }
 
                 createDeathEventObject(PncLibrary.getInstance().context().applicationContext(), closePncEvent.getProviderId(), closePncEvent.getLocationId(), closePncEvent.getEntityType(), PncLibrary.getInstance().eventClientRepository(), encounterDate, encounterDateTimeString, closePncEvent, eventType, entityTable);
 
-                ContentValues values = new ContentValues();
-                values.put(PncConstants.KeyConstants.DOD, encounterDateField);
-                values.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
-                updateChildFTSTables(values, baseEntityId);
-
-                updateDateOfRemoval(baseEntityId, encounterDateTimeString);
+//                ContentValues values = new ContentValues();
+//                values.put(PncConstants.KeyConstants.DOD, encounterDateField);
+//                values.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
+//                updateChildFTSTables(values, baseEntityId);
+//
+//                updateDateOfRemoval(baseEntityId, encounterDateTimeString);
 
             }
 
