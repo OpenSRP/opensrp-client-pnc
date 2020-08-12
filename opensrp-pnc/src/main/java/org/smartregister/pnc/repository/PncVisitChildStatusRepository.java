@@ -20,8 +20,6 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
             + PncDbConstants.Column.PncVisitChildStatus.VISIT_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_AGE + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY + " VARCHAR NULL, "
@@ -56,8 +54,6 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID, data.get(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, data.get(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
-        contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME));
-        contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, data.get(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, data.get(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));
         contentValues.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, data.get(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY));

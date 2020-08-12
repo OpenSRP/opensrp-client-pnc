@@ -241,8 +241,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                     data.put(PncDbConstants.Column.PncVisitChildStatus.VISIT_ID, visitId); //button that opens vaccine card should have clients' id as the value
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID, jsonChildObject.optString("open_vaccine_card")); //button that opens vaccine card should have clients' id as the value
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_AGE));
-                    data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_FIRST_NAME));
-                    data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_LAST_NAME));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.BABY_STATUS));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.DATE_OF_DEATH_BABY));
                     data.put(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY, jsonChildObject.optString(PncDbConstants.Column.PncVisitChildStatus.PLACE_OF_DEATH_BABY));

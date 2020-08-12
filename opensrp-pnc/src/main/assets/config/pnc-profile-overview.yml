@@ -82,3 +82,21 @@ fields:
   - template: "Number of babies stillborn: {baby_count_stillborn}"
     relevance: "baby_count_stillborn != ''"
     isRedFont: "baby_count_stillborn > 0"
+
+---
+subGroup: demographic_information
+fields:
+  - template: "Highest level of school: {educ_level}"
+    relevance: "educ_level != ''"
+
+  - template: "Marital Status: {marital_status}"
+    relevance: "marital_status != ''"
+
+  - template: "Occupation: {occupation}"
+    relevance: "occupation != ''"
+
+  - template: "Other Occupation: {occupation_other}"
+    relevance: "occupation_other != ''"
+
+  - template: "Religion: {religion}"
+    relevance: "religion != ''"

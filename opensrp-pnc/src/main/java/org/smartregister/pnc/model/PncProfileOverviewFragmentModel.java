@@ -1,7 +1,6 @@
 package org.smartregister.pnc.model;
 
 
-
 import android.support.annotation.NonNull;
 
 import org.smartregister.pnc.PncLibrary;
@@ -29,6 +28,11 @@ public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragme
             pncMedicInfo = new HashMap<>();
             pncMedicInfo = PncLibrary.getInstance().getPncMedicInfoRepository().findByBaseEntityId(baseEntityId);
 
+            HashMap<String, String> pncRegisterDetails = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
+
+            if (pncRegisterDetails != null) {
+                pncMedicInfo.putAll(pncRegisterDetails);
+            }
             appExecutors.mainThread().execute(() -> onFetchedCallback.onFetched(pncMedicInfo));
         });
     }

@@ -150,7 +150,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
 
             String query = "SELECT *, pvcs._id AS baby_row_id FROM " + Table.PNC_VISIT_INFO + " AS pvi \n" +
                     "LEFT JOIN " + Table.PNC_VISIT_CHILD_STATUS + " AS pvcs ON pvcs." + PncVisitChildStatus.VISIT_ID + " = pvi." + PncVisitInfo.VISIT_ID + " \n" +
-                    "WHERE pvi." + PncVisitInfo.ID + " IN (" + joinedIds + ")";
+                    "LEFT JOIN " + Table.PNC_BABY + " AS pb ON pvcs." + PncVisitChildStatus.BASE_ENTITY_ID + " = pb." + PncDbConstants.Column.PncBaby.BASE_ENTITY_ID + " \n" +
+                    "WHERE pvi." + PncVisitInfo.VISIT_ID + " IN (" + joinedIds + ")";
 
             ArrayList<HashMap<String, String>> data = rawQuery(getReadableDatabase(), query);
 
@@ -221,7 +222,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             int offset = pageNo * 10;
 
             String query = String.format(Locale.getDefault(), "SELECT %s FROM %s WHERE %s = '%s' ORDER BY %s DESC LIMIT 10 OFFSET %d "
-                    , PncVisitInfo.ID
+                    , PncVisitInfo.VISIT_ID
                     , Table.PNC_VISIT_INFO
                     , PncVisitInfo.MOTHER_BASE_ENTITY_ID
                     , motherBaseEntityId

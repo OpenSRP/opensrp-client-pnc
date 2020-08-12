@@ -61,7 +61,7 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         setDataFromRegistration(pncMedicInfo, facts);
 
         try {
-            generateYamlConfigList(pncMedicInfo.get("mother_base_entity_id"), facts, yamlConfigListGlobal);
+            generateYamlConfigList(pncMedicInfo.get("base_entity_id"), facts, yamlConfigListGlobal);
         } catch (IOException ioException) {
             Timber.e(ioException);
         }
