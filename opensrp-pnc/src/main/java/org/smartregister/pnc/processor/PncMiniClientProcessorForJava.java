@@ -1,5 +1,6 @@
 package org.smartregister.pnc.processor;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.CoreLibrary;
+import org.smartregister.commonregistry.AllCommonsRepository;
 import org.smartregister.domain.db.Event;
 import org.smartregister.domain.db.EventClient;
 import org.smartregister.domain.db.Obs;
@@ -57,6 +59,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             eventTypes.add(PncConstants.EventTypeConstants.PNC_MEDIC_INFO);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
             eventTypes.add(PncConstants.EventTypeConstants.PNC_VISIT);
+            eventTypes.add(PncConstants.EventTypeConstants.DEATH);
         }
 
         return eventTypes;
@@ -105,8 +108,35 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 processPncVisit(eventClient);
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
                 break;
+            case PncConstants.EventTypeConstants.DEATH:
+                processDeathEvent(eventClient);
+                processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
+                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                unsyncEvents.add(event);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void processDeathEvent(@NonNull EventClient eventClient) {
+        Event event = eventClient.getEvent();
+        String entityId = event.getBaseEntityId();
+
+        HashMap<String, String> keyValues = new HashMap<>();
+        generateKeyValuesFromEvent(event, keyValues, true);
+
+        String encounterDateField = keyValues.get("date_of_death");
+
+        ContentValues values = new ContentValues();
+        values.put(PncConstants.KeyConstants.DOD, encounterDateField);
+        values.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
+
+        //Update REGISTER and FTS Tables
+        AllCommonsRepository allCommonsRepository = PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT);
+        if (allCommonsRepository != null) {
+            allCommonsRepository.update(PncDbConstants.Table.EC_CLIENT, values, entityId);
+            PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT).updateSearch(Arrays.asList(new String[]{entityId}));
         }
     }
 

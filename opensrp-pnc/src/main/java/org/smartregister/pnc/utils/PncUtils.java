@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jeasy.rules.api.Facts;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -540,5 +541,9 @@ public class PncUtils extends org.smartregister.util.Utils {
             strIds[i] = JsonFormUtils.generateRandomUUIDString();
         }
         return strIds;
+    }
+
+    public static String getTodaysDate() {
+        return convertDateFormat(DateTime.now());
     }
 }

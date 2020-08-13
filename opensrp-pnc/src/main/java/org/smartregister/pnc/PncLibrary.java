@@ -35,6 +35,7 @@ import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
+import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -78,6 +79,7 @@ public class PncLibrary {
     private PncPartialFormRepository pncPartialFormRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
     private PncMedicInfoRepository pncMedicInfoRepository;
+    private EventClientRepository eventClientRepository;
     private PncVisitScheduler pncVisitScheduler;
     private AppExecutors appExecutors;
 
@@ -204,6 +206,13 @@ public class PncLibrary {
             pncPartialFormRepository = new PncPartialFormRepository();
         }
         return pncPartialFormRepository;
+    }
+
+    public EventClientRepository eventClientRepository() {
+        if (eventClientRepository == null) {
+            eventClientRepository = new EventClientRepository();
+        }
+        return eventClientRepository;
     }
 
     @NonNull
