@@ -144,24 +144,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             allCommonsRepository.update(PncDbConstants.Table.EC_CLIENT, values, entityId);
             PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT).updateSearch(Arrays.asList(new String[]{entityId}));
         }
-
-        // update date of removal
-        /*ContentValues contentValues = new ContentValues();
-
-        String encounterDateTimeString = null;
-        if (StringUtils.isNotBlank(encounterDateField)) {
-            try {
-                encounterDateTimeString = formatDate(encounterDateField);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (encounterDateTimeString != null) {
-            contentValues.put(PncConstants.KeyConstants.DATE_REMOVED, encounterDateTimeString);
-        }
-
-        PncLibrary.getInstance().context().getEventClientRepository().getWritableDatabase().update(PncDbConstants.Table.EC_CLIENT, contentValues, PncConstants.KeyConstants.BASE_ENTITY_ID + " = ?", new String[]{entityId});*/
     }
 
     private void processPncMedicInfo(@NonNull EventClient eventClient) {
