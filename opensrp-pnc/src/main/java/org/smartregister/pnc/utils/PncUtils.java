@@ -421,10 +421,14 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         }
 
-        String formType = button.getTag(R.id.BUTTON_TYPE).equals(R.string.start_pnc) ? PncConstants.EventTypeConstants.PNC_MEDIC_INFO : PncConstants.EventTypeConstants.PNC_VISIT;
-        PncPartialForm pncPartialForm = PncLibrary.getInstance().getPncPartialFormRepository().findOne(new PncPartialForm(client.getCaseId(), formType));
-        if (pncPartialForm != null) {
-            button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.saved_form_bg));
+        if (client.getColumnmaps().get("ppf_id") != null) {
+            String formType = client.getColumnmaps().get("ppf_form_type");
+            if ("PNC Medic Information".equals(formType)) {
+                if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)
+                    button.setText(R.string.start_pnc);
+            }
+            button.setBackgroundResource(R.drawable.saved_form_bg);
+            button.setTextColor(button.getContext().getResources().getColor(R.color.dark_grey_text));
         }
     }
 

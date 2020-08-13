@@ -289,7 +289,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                         value = values.toString();
                     }
                     keyValues.put(key, value);
-                    continue;
                 }
             }
         }
