@@ -26,6 +26,9 @@ import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
