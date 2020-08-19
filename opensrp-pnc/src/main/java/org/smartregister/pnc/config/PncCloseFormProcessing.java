@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
-import static org.smartregister.util.JsonFormUtils.generateRandomUUIDString;
-import static org.smartregister.util.JsonFormUtils.getFieldValue;
 
 public class PncCloseFormProcessing implements PncFormProcessingTask {
 
@@ -53,7 +51,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
     }
 
     protected void processWomanDiedEvent(JSONArray fieldsArray, Event event) throws JSONException {
-        if ("woman_died".equals(getFieldValue(fieldsArray, "pnc_close_reason"))) {
+        if ("woman_died".equals(JsonFormUtils.getFieldValue(fieldsArray, "pnc_close_reason"))) {
             event.setEventType(PncConstants.EventTypeConstants.DEATH);
             createDeathEventObject(event, fieldsArray);
         }
@@ -81,7 +79,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
         Event updateClientDetailsEvent = (Event) new Event().withBaseEntityId(event.getBaseEntityId())
                 .withEventDate(DateTime.now().toDate()).withEventType(PncUtils.metadata().getUpdateEventType()).withLocationId(event.getLocationId())
                 .withProviderId(event.getLocationId()).withEntityType(event.getEntityType())
-                .withFormSubmissionId(generateRandomUUIDString()).withDateCreated(new Date());
+                .withFormSubmissionId(JsonFormUtils.generateRandomUUIDString()).withDateCreated(new Date());
 
         JSONObject eventJsonUpdateClientEvent = new JSONObject(JsonFormUtils.gson.toJson(updateClientDetailsEvent));
 

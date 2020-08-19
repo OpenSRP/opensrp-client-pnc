@@ -113,6 +113,7 @@ public class PncConstants extends AllConstants {
         public static final String DATE_OF_DEATH = "date_of_death";
         public static final String DEATH_DATE = "deathdate";
         public static final String ATTRIBUTES = "attributes";
+        public static final String GENERATED_GRP = "generated_grp";
     }
 
     public static class JsonFormExtraConstants {
@@ -147,6 +148,8 @@ public class PncConstants extends AllConstants {
         public static final String GENDER = "gender";
         public static final String DOD = "dod";
         public static final String DATE_REMOVED = "date_removed";
+        public static final String PPF_ID = "ppf_id";
+        public static final String PPF_FORM_TYPE = "ppf_form_type";
     }
 
     public static class EntityConstants {

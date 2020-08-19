@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
+import com.vijay.jsonwizard.widgets.DatePickerFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,6 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
-import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.scheduler.VisitStatus;
 import org.smartregister.repository.BaseRepository;
@@ -387,7 +387,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
             String deliveryDateStr = client.getColumnmaps().get(PncConstants.FormGlobalConstants.DELIVERY_DATE);
             if (StringUtils.isNotBlank(deliveryDateStr)) {
-                LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern("dd-MM-yyyy"));
+                LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern(DatePickerFactory.DATE_FORMAT.toPattern()));
                 PncVisitScheduler pncVisitScheduler = PncLibrary.getInstance().getPncVisitScheduler();
                 pncVisitScheduler.setDeliveryDate(deliveryDate);
                 pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
@@ -423,11 +423,10 @@ public class PncUtils extends org.smartregister.util.Utils {
 
         }
 
-        if (client.getColumnmaps().get("ppf_id") != null) {
-            String formType = client.getColumnmaps().get("ppf_form_type");
-            if ("PNC Medic Information".equals(formType)) {
-                if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)
-                    button.setText(R.string.start_pnc);
+        if (client.getColumnmaps().get(PncConstants.KeyConstants.PPF_ID) != null) {
+            String formType = client.getColumnmaps().get(PncConstants.KeyConstants.PPF_FORM_TYPE);
+            if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(formType) && (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)) {
+                button.setText(R.string.start_pnc);
             }
             button.setBackgroundResource(R.drawable.saved_form_bg);
             button.setTextColor(button.getContext().getResources().getColor(R.color.dark_grey_text));
@@ -450,13 +449,13 @@ public class PncUtils extends org.smartregister.util.Utils {
 
             LocalDate todayDate = LocalDate.now();
             if (detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE) != null) {
-                LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern(com.vijay.jsonwizard.utils.FormUtils.NATIIVE_FORM_DATE_FORMAT_PATTERN));
                 int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
             }
 
             if (detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB) != null) {
-                LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
+                LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern(com.vijay.jsonwizard.utils.FormUtils.NATIIVE_FORM_DATE_FORMAT_PATTERN));
                 int numberOfYears = new Period(babyDob, todayDate).getYears();
                 defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
             }
@@ -477,7 +476,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static int getDeliveryDays(@Nullable String deliveryDate) {
         if (deliveryDate != null) {
-            LocalDate date = LocalDate.parse(deliveryDate, DateTimeFormat.forPattern("dd-MM-yyyy"));
+            LocalDate date = LocalDate.parse(deliveryDate, DateTimeFormat.forPattern(com.vijay.jsonwizard.utils.FormUtils.NATIIVE_FORM_DATE_FORMAT_PATTERN));
             return Days.daysBetween(date, LocalDate.now()).getDays();
         } else {
             return 0;
@@ -502,7 +501,7 @@ public class PncUtils extends org.smartregister.util.Utils {
 
             while (formKeys.hasNext()) {
                 String formKey = formKeys.next();
-                if (formKey != null && formKey.startsWith("step")) {
+                if (formKey != null && formKey.startsWith(JsonFormConstants.STEP)) {
                     JSONObject stepJSONObject = form.getJSONObject(formKey);
                     JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
                     for (int i = 0; i < fieldsArray.length(); i++) {

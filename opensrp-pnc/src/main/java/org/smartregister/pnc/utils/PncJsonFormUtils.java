@@ -24,7 +24,6 @@ import org.smartregister.domain.form.FormLocation;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.enums.LocationHierarchy;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.repository.AllSharedPreferences;
@@ -110,7 +109,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
     protected static void addRegLocHierarchyQuestions(@NonNull JSONObject form) {
         try {
-            JSONArray questions = com.vijay.jsonwizard.utils.FormUtils.getMultiStepFormFields(form);
+            JSONArray questions = FormUtils.getMultiStepFormFields(form);
             ArrayList<String> allLevels = PncUtils.metadata().getLocationLevels();
             ArrayList<String> healthFacilities = PncUtils.metadata().getHealthFacilityLevels();
 
@@ -132,6 +131,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
             Timber.e(e, "JsonFormUtils --> addChildRegLocHierarchyQuestions");
         }
     }
+
     private static void updateLocationTree(@NonNull JSONArray questions,
                                            @Nullable String defaultLocationString, @Nullable String defaultFacilityString,
                                            @Nullable String entireTreeString) throws JSONException {

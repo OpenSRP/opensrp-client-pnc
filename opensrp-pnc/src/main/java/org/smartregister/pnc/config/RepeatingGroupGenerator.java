@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
+import com.vijay.jsonwizard.widgets.DatePickerFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.pnc.PncLibrary;
+import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.util.Utils;
 
 import java.util.Arrays;
@@ -21,11 +23,6 @@ import java.util.Set;
 
 import timber.log.Timber;
 
-import static com.vijay.jsonwizard.constants.JsonFormConstants.CALCULATION;
-import static com.vijay.jsonwizard.constants.JsonFormConstants.RELEVANCE;
-import static com.vijay.jsonwizard.constants.JsonFormConstants.VALUE;
-import static com.vijay.jsonwizard.constants.JsonFormConstants.V_RELATIVE_MAX;
-import static com.vijay.jsonwizard.widgets.DatePickerFactory.DATE_FORMAT;
 
 public class RepeatingGroupGenerator {
     private JSONObject step;
@@ -99,29 +96,7 @@ public class RepeatingGroupGenerator {
                             repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
                     }
 
-                    if (readOnlyFields().contains(repeatingGrpFieldKey))
-                        repeatingGrpField.put(JsonFormConstants.READ_ONLY, "true");
-
-                    if (getFieldsWithoutRefreshLogic().contains(repeatingGrpFieldKey)) {
-                        repeatingGrpField.remove(JsonFormConstants.RELEVANCE);
-                        repeatingGrpField.remove(JsonFormConstants.CONSTRAINTS);
-                        repeatingGrpField.remove(JsonFormConstants.CALCULATION);
-                    }
-
-                    if (repeatingGrpField.has(JsonFormConstants.RELEVANCE) || repeatingGrpField.has(JsonFormConstants.CALCULATION)) {
-                        generateDynamicRules(repeatingGrpField, baseEntityIdModified);
-                    }
-
-                    if (getHiddenFields().contains(repeatingGrpFieldKey))
-                        repeatingGrpField.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
-
-                    if (repeatingGrpFieldKey.equals("generated_grp"))
-                        repeatingGrpField.put(JsonFormConstants.VALUE, "true");
-
-                    if (getFieldsWithoutSpecialViewValidation().contains(repeatingGrpFieldKey)) {
-                        repeatingGrpField.remove(JsonFormConstants.V_REQUIRED);
-                        repeatingGrpField.remove(JsonFormConstants.V_NUMERIC);
-                    }
+                    updateFieldProperties(baseEntityIdModified, repeatingGrpField, repeatingGrpFieldKey);
 
                     updateField(repeatingGrpField, entryMap);
                     repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
@@ -131,22 +106,48 @@ public class RepeatingGroupGenerator {
         }
     }
 
+    private void updateFieldProperties(@NonNull String baseEntityIdModified, @NonNull JSONObject repeatingGrpField, @NonNull String repeatingGrpFieldKey) throws JSONException {
+        if (readOnlyFields().contains(repeatingGrpFieldKey))
+            repeatingGrpField.put(JsonFormConstants.READ_ONLY, "true");
+
+        if (getFieldsWithoutRefreshLogic().contains(repeatingGrpFieldKey)) {
+            repeatingGrpField.remove(JsonFormConstants.RELEVANCE);
+            repeatingGrpField.remove(JsonFormConstants.CONSTRAINTS);
+            repeatingGrpField.remove(JsonFormConstants.CALCULATION);
+        }
+
+        if (repeatingGrpField.has(JsonFormConstants.RELEVANCE) || repeatingGrpField.has(JsonFormConstants.CALCULATION)) {
+            generateDynamicRules(repeatingGrpField, baseEntityIdModified);
+        }
+
+        if (getHiddenFields().contains(repeatingGrpFieldKey))
+            repeatingGrpField.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
+
+        if (repeatingGrpFieldKey.equals(PncConstants.JsonFormKeyConstants.GENERATED_GRP))
+            repeatingGrpField.put(JsonFormConstants.VALUE, "true");
+
+        if (getFieldsWithoutSpecialViewValidation().contains(repeatingGrpFieldKey)) {
+            repeatingGrpField.remove(JsonFormConstants.V_REQUIRED);
+            repeatingGrpField.remove(JsonFormConstants.V_NUMERIC);
+        }
+    }
+
     private void generateDynamicRules(JSONObject field, String uniqueId) {
 
         try {
             Context context = PncLibrary.getInstance().context().applicationContext();
 
-            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, RELEVANCE,
+            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, JsonFormConstants.RELEVANCE,
                     context, rulesFileMap, stepName);
 
-            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, CALCULATION,
+            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, JsonFormConstants.CALCULATION,
                     context, rulesFileMap, stepName);
 
-            JSONObject relativeMaxValidator = field.optJSONObject(V_RELATIVE_MAX);
+            JSONObject relativeMaxValidator = field.optJSONObject(JsonFormConstants.V_RELATIVE_MAX);
             if (relativeMaxValidator != null) {
-                String currRelativeMaxValidatorValue = relativeMaxValidator.getString(VALUE);
+                String currRelativeMaxValidatorValue = relativeMaxValidator.getString(JsonFormConstants.VALUE);
                 String newRelativeMaxValidatorValue = currRelativeMaxValidatorValue + "_" + uniqueId;
-                relativeMaxValidator.put(VALUE, newRelativeMaxValidatorValue);
+                relativeMaxValidator.put(JsonFormConstants.VALUE, newRelativeMaxValidatorValue);
             }
         } catch (JSONException e) {
             Timber.e(e);
@@ -165,7 +166,7 @@ public class RepeatingGroupGenerator {
         if (columnName.equals("dob")) {
             Date dob = Utils.dobStringToDate(value);
             if (dob != null) {
-                s = DATE_FORMAT.format(dob);
+                s = DatePickerFactory.DATE_FORMAT.format(dob);
             }
         } else {
             s = value;
