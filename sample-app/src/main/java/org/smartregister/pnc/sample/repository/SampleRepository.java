@@ -60,7 +60,6 @@ public class SampleRepository extends Repository {
         PncOtherVisitRepository.createTable(database);
         PncPartialFormRepository.createTable(database);
         SettingsRepository.onUpgrade(database);
-        PncRegistrationDetailsRepository.createTable(database);
         PncMedicInfoRepository.createTable(database);
     }
 

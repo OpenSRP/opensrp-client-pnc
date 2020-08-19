@@ -14,7 +14,7 @@ import java.util.Map;
 public class PncChildStatusRepeatingGroupGenerator extends RepeatingGroupGenerator {
 
     public PncChildStatusRepeatingGroupGenerator(@NonNull JSONObject step, @NonNull String repeatingGroupKey, @NonNull Map<String, String> columnMap, @NonNull String uniqueKeyField, @NonNull List<HashMap<String, String>> storedValues) {
-        super(step, repeatingGroupKey, columnMap, uniqueKeyField, storedValues);
+        super(step, "step4", repeatingGroupKey, columnMap, uniqueKeyField, storedValues);
     }
 
     @Override
@@ -23,8 +23,7 @@ public class PncChildStatusRepeatingGroupGenerator extends RepeatingGroupGenerat
         String key = repeatingGrpField.optString(JsonFormConstants.KEY);
         if ("baby_first_name".equals(key)) {
             repeatingGrpField.put(JsonFormConstants.VALUE, String.format("%s", entryMap.get("baby_first_name")));
-        }
-        else if ("baby_last_name".equals(key)) {
+        } else if ("baby_last_name".equals(key)) {
             repeatingGrpField.put(JsonFormConstants.VALUE, String.format("%s", entryMap.get("baby_last_name")));
         }
     }

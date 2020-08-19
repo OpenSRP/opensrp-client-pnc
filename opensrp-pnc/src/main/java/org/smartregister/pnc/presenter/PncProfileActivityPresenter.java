@@ -236,7 +236,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         }
 
         for (Event event : events) {
-            if (PncConstants.EventTypeConstants.PNC_CLOSE.equals(event.getEventType())) {
+            if (PncConstants.EventTypeConstants.PNC_CLOSE.equals(event.getEventType()) || PncConstants.EventTypeConstants.DEATH.equals(event.getEventType())) {
                 ((Activity) getProfileView()).finish();
                 break;
             }

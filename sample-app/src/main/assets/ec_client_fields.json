@@ -100,6 +100,81 @@
           "json_mapping": {
             "field": "version"
           }
+        },
+        {
+          "column_name": "alt_name",
+          "type": "Client",
+          "json_mapping": {
+            "field": "attributes.alt_name"
+          }
+        },
+        {
+          "column_name": "alt_phone_number",
+          "type": "Client",
+          "json_mapping": {
+            "field": "attributes.alt_phone_number"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pnc_registration_details",
+      "columns": [
+        {
+          "column_name": "base_entity_id",
+          "type": "Client",
+          "json_mapping": {
+            "field": "baseEntityId"
+          }
+        },
+        {
+          "column_name": "educ_level",
+          "type": "Event",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "1712AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "column_name": "marital_status",
+          "type": "Event",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "column_name": "occupation",
+          "type": "Event",
+          "save_format": "json_array",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "column_name": "occupation_other",
+          "type": "Event",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "occupation_other"
+          }
+        },
+        {
+          "column_name": "religion",
+          "type": "Event",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "162929AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        },
+        {
+          "column_name": "religion_other",
+          "type": "Event",
+          "json_mapping": {
+            "field": "obs.fieldCode",
+            "concept": "religion_other"
+          }
         }
       ]
     }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jeasy.rules.api.Facts;
@@ -545,5 +546,16 @@ public class PncUtils extends org.smartregister.util.Utils {
 
     public static String getTodaysDate() {
         return convertDateFormat(DateTime.now());
+    }
+
+    public static String reverseHyphenSeperatedValues(String rawString, String outputSeparator) {
+        if (StringUtils.isNotBlank(rawString)) {
+            String resultString = rawString;
+            String[] tokenArray = resultString.trim().split("-");
+            ArrayUtils.reverse(tokenArray);
+            resultString = StringUtils.join(tokenArray, outputSeparator);
+            return resultString;
+        }
+        return "";
     }
 }

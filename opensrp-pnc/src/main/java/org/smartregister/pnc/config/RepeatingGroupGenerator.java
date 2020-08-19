@@ -1,5 +1,6 @@
 package org.smartregister.pnc.config;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
@@ -7,6 +8,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.util.Utils;
 
 import java.util.Arrays;
@@ -17,6 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import timber.log.Timber;
+
+import static com.vijay.jsonwizard.constants.JsonFormConstants.CALCULATION;
+import static com.vijay.jsonwizard.constants.JsonFormConstants.RELEVANCE;
+import static com.vijay.jsonwizard.constants.JsonFormConstants.VALUE;
+import static com.vijay.jsonwizard.constants.JsonFormConstants.V_RELATIVE_MAX;
 import static com.vijay.jsonwizard.widgets.DatePickerFactory.DATE_FORMAT;
 
 public class RepeatingGroupGenerator {
@@ -30,9 +38,12 @@ public class RepeatingGroupGenerator {
     private Set<String> hiddenFields;
     private Set<String> readOnlyFields;
     private String baseEntityId;
+    private Map<String, List<Map<String, Object>>> rulesFileMap = new HashMap<>();
+    private String stepName;
+
 
     public RepeatingGroupGenerator(@NonNull JSONObject step,
-                                   @NonNull String repeatingGroupKey,
+                                   @NonNull String stepName, @NonNull String repeatingGroupKey,
                                    @NonNull Map<String, String> columnMap,
                                    @NonNull String uniqueKeyField,
                                    @NonNull List<HashMap<String, String>> storedValues) {
@@ -41,6 +52,7 @@ public class RepeatingGroupGenerator {
         this.storedValues = storedValues;
         this.step = step;
         this.columnMap = columnMap;
+        this.stepName = stepName;
     }
 
     public JSONObject getStep() {
@@ -68,48 +80,76 @@ public class RepeatingGroupGenerator {
         int mPos = pos;
         for (Map<String, String> entryMap : storedValues) {
             baseEntityId = entryMap.get(uniqueKeyField);
-            String baseEntityIdModified = baseEntityId.replaceAll("-", "");
-            for (int i = 0; i < repeatingGrpValues.length(); i++) {
-                JSONObject object = repeatingGrpValues.optJSONObject(i);
-                JSONObject repeatingGrpField = new JSONObject(object.toString());
-                String repeatingGrpFieldKey = repeatingGrpField.optString(JsonFormConstants.KEY);
+            if (baseEntityId != null) {
+                String baseEntityIdModified = baseEntityId.replaceAll("-", "");
+                for (int i = 0; i < repeatingGrpValues.length(); i++) {
+                    JSONObject object = repeatingGrpValues.optJSONObject(i);
+                    JSONObject repeatingGrpField = new JSONObject(object.toString());
+                    String repeatingGrpFieldKey = repeatingGrpField.optString(JsonFormConstants.KEY);
 
-                if (entryMap.containsKey(repeatingGrpFieldKey)) {
-                    if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
-                        repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
-                    else
-                        repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
-                } else if (columnMap.get(repeatingGrpFieldKey) != null && entryMap.containsKey(columnMap.get(repeatingGrpFieldKey))) {
-                    if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
-                        repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
-                    else
-                        repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
+                    if (entryMap.containsKey(repeatingGrpFieldKey)) {
+                        if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
+                            repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
+                        else
+                            repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(repeatingGrpFieldKey, entryMap.get(repeatingGrpFieldKey)));
+                    } else if (columnMap.get(repeatingGrpFieldKey) != null && entryMap.containsKey(columnMap.get(repeatingGrpFieldKey))) {
+                        if (repeatingGrpField.optString(JsonFormConstants.TYPE).equals(JsonFormConstants.LABEL))
+                            repeatingGrpField.put(JsonFormConstants.TEXT, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
+                        else
+                            repeatingGrpField.put(JsonFormConstants.VALUE, processColumnValue(columnMap.get(repeatingGrpFieldKey), entryMap.get(columnMap.get(repeatingGrpFieldKey))));
+                    }
+
+                    if (readOnlyFields().contains(repeatingGrpFieldKey))
+                        repeatingGrpField.put(JsonFormConstants.READ_ONLY, "true");
+
+                    if (getFieldsWithoutRefreshLogic().contains(repeatingGrpFieldKey)) {
+                        repeatingGrpField.remove(JsonFormConstants.RELEVANCE);
+                        repeatingGrpField.remove(JsonFormConstants.CONSTRAINTS);
+                        repeatingGrpField.remove(JsonFormConstants.CALCULATION);
+                    }
+
+                    if (repeatingGrpField.has(JsonFormConstants.RELEVANCE) || repeatingGrpField.has(JsonFormConstants.CALCULATION)) {
+                        generateDynamicRules(repeatingGrpField, baseEntityIdModified);
+                    }
+
+                    if (getHiddenFields().contains(repeatingGrpFieldKey))
+                        repeatingGrpField.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
+
+                    if (repeatingGrpFieldKey.equals("generated_grp"))
+                        repeatingGrpField.put(JsonFormConstants.VALUE, "true");
+
+                    if (getFieldsWithoutSpecialViewValidation().contains(repeatingGrpFieldKey)) {
+                        repeatingGrpField.remove(JsonFormConstants.V_REQUIRED);
+                        repeatingGrpField.remove(JsonFormConstants.V_NUMERIC);
+                    }
+
+                    updateField(repeatingGrpField, entryMap);
+                    repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
+                    stepFields.put(++mPos, repeatingGrpField);
                 }
-
-                if (readOnlyFields().contains(repeatingGrpFieldKey))
-                    repeatingGrpField.put(JsonFormConstants.READ_ONLY, "true");
-
-                if (getFieldsWithoutRefreshLogic().contains(repeatingGrpFieldKey)) {
-                    repeatingGrpField.remove(JsonFormConstants.RELEVANCE);
-                    repeatingGrpField.remove(JsonFormConstants.CONSTRAINTS);
-                    repeatingGrpField.remove(JsonFormConstants.CALCULATION);
-                }
-
-                if (getHiddenFields().contains(repeatingGrpFieldKey))
-                    repeatingGrpField.put(JsonFormConstants.TYPE, JsonFormConstants.HIDDEN);
-
-                if (repeatingGrpFieldKey.equals("generated_grp"))
-                    repeatingGrpField.put(JsonFormConstants.VALUE, "true");
-
-                if (getFieldsWithoutSpecialViewValidation().contains(repeatingGrpFieldKey)) {
-                    repeatingGrpField.remove(JsonFormConstants.V_REQUIRED);
-                    repeatingGrpField.remove(JsonFormConstants.V_NUMERIC);
-                }
-
-                updateField(repeatingGrpField, entryMap);
-                repeatingGrpField.put(JsonFormConstants.KEY, repeatingGrpFieldKey + "_" + baseEntityIdModified);
-                stepFields.put(++mPos, repeatingGrpField);
             }
+        }
+    }
+
+    private void generateDynamicRules(JSONObject field, String uniqueId) {
+
+        try {
+            Context context = PncLibrary.getInstance().context().applicationContext();
+
+            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, RELEVANCE,
+                    context, rulesFileMap, stepName);
+
+            com.vijay.jsonwizard.utils.Utils.buildRulesWithUniqueId(field, uniqueId, CALCULATION,
+                    context, rulesFileMap, stepName);
+
+            JSONObject relativeMaxValidator = field.optJSONObject(V_RELATIVE_MAX);
+            if (relativeMaxValidator != null) {
+                String currRelativeMaxValidatorValue = relativeMaxValidator.getString(VALUE);
+                String newRelativeMaxValidatorValue = currRelativeMaxValidatorValue + "_" + uniqueId;
+                relativeMaxValidator.put(VALUE, newRelativeMaxValidatorValue);
+            }
+        } catch (JSONException e) {
+            Timber.e(e);
         }
     }
 

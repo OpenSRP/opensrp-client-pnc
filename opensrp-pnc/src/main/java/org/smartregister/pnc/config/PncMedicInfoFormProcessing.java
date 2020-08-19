@@ -104,14 +104,6 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
                 , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_MEDIC_INFO, "");
         PncJsonFormUtils.tagSyncMetadata(pncMedicInfoEvent);
         eventList.add(pncMedicInfoEvent);
-
-
-        /*Event closePncEvent = JsonFormUtils.createEvent(new JSONArray(), new JSONObject(),
-                formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_CLOSE, "");
-        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
-        closePncEvent.addDetails(PncConstants.JsonFormKeyConstants.VISIT_END_DATE, PncUtils.convertDate(new Date(), PncConstants.DateFormat.YYYY_MM_DD_HH_MM_SS));
-        eventList.add(closePncEvent);*/
-
         return eventList;
 
     }

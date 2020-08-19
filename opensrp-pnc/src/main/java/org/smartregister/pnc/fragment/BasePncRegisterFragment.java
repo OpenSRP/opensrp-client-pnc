@@ -184,8 +184,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
                         if (buttonType != null) {
                             if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
                                 performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_VISIT);
-                            }
-                            else if (buttonType.equals(R.string.start_pnc)){
+                            } else if (buttonType.equals(R.string.start_pnc)) {
                                 performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_MEDIC_INFO);
                             }
                         }
@@ -251,7 +250,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
             String tagString = "PRESSED";
             if (filterSection.getTag() == null) {
                 switchViews(filterSection, true);
-                filter(searchText(), "", presenter().getDueFilterCondition(), false);
+                filter(searchText(), "", getDueFilterQuery(), false);
                 filterSection.setTag(tagString);
             } else if (filterSection.getTag().toString().equals(tagString)) {
                 switchViews(filterSection, false);
@@ -263,7 +262,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
 
     private void enableDueOnlyFilter(@NonNull View dueOnlyLayout, boolean enable) {
         String tag = enable ? DUE_FILTER_TAG : null;
-        String mainConditionString = enable ? presenter().getDueFilterCondition() : "";
+        String mainConditionString = enable ? getDueFilterQuery() : "";
 
         filter(searchText(), "", mainConditionString);
         dueOnlyLayout.setTag(tag);
@@ -381,6 +380,10 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         } catch (Exception e) {
             Timber.e(e);
         }
+    }
+
+    protected String getDueFilterQuery() {
+        return presenter().getDueFilterCondition();
     }
 
 }

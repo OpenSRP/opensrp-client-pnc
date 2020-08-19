@@ -17,9 +17,9 @@ import org.smartregister.domain.db.Obs;
 import org.smartregister.domain.jsonmapping.ClientClassification;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.exception.PncCloseEventProcessException;
+import org.smartregister.pnc.pojo.PncBaseDetails;
 import org.smartregister.pnc.pojo.PncChild;
 import org.smartregister.pnc.pojo.PncOtherVisit;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.pojo.PncStillBorn;
 import org.smartregister.pnc.repository.PncMedicInfoRepository;
 import org.smartregister.pnc.utils.PncConstants;
@@ -28,6 +28,7 @@ import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.MiniClientProcessorForJava;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,14 +80,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         switch (eventType) {
             case PncConstants.EventTypeConstants.PNC_REGISTRATION:
             case PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION:
-                HashMap<String, String> keyValues = new HashMap<>();
-                generateKeyValuesFromEvent(event, keyValues);
-
-                PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
-                pncDetails.setCreatedAt(new Date());
-
-                PncLibrary.getInstance().getPncRegistrationDetailsRepository().saveOrUpdate(pncDetails);
-
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
                 break;
@@ -124,9 +117,9 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         String entityId = event.getBaseEntityId();
 
         HashMap<String, String> keyValues = new HashMap<>();
-        generateKeyValuesFromEvent(event, keyValues, true);
+        generateKeyValuesFromEvent(event, keyValues);
 
-        String encounterDateField = keyValues.get("date_of_death");
+        String encounterDateField = keyValues.get(PncConstants.JsonFormKeyConstants.DATE_OF_DEATH);
 
         ContentValues values = new ContentValues();
         values.put(PncConstants.KeyConstants.DOD, encounterDateField);
@@ -136,7 +129,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         AllCommonsRepository allCommonsRepository = PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT);
         if (allCommonsRepository != null) {
             allCommonsRepository.update(PncDbConstants.Table.EC_CLIENT, values, entityId);
-            PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT).updateSearch(Arrays.asList(new String[]{entityId}));
+            PncLibrary.getInstance().context().allCommonsRepositoryobjects(PncDbConstants.Table.EC_CLIENT).updateSearch(Arrays.asList(entityId));
         }
     }
 
@@ -148,7 +141,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
 
-        PncRegistrationDetails pncDetails = new PncRegistrationDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
+        PncBaseDetails pncDetails = new PncBaseDetails(eventClient.getClient().getBaseEntityId(), event.getEventDate().toDate(), keyValues);
         pncDetails.setCreatedAt(new Date());
 
         PncMedicInfoRepository repo = PncLibrary.getInstance().getPncMedicInfoRepository();

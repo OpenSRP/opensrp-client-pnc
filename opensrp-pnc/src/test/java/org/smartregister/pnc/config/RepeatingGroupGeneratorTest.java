@@ -36,7 +36,7 @@ public class RepeatingGroupGeneratorTest extends BaseTest {
         map.put("birth_weight", "20");
         storedValues.add(map);
 
-        new RepeatingGroupGenerator(step, repeatingGrpkey,
+        new RepeatingGroupGenerator(step, "stepName", repeatingGrpkey,
                 columnMap,
                 uniqueKey,
                 storedValues).init();
