@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.internal.WhiteboxImpl;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
@@ -92,7 +93,7 @@ public class PncJsonFormUtilsTest {
         PowerMockito.when(pncMetadata.getPncRegistrationFormName()).thenReturn(PncConstants.Form.PNC_REGISTRATION);
 
         //PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
-                //BuildConfig.VERSION_CODE, 1);
+        //BuildConfig.VERSION_CODE, 1);
 
         PowerMockito.mockStatic(PncLibrary.class);
 
@@ -150,7 +151,7 @@ public class PncJsonFormUtilsTest {
         jsonObject.put(JsonFormConstants.KEY, "village");
         jsonObject.put(JsonFormConstants.TYPE, JsonFormConstants.TREE);
         jsonArray.put(jsonObject);
-        //String hierarchyString = "[\"Kenya\",\"Central\"]";
+        String hierarchyString = "[\"Kenya\",\"Central\"]";
         String entireTreeString = "[{\"nodes\":[{\"level\":\"Province\",\"name\":\"Central\",\"key\":\"1\"}],\"level\":\"Country\",\"name\":\"Kenya\",\"key\":\"0\"}]";
         ArrayList<String> healthFacilities = new ArrayList<>();
         healthFacilities.add("Country");
@@ -174,11 +175,11 @@ public class PncJsonFormUtilsTest {
         ReflectionHelpers.setStaticField(LocationHelper.class, "instance", locationHelper);
 
         Mockito.doReturn(entireTree).when(locationHelper).generateLocationHierarchyTree(ArgumentMatchers.anyBoolean(), ArgumentMatchers.eq(healthFacilities));
-        PncJsonFormUtils.updateLocationTree(jsonArray, entireTreeString, entireTreeString);
-        //WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
+
+        WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
         Assert.assertTrue(jsonObject.has(JsonFormConstants.TREE));
         Assert.assertTrue(jsonObject.has(JsonFormConstants.DEFAULT));
-        //Assert.assertEquals(hierarchyString, jsonObject.optString(JsonFormConstants.DEFAULT));
+        Assert.assertEquals(hierarchyString, jsonObject.optString(JsonFormConstants.DEFAULT));
         JSONArray resultTreeObject = new JSONArray(jsonObject.optString(JsonFormConstants.TREE));
         Assert.assertTrue(resultTreeObject.optJSONObject(0).has("nodes"));
         Assert.assertEquals("Kenya", resultTreeObject.optJSONObject(0).optString("name"));
@@ -256,35 +257,6 @@ public class PncJsonFormUtilsTest {
         Assert.assertNotNull(event);
     }
 
-    /*@Test
-    public void testGetLocationIdWithCurrentLocalityIsNotNull() throws Exception {
-        PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
-                , PncDbConstants.KEY.TABLE
-                , PncConstants.EventTypeConstants.PNC_REGISTRATION
-                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
-                , PncConstants.CONFIG
-                , Class.class
-                , Class.class
-                , true);
-        pncMetadata.setHealthFacilityLevels(new ArrayList<String>());
-        PncConfiguration pncConfiguration = new PncConfiguration
-                .Builder(PncRegisterQueryProviderTest.class)
-                .setPncMetadata(pncMetadata)
-                .build();
-        PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
-                BuildConfig.VERSION_CODE, 1);
-        CoreLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(SyncConfiguration.class));
-
-        ArrayList<String> defaultLocations = new ArrayList<>();
-        defaultLocations.add("Country");
-        LocationHelper.init(defaultLocations,
-                "Country");
-        AllSharedPreferences allSharedPreferences = PowerMockito.mock(AllSharedPreferences.class);
-        PowerMockito.when(allSharedPreferences.fetchCurrentLocality()).thenReturn("Place");
-        Assert.assertNotNull(LocationHelper.getInstance());
-        String result = PncJsonFormUtils.getLocationId("Country", allSharedPreferences);
-        Assert.assertEquals("Place", result);
-    }*/
 
     @Test
     public void testValidateParameters() throws JSONException {
@@ -345,23 +317,6 @@ public class PncJsonFormUtilsTest {
         Assert.assertEquals(jsonArray.getJSONObject(0).length(), 1);
     }
 
-    /*@Test
-    public void testProcessLocationFields() throws JSONException {
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JsonFormConstants.TYPE, JsonFormConstants.TREE);
-        JSONArray jsonArray1 = new JSONArray();
-        jsonArray1.put("test");
-        jsonObject.put(JsonFormConstants.VALUE, jsonArray1.toString());
-        jsonArray.put(jsonObject);
-        ArrayList<String> defaultLocations = new ArrayList<>();
-        defaultLocations.add("Country");
-        CoreLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(SyncConfiguration.class));
-        LocationHelper.init(defaultLocations,
-                "Country");
-        PncJsonFormUtils.processLocationFields(jsonArray);
-        Assert.assertEquals(jsonArray.getJSONObject(0).getString(JsonFormConstants.VALUE), "test");
-    }*/
 
     @Test
     public void testLastInteractedWithEmpty() {

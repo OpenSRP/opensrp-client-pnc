@@ -68,7 +68,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
         client.put(FormEntityConstants.Person.deathdate_estimated.name(), false);
         client.put(PncConstants.JsonFormKeyConstants.DEATH_DATE_APPROX, false);
 
-        JSONObject attributes = client.getJSONObject(PncConstants.JsonFormKeyConstants.ATTRIBUTES);
+        JSONObject attributes = client.optJSONObject(PncConstants.JsonFormKeyConstants.ATTRIBUTES);
         attributes.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
         client.put(PncConstants.JsonFormKeyConstants.ATTRIBUTES, attributes);
 

@@ -132,7 +132,7 @@ public class RepeatingGroupGenerator {
         }
     }
 
-    private void generateDynamicRules(JSONObject field, String uniqueId) {
+    protected void generateDynamicRules(@NonNull JSONObject field, @NonNull String uniqueId) {
 
         try {
             Context context = PncLibrary.getInstance().context().applicationContext();
