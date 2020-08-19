@@ -547,7 +547,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         return convertDateFormat(DateTime.now());
     }
 
-    public static String reverseHyphenSeperatedValues(String rawString, String outputSeparator) {
+    public static String reverseHyphenSeparatedValues(@Nullable String rawString, @NonNull String outputSeparator) {
         if (StringUtils.isNotBlank(rawString)) {
             String resultString = rawString;
             String[] tokenArray = resultString.trim().split("-");
