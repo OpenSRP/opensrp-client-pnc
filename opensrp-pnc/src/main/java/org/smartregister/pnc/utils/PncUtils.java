@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -379,8 +380,9 @@ public class PncUtils extends org.smartregister.util.Utils {
     }
 
     public static void setVisitButtonStatus(Button button, CommonPersonObjectClient client) {
-        button.setTag(R.id.BUTTON_TYPE, R.string.start_pnc);
-        button.setText(R.string.start_pnc);
+        button.setTag(R.id.BUTTON_TYPE, R.string.complete_pnc_registration);
+        button.setText(R.string.complete_pnc_registration);
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, button.getResources().getDimension(R.dimen.text_size));
         button.setBackgroundResource(R.drawable.pnc_status_btn_bg);
 
         if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) != null) {
@@ -390,7 +392,13 @@ public class PncUtils extends org.smartregister.util.Utils {
                 LocalDate deliveryDate = LocalDate.parse(deliveryDateStr, DateTimeFormat.forPattern(DatePickerFactory.DATE_FORMAT.toPattern()));
                 PncVisitScheduler pncVisitScheduler = PncLibrary.getInstance().getPncVisitScheduler();
                 pncVisitScheduler.setDeliveryDate(deliveryDate);
-                pncVisitScheduler.setLatestVisitDateInMills(client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
+                String strLatestVisitDate = client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE);
+                if (strLatestVisitDate != null) {
+                    LocalDate latestVisitDate = LocalDate.parse(client.getColumnmaps().get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+                    pncVisitScheduler.setLatestVisitDateInMills(String.valueOf(latestVisitDate.toDate().getTime()));
+                } else {
+                    pncVisitScheduler.setLatestVisitDateInMills(null);
+                }
 
                 if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
                     button.setText(R.string.pnc_due);
@@ -426,7 +434,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         if (client.getColumnmaps().get(PncConstants.KeyConstants.PPF_ID) != null) {
             String formType = client.getColumnmaps().get(PncConstants.KeyConstants.PPF_FORM_TYPE);
             if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(formType) && (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)) {
-                button.setText(R.string.start_pnc);
+                button.setText(R.string.complete_pnc_registration);
             }
             button.setBackgroundResource(R.drawable.saved_form_bg);
             button.setTextColor(button.getContext().getResources().getColor(R.color.dark_grey_text));

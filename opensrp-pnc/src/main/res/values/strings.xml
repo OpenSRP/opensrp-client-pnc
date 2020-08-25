@@ -54,7 +54,7 @@
     <string name="diagnose_and_treat"><![CDATA[DIAGNOSE & TREAT]]></string>
     <string name="pnc_due">PNC Due</string>
     <string name="pnc_overdue">PNC Overdue</string>
-    <string name="start_pnc">START PNC</string>
+    <string name="complete_pnc_registration">COMPLETE REGISTRATION</string>
     <string name="record_pnc">Record PNC</string>
     <string name="pnc_done_today">PNC Done Today</string>
     <string name="diagnosis">Diagnosis</string>

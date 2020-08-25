@@ -10,6 +10,7 @@ import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.activity.BasePncProfileActivity;
+import org.smartregister.pnc.config.BasePncRegisterRowOptions;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.sample.BuildConfig;
@@ -28,6 +29,8 @@ import org.smartregister.repository.Repository;
 import org.smartregister.sync.ClientProcessorForJava;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -109,9 +112,11 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
                 , PncFormActivity.class
                 , BasePncProfileActivity.class
                 ,true);
+        pncMetadata.setFieldsWithLocationHierarchy(new HashSet<>(Arrays.asList("village")));
         PncConfiguration pncConfiguration = new PncConfiguration
                 .Builder(PncRegisterQueryProvider.class)
                 .setPncMetadata(pncMetadata)
+                .setPncRegisterRowOptions(BasePncRegisterRowOptions.class)
                 .build();
         PncLibrary.init(context, getRepository(), pncConfiguration, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
 

@@ -191,11 +191,13 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                List<String> formSubmissionIds = new ArrayList<>();
                 for (Event event : events) {
+                    formSubmissionIds.add(event.getFormSubmissionId());
                     saveEventInDb(event);
                 }
 
-                processLatestUnprocessedEvents();
+                processLatestUnprocessedEvents(formSubmissionIds);
 
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
@@ -221,14 +223,14 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
         }
     }
 
-    private void processLatestUnprocessedEvents() {
+    private void processLatestUnprocessedEvents(List<String> formSubmissionIds) {
         // Process this event
         long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
         Date lastSyncDate = new Date(lastSyncTimeStamp);
 
         try {
-            getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unprocessed));
-            getAllSharedPreferences().saveLastUpdatedAtDate(new Date().getTime());
+            getClientProcessorForJava().processClient(getSyncHelper().getEvents(formSubmissionIds));
+            getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
         } catch (Exception e) {
             Timber.e(e);
         }

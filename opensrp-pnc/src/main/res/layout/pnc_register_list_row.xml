@@ -118,7 +118,7 @@
             android:hapticFeedbackEnabled="true"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/start_pnc"
+            android:text="@string/complete_pnc_registration"
             android:textAllCaps="true"
             android:textStyle="bold"
             style="@style/Widget.AppCompat.Button.Borderless"

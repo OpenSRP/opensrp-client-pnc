@@ -81,30 +81,30 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
             case PncConstants.EventTypeConstants.PNC_REGISTRATION:
             case PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                completeProcessing(event);
                 break;
             case PncConstants.EventTypeConstants.PNC_CLOSE:
                 if (eventClient.getClient() == null) {
                     throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.PNC_CLOSE));
                 }
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                completeProcessing(event);
                 unsyncEvents.add(event);
                 break;
             case PncConstants.EventTypeConstants.PNC_MEDIC_INFO:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 processPncMedicInfo(eventClient);
-                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                completeProcessing(event);
                 break;
             case PncConstants.EventTypeConstants.PNC_VISIT:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 processPncVisit(eventClient);
-                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                completeProcessing(event);
                 break;
             case PncConstants.EventTypeConstants.DEATH:
                 processDeathEvent(eventClient);
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
-                CoreLibrary.getInstance().context().getEventClientRepository().markEventAsProcessed(eventClient.getEvent().getFormSubmissionId());
+                completeProcessing(event);
                 unsyncEvents.add(event);
                 break;
             default:

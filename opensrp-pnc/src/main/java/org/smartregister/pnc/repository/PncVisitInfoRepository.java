@@ -48,6 +48,9 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             + PncDbConstants.Column.PncVisitInfo.UTERUS_STATUS_OTHER + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.INTERVENTION_GIVEN_TEXT + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.ITN_GIVEN + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.ITN_GIVEN_NOT_DONE + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.ITN_GIVEN_NOT_DONE_OTHER + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.REFERRED_OUT + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.REFERRED_OUT_SPECIFY + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.BREAST_FEEDING + " VARCHAR NULL, "
@@ -56,7 +59,8 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
             + PncDbConstants.Column.PncVisitInfo.VIT_A_NOT_GIVING_REASON + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.FP_COUNSEL + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitInfo.FP_METHOD + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER + " VARCHAR NULL )";
+            + PncVisitInfo.BABY_PRESENT + " VARCHAR NULL, "
+            + PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER + " VARCHAR NULL , UNIQUE(" + PncDbConstants.Column.PncVisitInfo.VISIT_ID + ") ON CONFLICT REPLACE)";
 
 
     private static final String INDEX_MOTHER_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_INFO
@@ -104,6 +108,11 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
         contentValues.put(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL, data.get(PncDbConstants.Column.PncVisitInfo.FP_COUNSEL));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD, data.get(PncDbConstants.Column.PncVisitInfo.FP_METHOD));
         contentValues.put(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER, data.get(PncDbConstants.Column.PncVisitInfo.FP_METHOD_OTHER));
+        contentValues.put(PncVisitInfo.ITN_GIVEN, data.get(PncVisitInfo.ITN_GIVEN));
+        contentValues.put(PncVisitInfo.ITN_GIVEN_NOT_DONE, data.get(PncVisitInfo.ITN_GIVEN_NOT_DONE));
+        contentValues.put(PncVisitInfo.ITN_GIVEN_NOT_DONE_OTHER, data.get(PncVisitInfo.ITN_GIVEN_NOT_DONE_OTHER));
+        contentValues.put(PncVisitInfo.BABY_PRESENT, data.get(PncVisitInfo.BABY_PRESENT));
+
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         long rows = sqLiteDatabase.insert(PncDbConstants.Table.PNC_VISIT_INFO, null, contentValues);
         return rows != -1;
@@ -165,8 +174,7 @@ public class PncVisitInfoRepository extends BaseRepository implements PncGeneric
                         childList.add(record);
                         visitChildStatusMap.put(record.get(PncVisitInfo.VISIT_ID), childList);
                     }
-                }
-                else {
+                } else {
                     List<Map<String, String>> childList = visitChildStatusMap.get(record.get(PncVisitInfo.VISIT_ID));
                     Objects.requireNonNull(childList).add(record);
                 }

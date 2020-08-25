@@ -36,7 +36,7 @@ public class PncVisitChildStatusRepository extends BaseRepository implements Pnc
             + PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.NOT_ART_PAIRING_REASON_OTHER + " VARCHAR NULL, "
             + PncDbConstants.Column.PncVisitChildStatus.BABY_DBS + " VARCHAR NULL, "
-            + PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT + " VARCHAR NULL )";
+            + PncDbConstants.Column.PncVisitChildStatus.BABY_CARE_MGMT + " VARCHAR NULL, UNIQUE(" + PncDbConstants.Column.PncVisitChildStatus.VISIT_ID + "," + PncDbConstants.Column.PncVisitChildStatus.BASE_ENTITY_ID + "))";
 
 
     private static final String INDEX_VISIT_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_VISIT_CHILD_STATUS

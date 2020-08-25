@@ -45,7 +45,7 @@ public class PncChildRepository extends BaseRepository implements PncGenericDao<
             + PncBaby.BF_FIRST_HOUR + " VARCHAR NULL, "
             + PncBaby.NVP_ADMINISTRATION + " VARCHAR NULL, "
             + PncBaby.CHILD_HIV_STATUS + " VARCHAR NULL, "
-            + PncBaby.EVENT_DATE + " VARCHAR NULL )";
+            + PncBaby.EVENT_DATE + " VARCHAR NULL , UNIQUE(" + PncBaby.BASE_ENTITY_ID+ ") ON CONFLICT REPLACE)";
 
 
     private static final String INDEX_BASE_ENTITY_ID = "CREATE INDEX " + PncDbConstants.Table.PNC_BABY

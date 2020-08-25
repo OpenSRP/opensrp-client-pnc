@@ -184,7 +184,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
                         if (buttonType != null) {
                             if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
                                 performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_VISIT);
-                            } else if (buttonType.equals(R.string.start_pnc)) {
+                            } else if (buttonType.equals(R.string.complete_pnc_registration)) {
                                 performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_MEDIC_INFO);
                             }
                         }

@@ -113,6 +113,10 @@ public interface PncDbConstants {
             String FP_METHOD = "fp_method";
             String FP_METHOD_OTHER = "fp_method_other";
             String LATEST_VISIT_DATE = "latest_visit_date";
+            String ITN_GIVEN = "itn_given";
+            String ITN_GIVEN_NOT_DONE = "itn_given_notdone";
+            String ITN_GIVEN_NOT_DONE_OTHER = "itn_given_notdone_other";
+            String BABY_PRESENT = "baby_present";
         }
 
         interface PncVisitChildStatus {

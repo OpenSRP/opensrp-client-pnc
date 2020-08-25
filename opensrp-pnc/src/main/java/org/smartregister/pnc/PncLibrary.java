@@ -5,16 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Weeks;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.smartregister.Context;
 import org.smartregister.clientandeventmodel.Event;
-import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.config.PncFormProcessingTask;
 import org.smartregister.pnc.domain.YamlConfig;
@@ -33,14 +26,12 @@ import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
-import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
-import org.smartregister.util.JsonFormUtils;
 import org.smartregister.view.activity.DrishtiApplication;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
@@ -55,8 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
-
-import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -118,14 +107,6 @@ public class PncLibrary {
                     + "your Application class");
         }
         return instance;
-    }
-
-
-    public static int getGestationAgeInWeeks(@NonNull String conceptionDateString) {
-        DateTimeFormatter SQLITE_DATE_DF = DateTimeFormat.forPattern("dd-MM-yyyy");
-        LocalDate conceptionDate = SQLITE_DATE_DF.withOffsetParsed().parseLocalDate(conceptionDateString);
-        Weeks weeks = Weeks.weeksBetween(conceptionDate, LocalDate.now());
-        return weeks.getWeeks();
     }
 
     @NonNull
@@ -289,24 +270,6 @@ public class PncLibrary {
             PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(pncFormProcessingTasks.get(eventType));
             eventList = pncFormProcessingTask.processPncForm(eventType, jsonString, data);
         }
-        return eventList;
-    }
-
-    @NonNull
-    public List<Event> processPncCloseForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        ArrayList<Event> eventList = new ArrayList<>();
-        JSONObject jsonFormObject = new JSONObject(jsonString);
-
-        JSONArray fieldsArray = PncUtils.generateFieldsFromJsonForm(jsonFormObject);
-        FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
-
-        String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
-        String entityTable = PncUtils.getIntentValue(data, PncConstants.IntentKey.ENTITY_TABLE);
-        Event closePncEvent = JsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, eventType, entityTable);
-        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
-        eventList.add(closePncEvent);
-
         return eventList;
     }
 

@@ -87,7 +87,6 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
         if (getActivity() != null) {
             HashMap<String, String> clientDetail = PncLibrary.getInstance().getPncMedicInfoRepository().findWithVisitInfoByBaseEntityId(baseEntityId);
             commonPersonObjectClient.getColumnmaps().put(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID, clientDetail.get(PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID));
-            commonPersonObjectClient.getColumnmaps().put(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE, clientDetail.get(PncDbConstants.Column.PncVisitInfo.LATEST_VISIT_DATE));
             PncUtils.setVisitButtonStatus(recordFormBtn, commonPersonObjectClient);
             pncProfileOverviewLayout.setVisibility(View.VISIBLE);
             recordFormBtn.setOnClickListener(v -> {
@@ -97,7 +96,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
                     if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
                         profileActivity.openPncVisitForm();
                     }
-                    else if (buttonType.equals(R.string.start_pnc)){
+                    else if (buttonType.equals(R.string.complete_pnc_registration)){
                         profileActivity.openPncMedicInfoForm();
                     }
                 }
