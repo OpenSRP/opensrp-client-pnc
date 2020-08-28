@@ -24,7 +24,7 @@ public class VisitSchedulerTest {
 
         VisitScheduler visitScheduler = Mockito.spy(VisitScheduler.class);
 
-        Assert.assertEquals(visitScheduler.processVisits(caseList, currentDate), VisitStatus.PNC_DUE);
+        Assert.assertEquals(visitScheduler.processVisits(caseList, currentDate, null), VisitStatus.PNC_DUE);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class VisitSchedulerTest {
 
         VisitScheduler visitScheduler = Mockito.spy(VisitScheduler.class);
 
-        Assert.assertEquals(visitScheduler.processVisits(caseList, currentDate), VisitStatus.PNC_OVERDUE);
+        Assert.assertEquals(visitScheduler.processVisits(caseList, currentDate, null), VisitStatus.PNC_OVERDUE);
     }
 
     @Test
@@ -52,6 +52,6 @@ public class VisitSchedulerTest {
 
         VisitScheduler visitScheduler = Mockito.spy(VisitScheduler.class);
 
-        Assert.assertNull(visitScheduler.processVisits(caseList, currentDate));
+        Assert.assertNull(visitScheduler.processVisits(caseList, currentDate, null));
     }
 }

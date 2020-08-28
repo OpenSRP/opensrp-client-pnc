@@ -5,9 +5,9 @@ import android.support.annotation.VisibleForTesting;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class PncVisitScheduler extends VisitScheduler {
 
@@ -63,7 +63,7 @@ public class PncVisitScheduler extends VisitScheduler {
                 break;
             } else if (block.getExpiryDate() != null) {
                 if (currentDate.isBefore(block.getExpiryDate().plusDays(1))) {
-                    visitStatus = processVisits(block.getVisitCaseList(), currentDate);
+                    visitStatus = processVisits(block.getVisitCaseList(), currentDate, getLatestVisitDateInMills());
                     break;
                 } else if (!blocksIterator.hasNext()) {
                     visitStatus = VisitStatus.PNC_CLOSE;
@@ -111,7 +111,7 @@ public class PncVisitScheduler extends VisitScheduler {
 
         long createdAtMillis = Long.parseLong(getLatestVisitDateInMills());
 
-        long diffInMills = System.currentTimeMillis() - createdAtMillis;
-        return diffInMills <= TimeUnit.DAYS.toMillis(1);
+        LocalDate localDate = LocalDate.fromDateFields(new Date(createdAtMillis));
+        return (localDate.getDayOfYear() == getCurrentDate().getDayOfYear()) && (localDate.getYear() == getCurrentDate().getYear());
     }
 }

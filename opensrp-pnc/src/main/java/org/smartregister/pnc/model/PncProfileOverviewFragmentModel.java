@@ -37,10 +37,9 @@ public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragme
 
             HashMap<String, String> pncDetails = PncUtils.getPncDetailsFromQueryProvider(query);
 
-            if (pncRegisterDetails != null) {
-                if (pncDetails != null) {
-                    pncRegisterDetails.putAll(pncDetails);
-                }
+            if (pncRegisterDetails != null && pncDetails != null) {
+                pncRegisterDetails.putAll(pncDetails);
+
             }
 
             appExecutors.mainThread().execute(() -> onFetchedCallback.onFetched(pncRegisterDetails != null ? pncRegisterDetails : new HashMap<>()));

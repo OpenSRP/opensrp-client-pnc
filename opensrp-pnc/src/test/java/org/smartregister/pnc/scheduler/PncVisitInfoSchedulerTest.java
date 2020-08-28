@@ -22,7 +22,7 @@ public class PncVisitInfoSchedulerTest {
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
 
-        Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.PNC_DUE);
+        Assert.assertEquals(VisitStatus.PNC_DUE, pncVisitScheduler.getStatus());
     }
 
     @Test
@@ -36,11 +36,11 @@ public class PncVisitInfoSchedulerTest {
         pncVisitScheduler.setCurrentDate(currentDate);
         pncVisitScheduler.buildStatusTable();
 
-        Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.PNC_OVERDUE);
+        Assert.assertEquals(VisitStatus.PNC_OVERDUE, pncVisitScheduler.getStatus());
     }
 
     @Test
-    public void getStatusShouldEqualRecordPnc() {
+    public void getStatusShouldEqualPncClose() {
 
         LocalDate deliveryDate = LocalDate.now();
         LocalDate currentDate = LocalDate.now().plusDays(61);
@@ -50,6 +50,20 @@ public class PncVisitInfoSchedulerTest {
         pncVisitScheduler.setLatestVisitDateInMills(String.valueOf(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1)) - 1));
 
         pncVisitScheduler.buildStatusTable();
-        Assert.assertEquals(pncVisitScheduler.getStatus(), VisitStatus.RECORD_PNC);
+        Assert.assertEquals(VisitStatus.PNC_CLOSE, pncVisitScheduler.getStatus());
+    }
+
+    @Test
+    public void getStatusShouldEqualPncRecordPnc() {
+
+        LocalDate deliveryDate = LocalDate.now();
+        LocalDate currentDate = LocalDate.now().plusDays(13);
+        PncVisitScheduler pncVisitScheduler = new PncVisitScheduler();
+        pncVisitScheduler.setDeliveryDate(deliveryDate);
+        pncVisitScheduler.setCurrentDate(currentDate);
+        pncVisitScheduler.setLatestVisitDateInMills(String.valueOf(currentDate.minusDays(1).toDate().getTime()));
+
+        pncVisitScheduler.buildStatusTable();
+        Assert.assertEquals(VisitStatus.RECORD_PNC, pncVisitScheduler.getStatus());
     }
 }
