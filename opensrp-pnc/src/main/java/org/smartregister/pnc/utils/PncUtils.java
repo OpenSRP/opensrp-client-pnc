@@ -1,5 +1,6 @@
 package org.smartregister.pnc.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -32,7 +33,9 @@ import org.json.JSONObject;
 import org.smartregister.CoreLibrary;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
+import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.pojo.PncEventClient;
@@ -311,26 +314,28 @@ public class PncUtils extends org.smartregister.util.Utils {
         HashMap<String, HashMap<String, String>> repeatingGroupMap = new HashMap<>();
         if (jsonObject != null) {
             JSONArray jsonArray = jsonObject.optJSONArray(JsonFormConstants.VALUE);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject valueField = jsonArray.optJSONObject(i);
-                String fieldKey = valueField.optString(JsonFormConstants.KEY);
-                keysArrayList.add(fieldKey);
-                jsonObject.remove(JsonFormConstants.VALUE);
-            }
+            if (jsonArray != null) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject valueField = jsonArray.optJSONObject(i);
+                    String fieldKey = valueField.optString(JsonFormConstants.KEY);
+                    keysArrayList.add(fieldKey);
+                    jsonObject.remove(JsonFormConstants.VALUE);
+                }
 
-            for (int k = 0; k < fields.length(); k++) {
-                JSONObject valueField = fields.optJSONObject(k);
-                String fieldKey = valueField.optString(JsonFormConstants.KEY);
-                String fieldValue = valueField.optString(JsonFormConstants.VALUE);
+                for (int k = 0; k < fields.length(); k++) {
+                    JSONObject valueField = fields.optJSONObject(k);
+                    String fieldKey = valueField.optString(JsonFormConstants.KEY);
+                    String fieldValue = valueField.optString(JsonFormConstants.VALUE);
 
-                if (fieldKey.contains("_")) {
-                    fieldKey = fieldKey.substring(0, fieldKey.lastIndexOf("_"));
-                    if (keysArrayList.contains(fieldKey) && StringUtils.isNotBlank(fieldValue)) {
-                        String fieldKeyId = valueField.optString(JsonFormConstants.KEY).substring(fieldKey.length() + 1);
-                        valueField.put(JsonFormConstants.KEY, fieldKey);
-                        HashMap<String, String> hashMap = repeatingGroupMap.get(fieldKeyId) == null ? new HashMap<>() : repeatingGroupMap.get(fieldKeyId);
-                        hashMap.put(fieldKey, fieldValue);
-                        repeatingGroupMap.put(fieldKeyId, hashMap);
+                    if (fieldKey.contains("_")) {
+                        fieldKey = fieldKey.substring(0, fieldKey.lastIndexOf("_"));
+                        if (keysArrayList.contains(fieldKey) && StringUtils.isNotBlank(fieldValue)) {
+                            String fieldKeyId = valueField.optString(JsonFormConstants.KEY).substring(fieldKey.length() + 1);
+                            valueField.put(JsonFormConstants.KEY, fieldKey);
+                            HashMap<String, String> hashMap = repeatingGroupMap.get(fieldKeyId) == null ? new HashMap<>() : repeatingGroupMap.get(fieldKeyId);
+                            hashMap.put(fieldKey, fieldValue);
+                            repeatingGroupMap.put(fieldKeyId, hashMap);
+                        }
                     }
                 }
             }
@@ -344,6 +349,18 @@ public class PncUtils extends org.smartregister.util.Utils {
                         "LEFT JOIN " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd ON prd.base_entity_id = " + metadata().getTableName() + ".base_entity_id " +
                         " where " + metadata().getTableName() + ".id = '" + baseEntityId + "' limit 1");
         if (!hashMap.isEmpty()) {
+            return hashMap.get(0);
+        }
+        return null;
+    }
+
+    public static HashMap<String, String> getPncDetailsFromQueryProvider(@NonNull String providerQuery) {
+        ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance()
+                .context()
+                .getEventClientRepository()
+                .rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
+                        providerQuery + " limit 1");
+        if (hashMap != null && !hashMap.isEmpty()) {
             return hashMap.get(0);
         }
         return null;
@@ -382,7 +399,7 @@ public class PncUtils extends org.smartregister.util.Utils {
     public static void setVisitButtonStatus(Button button, CommonPersonObjectClient client) {
         button.setTag(R.id.BUTTON_TYPE, R.string.complete_pnc_registration);
         button.setText(R.string.complete_pnc_registration);
-        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, button.getResources().getDimension(R.dimen.text_size));
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, button.getResources().getDimension(R.dimen.pnc_register_due_button_size));
         button.setBackgroundResource(R.drawable.pnc_status_btn_bg);
 
         if (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) != null) {
@@ -400,28 +417,28 @@ public class PncUtils extends org.smartregister.util.Utils {
                     pncVisitScheduler.setLatestVisitDateInMills(null);
                 }
 
-                if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DUE) {
+                VisitStatus visitStatus = pncVisitScheduler.getStatus();
+                if (visitStatus == VisitStatus.PNC_DUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_due);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_OVERDUE) {
+                } else if (visitStatus == VisitStatus.PNC_OVERDUE) {
                     button.setText(R.string.pnc_due);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_overdue);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.white));
                     button.setBackgroundColor(ContextCompat.getColor(button.getContext(), R.color.overdue_color));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.RECORD_PNC) {
+                } else if (visitStatus == VisitStatus.RECORD_PNC) {
                     button.setText(R.string.record_pnc);
                     button.setTag(R.id.BUTTON_TYPE, R.string.record_pnc);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.due_color));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_due_bg));
-
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_DONE_TODAY) {
+                } else if (visitStatus == VisitStatus.PNC_DONE_TODAY) {
                     button.setText(R.string.pnc_done_today);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_done_today);
                     button.setTextColor(ContextCompat.getColor(button.getContext(), R.color.dark_grey));
                     button.setBackground(ContextCompat.getDrawable(button.getContext(), R.drawable.pnc_btn_done_today));
-                } else if (pncVisitScheduler.getStatus() == VisitStatus.PNC_CLOSE) {
+                } else if (visitStatus == VisitStatus.PNC_CLOSE) {
                     button.setText(R.string.pnc_close);
                     button.setTag(R.id.BUTTON_TYPE, R.string.pnc_close);
                 }
@@ -430,7 +447,6 @@ public class PncUtils extends org.smartregister.util.Utils {
             }
 
         }
-
         if (client.getColumnmaps().get(PncConstants.KeyConstants.PPF_ID) != null) {
             String formType = client.getColumnmaps().get(PncConstants.KeyConstants.PPF_FORM_TYPE);
             if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(formType) && (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)) {
@@ -564,5 +580,29 @@ public class PncUtils extends org.smartregister.util.Utils {
             return resultString;
         }
         return "";
+    }
+
+    public static void updateLastInteractedWith(@NonNull String baseEntityId) {
+        try {
+            String tableName = metadata().getTableName();
+
+            String lastInteractedWithDate = String.valueOf(new Date().getTime());
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(PncConstants.JsonFormKeyConstants.LAST_INTERACTED_WITH, lastInteractedWithDate);
+
+            PncLibrary.getInstance().getRepository().getWritableDatabase()
+                    .update(tableName, contentValues, "base_entity_id = ?", new String[]{baseEntityId});
+
+            // Update FTS
+            CommonRepository commonrepository = PncLibrary.getInstance().context().commonrepository(tableName);
+
+            if (commonrepository.isFts()) {
+                PncLibrary.getInstance().getRepository().getWritableDatabase()
+                        .update(CommonFtsObject.searchTableName(tableName), contentValues, CommonFtsObject.idColumn + " = ?", new String[]{baseEntityId});
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 }

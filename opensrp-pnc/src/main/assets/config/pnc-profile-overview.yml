@@ -20,11 +20,17 @@ fields:
   - template: "Onset of Labour: {onset_labour}{onset_labour_time}"
     relevance: "onset_labour != '' || onset_labour_time != ''"
 
-  - template: "Any past pregnancy problems?: {previous_complications}{previous_complications_other}"
-    relevance: "previous_complications != '' || previous_complications_other != ''"
+  - template: "Any past pregnancy problems?: {previous_complications}"
+    relevance: "previous_complications != ''"
 
-  - template: "Family medical history: {family_history}{family_history_other}"
-    relevance: "family_history != '' || family_history_other != ''"
+  - template: "Any past pregnancy problems(Other)?: {previous_complications_other}"
+    relevance: "previous_complications_other != ''"
+
+  - template: "Family medical history: {family_history}"
+    relevance: "family_history != ''"
+
+  - template: "Family medical history (Other): {family_history_other}"
+    relevance: "family_history_other != ''"
 
   - template: "How many does of TDV did the mother receive?: {mother_tdv_doses}"
     relevance: "mother_tdv_doses != ''"
@@ -42,18 +48,30 @@ fields:
   - template: "Place of delivery: {delivery_place}"
     relevance: "delivery_place != ''"
 
-  - template: "Staff conducting the delivery: {delivery_person}{delivery_person_other}"
-    relevance: "delivery_person != '' || delivery_person_other != ''"
+  - template: "Staff conducting the delivery: {delivery_person}"
+    relevance: "delivery_person != ''"
 
-  - template: "Mode of delivery: {delivery_mode}{delivery_mode_other}"
-    relevance: "delivery_mode != '' || delivery_mode_other != ''"
+  - template: "Staff conducting the delivery (Other): {delivery_person_other}"
+    relevance: "delivery_person_other != ''"
 
-  - template: "Obstetric complications: {obstretic_complications}{obstretic_complications_other}"
-    relevance: "obstretic_complications != '' || obstretic_complications_other != ''"
-    isRedFont: "obstretic_complications_other != 'None'"
+  - template: "Mode of delivery: {delivery_mode}"
+    relevance: "delivery_mode != ''"
 
-  - template: "Obstetric care: {obstretic_care}{obstretic_care_other}"
-    relevance: "obstretic_care != '' || obstretic_care_other != ''"
+  - template: "Mode of delivery (Other): {delivery_mode_other}"
+    relevance: "delivery_mode_other != ''"
+
+  - template: "Obstetric complications: {obstretic_complications}"
+    relevance: "obstretic_complications != ''"
+    isRedFont: "obstretic_complications != 'None'"
+
+  - template: "Obstetric complications (Other): {obstretic_complications_other}"
+    relevance: "obstretic_complications_other != ''"
+
+  - template: "Obstetric care: {obstretic_care}"
+    relevance: "obstretic_care != ''"
+
+  - template: "Obstetric care (Other): {obstretic_care_other}"
+    relevance: "obstretic_care_other != ''"
 
   - template: "Referred out: {referred_out}"
     relevance: "referred_out != ''"

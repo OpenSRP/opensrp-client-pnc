@@ -233,6 +233,8 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
 
         if (view != null) {
             view.hideProgressDialog();
+            view.getActionListenerForProfileOverview().onActionReceive();
+            view.getActionListenerForVisitFragment().onActionReceive();
         }
 
         for (Event event : events) {

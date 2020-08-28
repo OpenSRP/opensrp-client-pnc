@@ -106,6 +106,7 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
                         .setMessage(getString(R.string.save_form_fill_session))
                         .setNegativeButton(R.string.yes, (dialog1, which) -> {
                             saveFormFillSession(eventType);
+                            updateLastInteractedTime();
                             BasePncFormActivity.this.finish();
                         })
                         .setPositiveButton(R.string.no, (dialog12, which) -> Timber.d("No button on dialog in %s", JsonFormActivity.class.getCanonicalName()))
@@ -123,6 +124,10 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
         } else {
             BasePncFormActivity.this.finish();
         }
+    }
+
+    public void updateLastInteractedTime() {
+        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncUtils.updateLastInteractedWith(PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID)));
     }
 
     private void saveFormFillSession(String eventType) {

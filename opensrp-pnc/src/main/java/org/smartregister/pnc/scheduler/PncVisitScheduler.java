@@ -37,7 +37,7 @@ public class PncVisitScheduler extends VisitScheduler {
         addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(2), withIn48HoursCases));
         addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(8), case3To7Days));
         addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(28), case8to28Days));
-        addBlock(new VisitBlock(getDeliveryDate(), null, case29To42Days));
+        addBlock(new VisitBlock(getDeliveryDate(), getDeliveryDate().plusDays(60), case29To42Days));
     }
 
     public void addBlock(VisitBlock visitCase) {
@@ -61,18 +61,15 @@ public class PncVisitScheduler extends VisitScheduler {
             if (isVisitDoneToday()) {
                 visitStatus = VisitStatus.PNC_DONE_TODAY;
                 break;
-            }
-            else if (block.getExpiryDate() != null) {
+            } else if (block.getExpiryDate() != null) {
                 if (currentDate.isBefore(block.getExpiryDate().plusDays(1))) {
                     visitStatus = processVisits(block.getVisitCaseList(), currentDate);
                     break;
-                }
-                else if (!blocksIterator.hasNext()) {
+                } else if (!blocksIterator.hasNext()) {
                     visitStatus = VisitStatus.PNC_CLOSE;
                     break;
                 }
-            }
-            else {
+            } else {
                 visitStatus = VisitStatus.RECORD_PNC;
                 break;
             }

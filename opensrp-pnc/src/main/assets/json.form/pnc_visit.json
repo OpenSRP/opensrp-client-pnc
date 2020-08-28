@@ -138,7 +138,7 @@
         "openmrs_entity_parent": "",
         "openmrs_entity": "",
         "openmrs_entity_id": "",
-        "reference_edit_text_hint": "#Total other visit",
+        "reference_edit_text_hint": "#Total previous visit",
         "repeating_group_label": "Other visit",
         "reference_edit_text": "Number of other visit",
         "label_text_style": "bold",

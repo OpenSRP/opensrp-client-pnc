@@ -20,9 +20,12 @@ fields:
   - template: "APGAR score: {apgar}"
     relevance: "apgar != ''"
 
-  - template: "Newborn care complications: {baby_complications}{baby_complications_other}"
-    relevance: "baby_complications != '' || baby_complications_other != ''"
+  - template: "Newborn care complications: {baby_complications}"
+    relevance: "baby_complications != ''"
     isRedFont: "baby_complications != 'none'"
+
+  - template: "Newborn care complications (Other): {baby_complications_other}"
+    relevance: "baby_complications_other != ''"
 
   - template: "Newborn Routine Care & Management: {baby_care_mgt}{baby_care_mgt_specify}"
     relevance: "baby_care_mgt != '' || baby_care_mgt_specify != ''"

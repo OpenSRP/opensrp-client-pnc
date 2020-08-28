@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 public class PncMedicInfoRepository extends PncDetailsRepository {
 
-    private static final String TABLE = PncDbConstants.Table.PNC_MEDIC_INFO;
+    protected static final String TABLE = PncDbConstants.Table.PNC_MEDIC_INFO;
 
     private static String CREATE_TABLE_SQL = "CREATE TABLE " + TABLE + "("
             + PncMedicInfo.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "

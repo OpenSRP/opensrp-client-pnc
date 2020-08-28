@@ -32,6 +32,20 @@ public class PncRegistrationDetailsRepository extends BaseRepository {
         return null;
     }
 
+    public HashMap<String, String> findWithMedicInfoByBaseEntityId(@NonNull String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "select * from " + getTableName() + " prd " +
+                                " left join " + PncMedicInfoRepository.TABLE + " pmi on " + "prd." + PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID + " = " + "pmi." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID +
+                                " where prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "' limit 1").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
     public String getTableName() {
         return TABLE;
     }

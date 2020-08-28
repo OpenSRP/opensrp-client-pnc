@@ -13,7 +13,8 @@ public abstract class VisitScheduler {
         VisitStatus visitStatus = null;
 
         for (VisitCase visitCase : visits) {
-            if (currentDate.isAfter(visitCase.getStartDateInclusive().minusDays(1)) && currentDate.isBefore(visitCase.getEndDateInclusive().plusDays(1))) {
+            if (currentDate.isAfter(visitCase.getStartDateInclusive().minusDays(1)) &&
+                    currentDate.isBefore(visitCase.getEndDateInclusive().plusDays(1))) {
                 visitStatus = visitCase.getVisitStatus();
                 break;
             }

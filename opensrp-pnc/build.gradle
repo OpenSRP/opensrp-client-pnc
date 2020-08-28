@@ -33,6 +33,11 @@ android {
         buildConfigField "String", "DEFAULT_LEVEL", '"Health Facility"'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //consumerProguardFiles 'consumer-rules.pro'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
     }
 
     buildTypes {
@@ -62,6 +67,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/NOTICE.md'
+    }
+
+
 }
 
 tasks.withType(Test) {
@@ -75,7 +86,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     implementation 'com.android.support:multidex:1.0.0'
 
-    api('org.smartregister:opensrp-client-core:1.9.4-SNAPSHOT@aar') {
+    api('org.smartregister:opensrp-client-core:1.11.7-LOCAL-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'

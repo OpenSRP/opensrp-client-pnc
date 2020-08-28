@@ -19,9 +19,12 @@ fields:
 subGroup: woman_status
 fields:
 
-  - template: "Postnatal complications: {pnc_complications}{pnc_complications_other}"
-    relevance: "pnc_complications != '' || pnc_complications_other != ''"
+  - template: "Postnatal complications: {pnc_complications}"
+    relevance: "pnc_complications != ''"
     isRedFont: "pnc_complications != 'none'"
+
+  - template: "Postnatal complications(Other): {pnc_complications_other}"
+    relevance: "pnc_complications_other != ''"
 
   - template: "Status of C-section incision: {status_csection}"
     relevance: "status_csection != ''"
@@ -31,19 +34,27 @@ fields:
     relevance: "episotomy_tear_status != ''"
     isRedFont: "episotomy_tear_status != ''"
 
-  - template: "Status of the lochia: {lochia_status}{lochia_status_other}"
-    relevance: "lochia_status != '' || lochia_status_other != ''"
-    isRedFont: "lochia_status != '' || lochia_status_other != ''"
+  - template: "Status of the lochia: {lochia_status}"
+    relevance: "lochia_status != ''"
+    isRedFont: "lochia_status != ''"
 
-  - template: "Status of the uterus: {uterus_status}{uterus_status_other}"
-    relevance: "uterus_status != '' || uterus_status_other != ''"
-    isRedFont: "uterus_status != '' || uterus_status_other != ''"
+  - template: "Status of the lochia (Other): {lochia_status_other}"
+    relevance: "lochia_status_other != ''"
+    isRedFont: "lochia_status_other != ''"
+
+  - template: "Status of the uterus: {uterus_status}"
+    relevance: "uterus_status != ''"
+    isRedFont: "uterus_status != ''"
+
+  - template: "Status of the uterus (Other): {uterus_status_other}"
+    relevance: "uterus_status_other != ''"
+    isRedFont: "uterus_status_other != ''"
 
   - template: "Intervention given: {intervention_given_text}"
     relevance: "intervention_given_text != ''"
     isRedFont: "intervention_given_text != ''"
 
-  - template: "Was the woman referred?: {referred_out}{referred_out_specify}"
+  - template: "Was the woman referred?: {referred_out}, {referred_out_specify}"
     relevance: "referred_out != '' || referred_out_specify != ''"
 
   - template: "Was Vitamin A given?: {vit_a}"
@@ -55,5 +66,8 @@ fields:
   - template: "Family planning done?: {fp_counsel}"
     relevance: "fp_counsel != ''"
 
-  - template: "Family planning methods chosen: {fp_method}{fp_method_other}"
-    relevance: "fp_method != '' || fp_method_other != ''"
+  - template: "Family planning methods chosen: {fp_method}"
+    relevance: "fp_method != ''"
+
+  - template: "Family planning methods chosen (Other): {fp_method_other}"
+    relevance: "fp_method_other != ''"
