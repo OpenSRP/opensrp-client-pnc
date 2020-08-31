@@ -52,7 +52,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
 
     protected void processWomanDiedEvent(JSONArray fieldsArray, Event event) throws JSONException {
         if ("woman_died".equals(JsonFormUtils.getFieldValue(fieldsArray, "pnc_close_reason"))) {
-            event.setEventType(PncConstants.EventTypeConstants.DEATH);
+            event.setEventType(PncConstants.EventType.DEATH);
             createDeathEventObject(event, fieldsArray);
         }
     }

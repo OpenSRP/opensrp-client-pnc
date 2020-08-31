@@ -54,12 +54,12 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     public HashSet<String> getEventTypes() {
         if (eventTypes == null) {
             eventTypes = new HashSet<>();
-            eventTypes.add(PncConstants.EventTypeConstants.PNC_REGISTRATION);
-            eventTypes.add(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION);
-            eventTypes.add(PncConstants.EventTypeConstants.PNC_MEDIC_INFO);
-            eventTypes.add(PncConstants.EventTypeConstants.PNC_CLOSE);
-            eventTypes.add(PncConstants.EventTypeConstants.PNC_VISIT);
-            eventTypes.add(PncConstants.EventTypeConstants.DEATH);
+            eventTypes.add(PncConstants.EventType.PNC_REGISTRATION);
+            eventTypes.add(PncConstants.EventType.UPDATE_PNC_REGISTRATION);
+            eventTypes.add(PncConstants.EventType.PNC_MEDIC_INFO);
+            eventTypes.add(PncConstants.EventType.PNC_CLOSE);
+            eventTypes.add(PncConstants.EventType.PNC_VISIT);
+            eventTypes.add(PncConstants.EventType.DEATH);
         }
 
         return eventTypes;
@@ -77,30 +77,30 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         String eventType = event.getEventType();
 
         switch (eventType) {
-            case PncConstants.EventTypeConstants.PNC_REGISTRATION:
-            case PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION:
+            case PncConstants.EventType.PNC_REGISTRATION:
+            case PncConstants.EventType.UPDATE_PNC_REGISTRATION:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 completeProcessing(event);
                 break;
-            case PncConstants.EventTypeConstants.PNC_CLOSE:
+            case PncConstants.EventType.PNC_CLOSE:
                 if (eventClient.getClient() == null) {
-                    throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventTypeConstants.PNC_CLOSE));
+                    throw new PncCloseEventProcessException(String.format("Client %s referenced by %s event does not exist", event.getBaseEntityId(), PncConstants.EventType.PNC_CLOSE));
                 }
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 completeProcessing(event);
                 unsyncEvents.add(event);
                 break;
-            case PncConstants.EventTypeConstants.PNC_MEDIC_INFO:
+            case PncConstants.EventType.PNC_MEDIC_INFO:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 processPncMedicInfo(eventClient);
                 completeProcessing(event);
                 break;
-            case PncConstants.EventTypeConstants.PNC_VISIT:
+            case PncConstants.EventType.PNC_VISIT:
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 processPncVisit(eventClient);
                 completeProcessing(event);
                 break;
-            case PncConstants.EventTypeConstants.DEATH:
+            case PncConstants.EventType.DEATH:
                 processDeathEvent(eventClient);
                 processEvent(eventClient.getEvent(), eventClient.getClient(), clientClassification);
                 completeProcessing(event);

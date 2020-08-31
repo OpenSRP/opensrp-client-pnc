@@ -259,13 +259,13 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
             JSONObject form = new JSONObject(jsonString);
             String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
-           if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+           if (encounterType.equals(PncConstants.EventType.PNC_VISIT)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+                } else if (encounterType.equals(PncConstants.EventType.PNC_MEDIC_INFO)) {
                     showProgressDialog(R.string.saving_dialog_title);
                     ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
-                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
+                } else if (encounterType.equals(PncConstants.EventType.UPDATE_PNC_REGISTRATION)) {
                     showProgressDialog(R.string.saving_dialog_title);
                 RegisterParams registerParam = new RegisterParams();
                 registerParam.setEditMode(true);
@@ -274,7 +274,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
                 showProgressDialog(R.string.saving_dialog_title);
                 ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
             }
-            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            else if (encounterType.equals(PncConstants.EventType.PNC_CLOSE)) {
                 showProgressDialog(R.string.saving_dialog_title);
                 ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
             }

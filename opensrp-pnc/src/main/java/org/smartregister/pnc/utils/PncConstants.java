@@ -160,11 +160,11 @@ public class PncConstants extends AllConstants {
         public static final int TRUE = 1;
     }
 
-    public static final class FormActivityConstants {
+    public static final class FormActivity {
         public static final String ENABLE_ON_CLOSE_DIALOG = "EnableOnCloseDialog";
     }
 
-    public static final class EventTypeConstants {
+    public static final class EventType {
         public static final String PNC_REGISTRATION = "PNC Registration";
         public static final String PNC_MEDIC_INFO = "PNC Medic Information";
         public static final String UPDATE_PNC_REGISTRATION = "Update PNC Registration";

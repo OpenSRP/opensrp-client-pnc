@@ -39,7 +39,7 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
 
     @Override
     public List<Event> processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+        if (eventType.equals(PncConstants.EventType.PNC_MEDIC_INFO)) {
             return processPncMedicInfoForm(jsonString, data);
         }
         return new ArrayList<>();
@@ -101,7 +101,7 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
         FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
 
         Event pncMedicInfoEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_MEDIC_INFO, "");
+                , formTag, baseEntityId, PncConstants.EventType.PNC_MEDIC_INFO, "");
         PncJsonFormUtils.tagSyncMetadata(pncMedicInfoEvent);
         eventList.add(pncMedicInfoEvent);
         return eventList;
@@ -172,7 +172,7 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
 
     @NonNull
     public String childRegistrationEvent() {
-        return PncConstants.EventTypeConstants.BIRTH_REGISTRATION;
+        return PncConstants.EventType.BIRTH_REGISTRATION;
     }
 
     @NonNull

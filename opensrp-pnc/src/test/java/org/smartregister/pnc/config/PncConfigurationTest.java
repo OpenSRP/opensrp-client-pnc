@@ -27,8 +27,8 @@ public class PncConfigurationTest {
 
         PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventTypeConstants.PNC_REGISTRATION
-                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventType.PNC_REGISTRATION
+                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , null
                 , BasePncProfileActivity.class

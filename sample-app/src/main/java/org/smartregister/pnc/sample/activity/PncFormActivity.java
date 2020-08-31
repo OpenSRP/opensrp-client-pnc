@@ -51,7 +51,7 @@ public class PncFormActivity extends BasePncFormActivity {
 
     public void generateRepeatingGrpFields(JSONObject json) {
         String motherBaseEntityId = getIntent().getStringExtra(PncDbConstants.KEY.BASE_ENTITY_ID);
-        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(json.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+        if (PncConstants.EventType.PNC_VISIT.equals(json.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
             try {
                 new PncChildStatusRepeatingGroupGenerator(json.optJSONObject("step3"),
                         "child_status",
