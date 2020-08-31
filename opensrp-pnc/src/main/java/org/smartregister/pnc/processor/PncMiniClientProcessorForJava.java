@@ -135,8 +135,6 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
     private void processPncMedicInfo(@NonNull EventClient eventClient) {
         Event event = eventClient.getEvent();
 
-        String motherBaseEntityId = event.getBaseEntityId();
-
         HashMap<String, String> keyValues = new HashMap<>();
         generateKeyValuesFromEvent(event, keyValues);
 

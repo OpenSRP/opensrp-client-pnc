@@ -46,7 +46,7 @@ public class PncLibraryTest {
     }
 
     @Test
-    public void getInstanceShouldThrowIllegalStateException() throws Throwable {
+    public void getInstanceShouldThrowIllegalStateException() {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Instance does not exist!!! Call org.smartregister.pnc.PncLibrary"
                 + ".init method in the onCreate method of "
