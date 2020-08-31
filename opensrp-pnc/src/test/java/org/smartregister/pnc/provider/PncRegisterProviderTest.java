@@ -80,6 +80,9 @@ public class PncRegisterProviderTest {
     @Mock
     private Resources resources;
 
+    @Mock
+    private PncLibrary pncLibrary;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -95,7 +98,9 @@ public class PncRegisterProviderTest {
                 .setPncRegisterRowOptions(pncRegisterRowOption.getClass())
                 .build();
 
-        PncLibrary.init(Mockito.mock(org.smartregister.Context.class), Mockito.mock(Repository.class), pncConfiguration, BuildConfig.VERSION_CODE, 1);
+        Mockito.doReturn(pncConfiguration).when(pncLibrary).getPncConfiguration();
+
+        ReflectionHelpers.setStaticField(PncLibrary.class,"instance", pncLibrary);
 
         pncRegisterProvider = new PncRegisterProvider(context, onClickListener, paginationClickListener);
         ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterProviderMetadata", pncRegisterProviderMetadata);
