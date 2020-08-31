@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.CoreLibrary;
 import org.smartregister.commonregistry.AllCommonsRepository;
 import org.smartregister.domain.db.Event;
 import org.smartregister.domain.db.EventClient;
@@ -149,9 +148,9 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
 
 
         String strStillBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_STILL_BORN_MAP);
-        processStillBorn(strStillBorn, event, motherBaseEntityId);
+        processStillBorn(strStillBorn, event);
         String strBabiesBorn = keyValues.get(PncConstants.JsonFormKeyConstants.BABIES_BORN_MAP);
-        processBabiesBorn(strBabiesBorn, event, motherBaseEntityId);
+        processBabiesBorn(strBabiesBorn, event);
     }
 
     private void processPncVisit(@NonNull EventClient eventClient) {
@@ -192,7 +191,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event, @NonNull String motherBaseEntityId) {
+    private void processBabiesBorn(@Nullable String strBabiesBorn, @NonNull Event event) {
         if (StringUtils.isNotBlank(strBabiesBorn)) {
             try {
                 JSONObject jsonObject = new JSONObject(strBabiesBorn);
@@ -200,7 +199,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncChild pncChild = new PncChild();
-                    pncChild.setMotherBaseEntityId(motherBaseEntityId);
+                    pncChild.setMotherBaseEntityId(event.getBaseEntityId());
                     pncChild.setBaseEntityId(jsonChildObject.optString(PncDbConstants.Column.PncBaby.BASE_ENTITY_ID));
                     pncChild.setDischargedAlive(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.DISCHARGED_ALIVE));
                     pncChild.setChildRegistered(jsonChildObject.optString(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED));
@@ -232,7 +231,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
         }
     }
 
-    private void processStillBorn(@Nullable String strStillBorn, @NonNull Event event, String motherBaseEntityId) {
+    private void processStillBorn(@Nullable String strStillBorn, @NonNull Event event) {
         if (StringUtils.isNotBlank(strStillBorn)) {
             try {
                 JSONObject jsonObject = new JSONObject(strStillBorn);
@@ -240,7 +239,7 @@ public class PncMiniClientProcessorForJava extends ClientProcessorForJava implem
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonTestObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
                     PncStillBorn pncStillBorn = new PncStillBorn();
-                    pncStillBorn.setMotherBaseEntityId(motherBaseEntityId);
+                    pncStillBorn.setMotherBaseEntityId(event.getBaseEntityId());
                     pncStillBorn.setStillBirthCondition(jsonTestObject.optString(PncConstants.JsonFormKeyConstants.STILL_BIRTH_CONDITION));
                     pncStillBorn.setEventDate(PncUtils.convertDate(event.getEventDate().toDate(), PncDbConstants.DATE_FORMAT));
                     PncLibrary.getInstance().getPncStillBornRepository().saveOrUpdate(pncStillBorn);
