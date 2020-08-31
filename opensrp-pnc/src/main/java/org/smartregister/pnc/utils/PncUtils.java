@@ -222,7 +222,7 @@ public class PncUtils extends org.smartregister.util.Utils {
             form.setHideNextButton(false);
             form.setHidePreviousButton(false);
 
-            if (PncConstants.EventType.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+            if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
                 form.setSaveLabel(context.getString(R.string.submit_and_close_pnc));
             }
 
@@ -449,7 +449,7 @@ public class PncUtils extends org.smartregister.util.Utils {
         }
         if (client.getColumnmaps().get(PncConstants.KeyConstants.PPF_ID) != null) {
             String formType = client.getColumnmaps().get(PncConstants.KeyConstants.PPF_FORM_TYPE);
-            if (PncConstants.EventType.PNC_MEDIC_INFO.equals(formType) && (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)) {
+            if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(formType) && (client.getColumnmaps().get(PncConstants.JsonFormKeyConstants.PMI_BASE_ENTITY_ID) == null)) {
                 button.setText(R.string.complete_pnc_registration);
             }
             button.setBackgroundResource(R.drawable.saved_form_bg);
@@ -510,11 +510,11 @@ public class PncUtils extends org.smartregister.util.Utils {
     public static void processPreChecks(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
         intentData.put(PncDbConstants.KEY.BASE_ENTITY_ID, entityId);
 
-        if (PncConstants.EventType.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
             PncUtils.addGlobals(entityId, jsonForm);
         }
 
-        if (PncConstants.EventType.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
+        if (PncConstants.EventTypeConstants.PNC_MEDIC_INFO.equals(jsonForm.optString(PncConstants.JsonFormKeyConstants.ENCOUNTER_TYPE))) {
             PncUtils.putDataOnField(jsonForm, PncConstants.JsonFormKeyConstants.LIVE_BIRTHS, PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT, intentData.get(PncConstants.JsonFormKeyConstants.CHILD_REGISTERED_COUNT));
         }
     }

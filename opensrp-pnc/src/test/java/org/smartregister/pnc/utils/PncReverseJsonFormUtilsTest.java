@@ -76,8 +76,8 @@ public class PncReverseJsonFormUtilsTest extends BaseTest {
 
         PncMetadata maternityMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , "table-name"
-                , PncConstants.EventType.PNC_REGISTRATION
-                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , "config"
                 , BasePncFormActivity.class
                 , BasePncProfileActivity.class

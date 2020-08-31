@@ -38,16 +38,16 @@ public class PncConfiguration {
             builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
         }
 
-        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventType.PNC_MEDIC_INFO)) {
-            builder.pncFormProcessingClasses.put(PncConstants.EventType.PNC_MEDIC_INFO, PncMedicInfoFormProcessing.class);
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_MEDIC_INFO, PncMedicInfoFormProcessing.class);
         }
 
-        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventType.PNC_VISIT)) {
-            builder.pncFormProcessingClasses.put(PncConstants.EventType.PNC_VISIT, PncVisitFormProcessing.class);
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_VISIT)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_VISIT, PncVisitFormProcessing.class);
         }
 
-        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventType.PNC_CLOSE)) {
-            builder.pncFormProcessingClasses.put(PncConstants.EventType.PNC_CLOSE, PncCloseFormProcessing.class);
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_CLOSE, PncCloseFormProcessing.class);
         }
     }
 

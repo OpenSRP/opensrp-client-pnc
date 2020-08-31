@@ -29,7 +29,7 @@ public class PncVisitFormProcessing implements PncFormProcessingTask {
 
     @Override
     public List<Event> processPncForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        if (eventType.equals(PncConstants.EventType.PNC_VISIT)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             return processPncVisitForm(jsonString, data);
         }
         return new ArrayList<>();
@@ -85,7 +85,7 @@ public class PncVisitFormProcessing implements PncFormProcessingTask {
 
         FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
         Event pncVisitEvent = PncJsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, PncConstants.EventType.PNC_VISIT, "");
+                , formTag, baseEntityId, PncConstants.EventTypeConstants.PNC_VISIT, "");
         PncJsonFormUtils.tagSyncMetadata(pncVisitEvent);
         eventList.add(pncVisitEvent);
         return eventList;

@@ -82,12 +82,12 @@ public class PncCloseFormProcessingTest {
         doReturn(new JSONObject(strClient)).when(eventClientRepository).getClientByBaseEntityId(anyString());
         doReturn(pncConfiguration).when(PncLibrary.getInstance()).getPncConfiguration();
         doReturn(pncMetadata).when(pncConfiguration).getPncMetadata();
-        doReturn(PncConstants.EventType.UPDATE_PNC_REGISTRATION).when(pncMetadata).getUpdateEventType();
+        doReturn(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION).when(pncMetadata).getUpdateEventType();
 
         List<Event> events = pncCloseFormProcessing.processPncForm("PNC Close", jsonString, intent);
 
         assertEquals(1, events.size());
-        assertEquals(PncConstants.EventType.DEATH, events.get(0).getEventType());
+        assertEquals(PncConstants.EventTypeConstants.DEATH, events.get(0).getEventType());
         assertEquals(baseEntityId, events.get(0).getBaseEntityId());
         assertEquals("ec_client", events.get(0).getEntityType());
 

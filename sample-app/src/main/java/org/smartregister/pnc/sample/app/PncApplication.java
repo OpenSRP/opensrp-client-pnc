@@ -106,8 +106,8 @@ public class PncApplication extends org.smartregister.view.activity.DrishtiAppli
         //Pnc Initialization
         PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.PNC_REGISTRATION
-                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , PncFormActivity.class
                 , BasePncProfileActivity.class

@@ -108,7 +108,7 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        if (eventType.equals(PncConstants.EventType.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventType.PNC_VISIT)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             try {
                 List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 interactor.saveEvents(pncFormEvent, this);

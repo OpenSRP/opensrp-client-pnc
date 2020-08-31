@@ -216,7 +216,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
             return;
         }
 
-        if (eventType.equals(PncConstants.EventType.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventType.PNC_VISIT) || eventType.equals(PncConstants.EventType.PNC_CLOSE)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT) || eventType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
             try {
                 List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
                 mProfileInteractor.saveEvents(pncFormEvent, this);
@@ -238,7 +238,7 @@ public class PncProfileActivityPresenter implements PncProfileActivityContract.P
         }
 
         for (Event event : events) {
-            if (PncConstants.EventType.PNC_CLOSE.equals(event.getEventType()) || PncConstants.EventType.DEATH.equals(event.getEventType())) {
+            if (PncConstants.EventTypeConstants.PNC_CLOSE.equals(event.getEventType()) || PncConstants.EventTypeConstants.DEATH.equals(event.getEventType())) {
                 ((Activity) getProfileView()).finish();
                 break;
             }

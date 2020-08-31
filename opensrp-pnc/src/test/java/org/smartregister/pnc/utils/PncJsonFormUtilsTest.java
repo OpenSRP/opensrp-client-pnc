@@ -64,8 +64,8 @@ public class PncJsonFormUtilsTest {
         MockitoAnnotations.initMocks(this);
         pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.PNC_REGISTRATION
-                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -194,8 +194,8 @@ public class PncJsonFormUtilsTest {
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndInjectableFields() throws Exception {
         PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.PNC_REGISTRATION
-                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
@@ -237,8 +237,8 @@ public class PncJsonFormUtilsTest {
     public void testTagSyncMetadataWithEmptyEvent() throws Exception {
         PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
                 , PncDbConstants.KEY.TABLE
-                , PncConstants.EventType.PNC_REGISTRATION
-                , PncConstants.EventType.UPDATE_PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.PNC_REGISTRATION
+                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
                 , PncConstants.CONFIG
                 , Class.class
                 , Class.class
