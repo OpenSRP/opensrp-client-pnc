@@ -16,7 +16,6 @@ import org.smartregister.domain.Photo;
 import org.smartregister.domain.form.FormLocation;
 import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.enums.LocationHierarchy;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.util.AssetHandler;
 import org.smartregister.util.FormUtils;
@@ -80,7 +79,7 @@ public class PncReverseJsonFormUtils {
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.DOB_UNKNOWN)) {
             reverseDobUnknown(pncDetails, jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.AGE_ENTERED)) {
-            reverseAge(Utils.getValue(pncDetails, PncConstants.JsonFormKeyConstants.AGE, false), jsonObject);
+            reverseAge(pncDetails, jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncConstants.JsonFormKeyConstants.DOB_ENTERED)) {
             reverseDobEntered(pncDetails, jsonObject);
         } else if (jsonObject.getString(PncJsonFormUtils.OPENMRS_ENTITY).equalsIgnoreCase(PncJsonFormUtils.PERSON_IDENTIFIER)) {
@@ -172,7 +171,10 @@ public class PncReverseJsonFormUtils {
         return !TextUtils.isEmpty(value) ? value : Utils.getValue(pncDetails, key.toLowerCase(), false);
     }
 
-    private static void reverseAge(@NonNull String value, @NonNull JSONObject jsonObject) throws JSONException {
-        jsonObject.put(PncJsonFormUtils.VALUE, value);
+    private static void reverseAge(@NonNull Map<String, String> pncDetails, @NonNull JSONObject jsonObject) throws JSONException {
+        String value = Utils.getValue(pncDetails, PncConstants.JsonFormKeyConstants.DOB, false);
+        if (StringUtils.isNotBlank(value)) {
+            jsonObject.put(PncJsonFormUtils.VALUE, Utils.getAgeFromDate(value));
+        }
     }
 }
