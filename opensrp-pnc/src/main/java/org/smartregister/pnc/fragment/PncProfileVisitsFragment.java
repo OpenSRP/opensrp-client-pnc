@@ -1,17 +1,16 @@
 package org.smartregister.pnc.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
@@ -20,11 +19,11 @@ import org.smartregister.pnc.adapter.PncProfileVisitsAdapter;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 import org.smartregister.pnc.presenter.PncProfileVisitsFragmentPresenter;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.view.fragment.BaseProfileFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,12 +72,7 @@ public class PncProfileVisitsFragment extends BaseProfileFragment implements Pnc
     @Override
     protected void onResumption() {
         presenter.loadPageCounter(baseEntityId);
-        presenter.loadVisits(baseEntityId, new PncProfileVisitsFragmentContract.Presenter.OnFinishedCallback() {
-            @Override
-            public void onFinished(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
-                displayVisits(ancVisitSummaries, items);
-            }
-        });
+        presenter.loadVisits(baseEntityId, (ancVisitSummaries, items) -> displayVisits(ancVisitSummaries, items));
     }
 
     @Override
@@ -135,7 +129,7 @@ public class PncProfileVisitsFragment extends BaseProfileFragment implements Pnc
     }
 
     @Override
-    public void displayVisits(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
+    public void displayVisits(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
         if (getActivity() != null) {
             PncProfileVisitsAdapter adapter = new PncProfileVisitsAdapter(getActivity(), items);
             adapter.notifyDataSetChanged();

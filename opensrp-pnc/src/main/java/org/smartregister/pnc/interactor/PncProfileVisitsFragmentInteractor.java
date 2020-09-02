@@ -1,12 +1,13 @@
 package org.smartregister.pnc.interactor;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
-import org.smartregister.util.AppExecutors;
+import org.smartregister.pnc.pojo.PncVisitSummary;
+import org.smartregister.pnc.utils.AppExecutors;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -35,35 +36,19 @@ public class PncProfileVisitsFragmentInteractor implements PncProfileVisitsFragm
 
     @Override
     public void fetchVisits(@NonNull final String baseEntityId, final int pageNo, @NonNull final PncProfileVisitsFragmentContract.Presenter.OnVisitsLoadedCallback onVisitsLoadedCallback) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                /*final List<OpdVisitSummary> summaries = PncLibrary.getInstance().getOpdVisitSummaryRepository().getOpdVisitSummaries(baseEntityId, pageNo);
+        appExecutors.diskIO().execute(() -> {
+            final PncVisitSummary summary = PncLibrary.getInstance().getPncVisitInfoRepository().getPncVisitSummaries(baseEntityId, pageNo);
 
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        onVisitsLoadedCallback.onVisitsLoaded(summaries);
-                    }
-                });*/
-            }
+            appExecutors.mainThread().execute(() -> onVisitsLoadedCallback.onVisitsLoaded(summary));
         });
     }
 
     @Override
     public void fetchVisitsPageCount(@NonNull final String baseEntityId, @NonNull final OnFetchVisitsPageCountCallback onFetchVisitsPageCountCallback) {
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                /*final int visitsPageCount = PncLibrary.getInstance().getOpdVisitSummaryRepository().getVisitPageCount(baseEntityId);
+        appExecutors.diskIO().execute(() -> {
+            final int visitsPageCount = PncLibrary.getInstance().getPncVisitInfoRepository().getVisitPageCount(baseEntityId);
 
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        onFetchVisitsPageCountCallback.onFetchVisitsPageCount(visitsPageCount);
-                    }
-                });*/
-            }
+            appExecutors.mainThread().execute(() -> onFetchVisitsPageCountCallback.onFetchVisitsPageCount(visitsPageCount));
         });
     }
 

@@ -1,8 +1,7 @@
 package org.smartregister.pnc.config;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 

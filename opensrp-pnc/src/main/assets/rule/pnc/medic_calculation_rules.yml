@@ -26,3 +26,12 @@ priority: 1
 condition: "true"
 actions:
   - "calculation = step4_birth_weight_entered / 1000"
+---
+name: step4_hiv_status_previous
+description: hiv_status_previous
+priority: 1
+condition: "true"
+actions:
+  - "calculation = step3_hiv_status_previous"
+
+

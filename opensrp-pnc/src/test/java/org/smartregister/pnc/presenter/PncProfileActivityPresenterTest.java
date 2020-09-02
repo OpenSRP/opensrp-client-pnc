@@ -18,11 +18,13 @@ import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileActivityContract;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
 
 import java.util.HashMap;
+
+import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PncProfileActivityPresenterTest extends BaseTest {
@@ -79,8 +81,8 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         form.put("question", "What is happening?");
 
         ReflectionHelpers.setField(presenter, "form", form);
-        presenter.onFetchedSavedDiagnosisAndTreatmentForm(null, "caseId", "ec_child");
-        Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), Mockito.anyString(), Mockito.nullable(String.class));
+        presenter.onFetchedSavedForm(null, "caseId", "ec_child");
+        Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), anyString(), Mockito.nullable(String.class));
 
         Assert.assertEquals("", formCaptor.getValue().get("value"));
     }
@@ -99,11 +101,11 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         prefilledForm.put("value", "I Don't Know");
         prefilledForm.put("question", "What is happening?");
 
-        presenter.onFetchedSavedDiagnosisAndTreatmentForm(
-                new PncOutcomeForm(8923, "bei", prefilledForm.toString(), "2019-05-01 11:11:11")
+        presenter.onFetchedSavedForm(
+                new PncPartialForm(8923, "bei", prefilledForm.toString(), PncConstants.Form.PNC_MEDIC_INFO, "2019-05-01 11:11:11")
                 , "caseId"
                 , "ec_child");
-        Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), Mockito.anyString(), Mockito.nullable(String.class));
+        Mockito.verify(presenter, Mockito.times(1)).startFormActivity(formCaptor.capture(), anyString(), Mockito.nullable(String.class));
         Assert.assertEquals("I Don't Know", formCaptor.getValue().get("value"));
     }
 
@@ -123,10 +125,9 @@ public class PncProfileActivityPresenterTest extends BaseTest {
         client.put(PncDbConstants.KEY.REGISTER_ID, registerId);
         client.put(PncDbConstants.KEY.ID, clientId);
 
-        presenter.refreshProfileTopSection(client);
+        presenter.refreshProfileTopSection(client, clientId);
 
         Mockito.verify(view, Mockito.times(1)).setProfileName(Mockito.eq(firstName + " " + lastName));
-        Mockito.verify(view, Mockito.times(1)).setProfileGender(Mockito.eq(gender));
         Mockito.verify(view, Mockito.times(1)).setProfileID(Mockito.eq(registerId));
         Mockito.verify(view, Mockito.times(1)).setProfileImage(Mockito.eq(clientId));
     }

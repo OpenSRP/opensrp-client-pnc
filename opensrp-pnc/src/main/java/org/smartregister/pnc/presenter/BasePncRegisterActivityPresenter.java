@@ -2,9 +2,10 @@ package org.smartregister.pnc.presenter;
 
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -15,8 +16,9 @@ import org.smartregister.domain.FetchStatus;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.interactor.BasePncRegisterActivityInteractor;
-import org.smartregister.pnc.pojo.PncOutcomeForm;
+import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.utils.PncConstants;
+import org.smartregister.pnc.utils.PncUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -106,10 +108,11 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        if (eventType.equals(PncConstants.EventTypeConstants.PNC_OUTCOME) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+        if (eventType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO) || eventType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
             try {
-                List<Event> pncOutcomeAndCloseEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
-                interactor.saveEvents(pncOutcomeAndCloseEvent, this);
+                List<Event> pncFormEvent = PncLibrary.getInstance().processPncForm(eventType, jsonString, data);
+                interactor.saveEvents(pncFormEvent, this);
+                PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncPartialFormRepository().delete(new PncPartialForm(PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID), eventType)));
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -137,14 +140,15 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
             return;
         }
 
-        form = null;
+
         try {
+
             form = model.getFormAsJson(formName, entityId, locationId, injectedFieldValues);
-            // Todo: Enquire if we have to save a session of the outcome form to be continued later
-            /*if (formName.equals(PncConstants.Form.PNC_RECURRING_VISIT)) {
-                interactor.fetchSavedPncOutcomeForm(entityId, entityTable, this);
+
+            if (formName.equals(PncConstants.Form.PNC_MEDIC_INFO) || formName.equals(PncConstants.Form.PNC_VISIT)) {
+                interactor.fetchSavedForm(form.optString(JsonFormConstants.ENCOUNTER_TYPE), entityId, entityTable, this);
                 return;
-            }*/
+            }
 
         } catch (JSONException e) {
             Timber.e(e);
@@ -155,10 +159,10 @@ public abstract class BasePncRegisterActivityPresenter implements PncRegisterAct
     }
 
     @Override
-    public void onFetchedSavedDiagnosisAndTreatmentForm(@Nullable PncOutcomeForm diagnosisAndTreatmentForm, @NonNull String caseId, @Nullable String entityTable) {
+    public void onFetchedSavedForm(@Nullable PncPartialForm pncPartialForm, @NonNull String caseId, @NonNull String formType, @Nullable String entityTable) {
         try {
-            if (diagnosisAndTreatmentForm != null) {
-                form = new JSONObject(diagnosisAndTreatmentForm.getForm());
+            if (pncPartialForm != null) {
+                form = new JSONObject(pncPartialForm.getForm());
             }
 
             startFormActivity(caseId, entityTable, form);

@@ -3,21 +3,12 @@ package org.smartregister.pnc.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.vijay.jsonwizard.constants.JsonFormConstants;
-
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.pnc.PncLibrary;
@@ -26,15 +17,12 @@ import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.pnc.model.PncRegisterActivityModel;
 import org.smartregister.pnc.presenter.BasePncRegisterActivityPresenter;
-import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.activity.BaseRegisterActivity;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -121,83 +109,12 @@ public abstract class BasePncRegisterActivity extends BaseRegisterActivity imple
 
     @Override
     public void startFormActivityFromFormJson(@NonNull String entityId, @NonNull JSONObject jsonForm, @Nullable HashMap<String, String> intentData) {
-        addGlobals(entityId, jsonForm);
-        if (PncConstants.EventTypeConstants.PNC_VISIT.equals(jsonForm.optString("encounter_type"))){
-            addNumberOfBabyCount(entityId, jsonForm);
-        }
+        PncUtils.processPreChecks(entityId, jsonForm, intentData);
         Intent intent = PncUtils.buildFormActivityIntent(jsonForm, intentData, this);
         if (intent != null) {
             startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
         } else {
             Timber.e(new Exception(), "FormActivityConstants cannot be started because PncMetadata is NULL");
-        }
-    }
-
-    private void addGlobals(String baseEntityId, JSONObject form) {
-
-        Map<String, String> detailMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(baseEntityId);
-
-        try {
-            JSONObject defaultGlobal = new JSONObject();
-
-            for (Map.Entry<String, String> entry: detailMap.entrySet()) {
-                defaultGlobal.put(entry.getKey(), entry.getValue());
-            }
-
-            LocalDate todayDate = LocalDate.now();
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.DELIVERY_DATE)) {
-                LocalDate deliveryDate = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.DELIVERY_DATE), DateTimeFormat.forPattern("dd-MM-yyyy"));
-                int numberOfDays = Days.daysBetween(deliveryDate, todayDate).getDays();
-                defaultGlobal.put(PncConstants.FormGlobalConstants.PNC_VISIT_PERIOD, numberOfDays);
-            }
-
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_DOB)) {
-                LocalDate babyDob = LocalDate.parse(detailMap.get(PncConstants.FormGlobalConstants.BABY_DOB), DateTimeFormat.forPattern("dd-MM-yyyy"));
-                int numberOfYears = new Period(babyDob, todayDate).getYears();
-                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_AGE, numberOfYears);
-            }
-
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS)) {
-                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_PREVIOUS));
-            }
-
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT)) {
-                defaultGlobal.put(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT, detailMap.get(PncConstants.FormGlobalConstants.HIV_STATUS_CURRENT));
-            }
-
-            if (detailMap.containsKey(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS)) {
-                defaultGlobal.put(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS, detailMap.get(PncConstants.FormGlobalConstants.BABY_COMPLICATIONS));
-            }
-
-            form.put(JsonFormConstants.JSON_FORM_KEY.GLOBAL, defaultGlobal);
-        }
-        catch (JSONException ex) {
-            Timber.e(ex);
-        }
-    }
-
-    private void addNumberOfBabyCount(String baseEntityId, JSONObject form) {
-        try {
-
-            Iterator<String> formKeys = form.keys();
-
-            while (formKeys.hasNext()) {
-                String formKey = formKeys.next();
-                if (formKey != null && formKey.startsWith("step")) {
-                    JSONObject stepJSONObject = form.getJSONObject(formKey);
-                    JSONArray fieldsArray = stepJSONObject.getJSONArray(PncJsonFormUtils.FIELDS);
-                    for (int i = 0; i < fieldsArray.length(); i++) {
-                        JSONObject comObject = fieldsArray.getJSONObject(i);
-                        if ("child_status".equals(comObject.getString(PncJsonFormUtils.KEY))) {
-                            int numberOfCount = PncLibrary.getInstance().getPncChildRepository().countBaby28DaysOld(baseEntityId, 28);
-                            comObject.put(PncConstants.JsonFormKeyConstants.BABY_COUNT_ALIVE, numberOfCount);
-                        }
-                    }
-                }
-            }
-        }
-        catch (JSONException ex) {
-            Timber.e(ex);
         }
     }
 }

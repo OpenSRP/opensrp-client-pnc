@@ -2,9 +2,8 @@ package org.smartregister.pnc.widgets;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.vision.barcode.Barcode;
 import com.rengwuxian.materialedittext.MaterialEditText;

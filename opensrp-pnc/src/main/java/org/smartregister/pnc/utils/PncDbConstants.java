@@ -17,8 +17,6 @@ public interface PncDbConstants {
 
         String REGISTER_ID = "register_id";
         String BASE_ENTITY_ID = "base_entity_id";
-        String GA = "ga";
-        String CONCEPTION_DATE = "conception_date";
 
         String TABLE = "ec_client";
         String OPENSRP_ID = "opensrp_id";
@@ -44,26 +42,30 @@ public interface PncDbConstants {
         interface PncDetails {
             String ID = "_id";
             String BASE_ENTITY_ID = "base_entity_id";
-            String PENDING_OUTCOME = "pending_outcome";
-            String PARA = "para";
-            String GRAVIDA = "gravida";
-            String RECORDED_AT = "recorded_at";
-            String CONCEPTION_DATE = "conception_date";
-            String HIV_STATUS = "hiv_status";
+            String EVENT_DATE = "event_date";
+            String CREATED_AT = "created_at";
+        }
+
+        interface PncMedicInfo{
+            String ID = "_id";
+            String BASE_ENTITY_ID = "base_entity_id";
             String EVENT_DATE = "event_date";
             String CREATED_AT = "created_at";
         }
 
         interface PncBaby {
+            String ID = "_id";
+            String BASE_ENTITY_ID = "base_entity_id";
             String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String DISCHARGED_ALIVE = "discharged_alive";
+            String CREATED_AT = "created_at";
             String CHILD_REGISTERED = "child_registered";
             String BIRTH_RECORD = "birth_record_date";
-            String FIRST_NAME = "first_name";
-            String LAST_NAME = "last_name";
-            String DOB = "dob";
+            String BABY_FIRST_NAME = "baby_first_name";
+            String BABY_LAST_NAME = "baby_last_name";
+            String BABY_DOB = "dob";
             String GENDER = "gender";
-            String BIRTH_WEIGTH_ENTERED = "birth_weight_entered";
+            String BIRTH_WEIGHT_ENTERED = "birth_weight_entered";
             String BIRTH_WEIGHT = "birth_weight";
             String BIRTH_HEIGHT_ENTERED = "birth_height_entered";
             String APGAR = "apgar";
@@ -76,11 +78,16 @@ public interface PncDbConstants {
             String BF_FIRST_HOUR = "bf_first_hour";
             String NVP_ADMINISTRATION = "nvp_administration";
             String CHILD_HIV_STATUS = "child_hiv_status";
+            String EVENT_DATE = "event_date";
         }
 
-        interface PncVisit {
-            String PARENT_BASE_ENTITY_ID = "parent_base_entity_id";
+        interface PncVisitInfo {
+            String ID = "_id";
+            String VISIT_DATE = "visit_date";
+            String VISIT_ID = "visit_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
             String BASE_ENTITY_ID = "base_entity_id";
+            String CREATED_AT = "created_at";
             String PERIOD = "pnc_visit_period";
             String FIRST_VISIT_CHECK = "pnc_first_visit_check";
             String OUTSIDE_FACILITY = "visits_outside_facility";
@@ -105,10 +112,20 @@ public interface PncDbConstants {
             String FP_COUNSEL = "fp_counsel";
             String FP_METHOD = "fp_method";
             String FP_METHOD_OTHER = "fp_method_other";
+            String LATEST_VISIT_DATE = "latest_visit_date";
+            String ITN_GIVEN = "itn_given";
+            String ITN_GIVEN_NOT_DONE = "itn_given_notdone";
+            String ITN_GIVEN_NOT_DONE_OTHER = "itn_given_notdone_other";
+            String BABY_PRESENT = "baby_present";
         }
 
         interface PncVisitChildStatus {
+            String ID = "_id";
+            String VISIT_ID = "visit_id";
+            String BASE_ENTITY_ID = "base_entity_id";
             String BABY_AGE = "baby_age";
+            String BABY_FIRST_NAME = "baby_first_name";
+            String BABY_LAST_NAME = "baby_last_name";
             String BABY_STATUS = "baby_status";
             String DATE_OF_DEATH_BABY = "date_of_death_baby";
             String PLACE_OF_DEATH_BABY = "place_of_death_baby";
@@ -128,19 +145,38 @@ public interface PncDbConstants {
             String BABY_CARE_MGMT = "baby_care_mgt";
         }
 
+        interface PncOtherVisit {
+            String ID = "_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String VISIT_ID = "visit_id";
+            String VISIT_DATE = "visit_date";
+        }
+
         interface PncStillBorn {
-            String STILL_BIRTH_CONDITION = "still_birth_condition";
+            String ID = "_id";
+            String MOTHER_BASE_ENTITY_ID = "mother_base_entity_id";
+            String STILL_BIRTH_CONDITION = "stillbirth_condition";
+            String EVENT_DATE = "event_date";
+        }
+
+        interface PncPartialForm {
+            String ID = "id";
+            String BASE_ENTITY_ID = "base_entity_id";
+            String FORM_TYPE = "form_type";
+            String FORM = "form";
+            String CREATED_AT = "created_at";
         }
     }
 
     interface Table {
         String EC_CLIENT = "ec_client";
-        String PNC_DETAILS = "pnc_details";
         String PNC_REGISTRATION_DETAILS = "pnc_registration_details";
-        String PNC_OUTCOME_FORM = "pnc_outcome_form";
+        String PNC_MEDIC_INFO = "pnc_medic_info";
         String PNC_BABY = "pnc_baby";
         String PNC_STILL_BORN = "pnc_still_born";
         String PNC_VISIT_INFO = "pnc_visit_info";
         String PNC_VISIT_CHILD_STATUS = "pnc_visit_child_status";
+        String PNC_PARTIAL_FORM = "pnc_partial_form";
+        String PNC_OTHER_VISIT = "pnc_other_visit";
     }
 }

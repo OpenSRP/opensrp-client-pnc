@@ -1,8 +1,7 @@
 package org.smartregister.pnc.sample.processor;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import org.smartregister.domain.db.Event;
 import org.smartregister.domain.db.EventClient;

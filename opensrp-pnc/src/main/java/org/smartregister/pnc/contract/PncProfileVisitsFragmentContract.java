@@ -1,15 +1,14 @@
 package org.smartregister.pnc.contract;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Pair;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 
 import org.jeasy.rules.api.Facts;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
+import org.smartregister.pnc.pojo.PncVisitSummary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +30,7 @@ public interface PncProfileVisitsFragmentContract {
 
         void loadPageCounter(@NonNull String baseEntityId);
 
-        void populateWrapperDataAndFacts(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items);
+        void populateWrapperDataAndFacts(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items);
 
         void onNextPageClicked();
 
@@ -40,12 +39,12 @@ public interface PncProfileVisitsFragmentContract {
 
         interface OnFinishedCallback {
 
-            void onFinished(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items);
+            void onFinished(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items);
         }
 
         interface OnVisitsLoadedCallback {
 
-            void onVisitsLoaded(@NonNull List<Object> ancVisitSummaries);
+            void onVisitsLoaded(@NonNull PncVisitSummary pncVisitSummary);
         }
     }
 
@@ -59,7 +58,7 @@ public interface PncProfileVisitsFragmentContract {
 
         void showPreviousPageBtn(boolean show);
 
-        void displayVisits(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items);
+        void displayVisits(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items);
 
         @Nullable
         String getClientBaseEntityId();

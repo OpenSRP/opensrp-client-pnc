@@ -6,14 +6,13 @@ import org.jeasy.rules.api.Facts;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.util.ReflectionHelpers;
+import org.smartregister.pnc.BaseTest;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.pojo.PncMetadata;
@@ -25,8 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PncUtilsTest {
+public class PncUtilsTest extends BaseTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -61,15 +59,6 @@ public class PncUtilsTest {
     }
 
     @Test
-    public void generateNIds() {
-        String result = PncUtils.generateNIds(0);
-        assertEquals(result, "");
-
-        String result1 = PncUtils.generateNIds(1);
-        assertEquals(result1.split(",").length, 1);
-    }
-
-    @Test
     public void getIntentValue() {
         Intent intent = Mockito.mock(Intent.class);
         Mockito.when(intent.hasExtra("test")).thenReturn(false);
@@ -97,7 +86,7 @@ public class PncUtilsTest {
     }
 
     @Test
-    public void testGetClientAge(){
+    public void testGetClientAge() {
         assertEquals("13", PncUtils.getClientAge("13y 4m", "y"));
         assertEquals("4m", PncUtils.getClientAge("4m", "y"));
         assertEquals("5", PncUtils.getClientAge("5y 4w", "y"));
@@ -117,4 +106,9 @@ public class PncUtilsTest {
         assertTrue(PncUtils.isTemplate("Project Name: {project_name}"));
     }
 
+    @Test
+    public void testGenerateNIdsShouldGenerateNIds() {
+        assertEquals(2, PncUtils.generateNIds(2).length);
+        assertEquals(0, PncUtils.generateNIds(0).length);
+    }
 }

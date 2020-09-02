@@ -8,8 +8,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
@@ -26,9 +26,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(shadows = {ShadowPncLibrary.class})
-public class PncLibraryTest {
+public class PncLibraryTest extends BaseTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -46,7 +46,7 @@ public class PncLibraryTest {
     }
 
     @Test
-    public void getInstanceShouldThrowIllegalStateException() throws Throwable {
+    public void getInstanceShouldThrowIllegalStateException() {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("Instance does not exist!!! Call org.smartregister.pnc.PncLibrary"
                 + ".init method in the onCreate method of "

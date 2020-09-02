@@ -1,43 +1,38 @@
 package org.smartregister.pnc;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-
-import org.joda.time.LocalDate;
-import org.joda.time.Weeks;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.smartregister.Context;
 import org.smartregister.clientandeventmodel.Event;
-import org.smartregister.domain.tag.FormTag;
 import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.config.PncFormProcessingTask;
 import org.smartregister.pnc.domain.YamlConfig;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.helper.PncRulesEngineHelper;
 import org.smartregister.pnc.repository.PncChildRepository;
-import org.smartregister.pnc.repository.PncOtherDetailsRepository;
+import org.smartregister.pnc.repository.PncMedicInfoRepository;
+import org.smartregister.pnc.repository.PncOtherVisitRepository;
+import org.smartregister.pnc.repository.PncPartialFormRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
+import org.smartregister.pnc.repository.PncRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
 import org.smartregister.pnc.repository.PncVisitInfoRepository;
+import org.smartregister.pnc.scheduler.PncVisitScheduler;
+import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.FilePath;
 import org.smartregister.pnc.utils.PncConstants;
-import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
+import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
-import org.smartregister.util.AppExecutors;
-import org.smartregister.util.JsonFormUtils;
 import org.smartregister.view.activity.DrishtiApplication;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
@@ -52,8 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
-
-import static org.smartregister.pnc.utils.PncJsonFormUtils.METADATA;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -71,9 +64,14 @@ public class PncLibrary {
     private PncChildRepository pncChildRepository;
     private PncStillBornRepository pncStillBornRepository;
     private PncVisitInfoRepository pncVisitInfoRepository;
+    private PncOtherVisitRepository pncOtherVisitRepository;
     private PncVisitChildStatusRepository pncVisitChildStatusRepository;
+    private PncPartialFormRepository pncPartialFormRepository;
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
-    private PncOtherDetailsRepository pncOtherDetailsRepository;
+    private PncMedicInfoRepository pncMedicInfoRepository;
+    private EventClientRepository eventClientRepository;
+    private PncRepository pncRepository;
+    private PncVisitScheduler pncVisitScheduler;
     private AppExecutors appExecutors;
 
     private Compressor compressor;
@@ -113,14 +111,6 @@ public class PncLibrary {
         return instance;
     }
 
-
-    public static int getGestationAgeInWeeks(@NonNull String conceptionDateString) {
-        DateTimeFormatter SQLITE_DATE_DF = DateTimeFormat.forPattern("dd-MM-yyyy");
-        LocalDate conceptionDate = SQLITE_DATE_DF.withOffsetParsed().parseLocalDate(conceptionDateString);
-        Weeks weeks = Weeks.weeksBetween(conceptionDate, LocalDate.now());
-        return weeks.getWeeks();
-    }
-
     @NonNull
     public Context context() {
         return context;
@@ -141,6 +131,22 @@ public class PncLibrary {
         }
 
         return pncRegistrationDetailsRepository;
+    }
+
+    @NonNull
+    public PncMedicInfoRepository getPncMedicInfoRepository() {
+        if (pncMedicInfoRepository == null) {
+            pncMedicInfoRepository = new PncMedicInfoRepository();
+        }
+
+        return pncMedicInfoRepository;
+    }
+
+    public PncVisitScheduler getPncVisitScheduler() {
+        if (pncVisitScheduler == null) {
+            pncVisitScheduler = ConfigurationInstancesHelper.newInstance(getPncConfiguration().getPncVisitScheduler());
+        }
+        return pncVisitScheduler;
     }
 
     public PncChildRepository getPncChildRepository() {
@@ -164,6 +170,13 @@ public class PncLibrary {
         return pncVisitInfoRepository;
     }
 
+    public PncOtherVisitRepository getPncOtherVisitRepository() {
+        if (pncOtherVisitRepository == null) {
+            pncOtherVisitRepository = new PncOtherVisitRepository();
+        }
+        return pncOtherVisitRepository;
+    }
+
     public PncVisitChildStatusRepository getPncVisitChildStatusRepository() {
         if (pncVisitChildStatusRepository == null) {
             pncVisitChildStatusRepository = new PncVisitChildStatusRepository();
@@ -171,12 +184,25 @@ public class PncLibrary {
         return pncVisitChildStatusRepository;
     }
 
-    @NonNull
-    public PncOtherDetailsRepository getPncOtherDetailsRepository() {
-        if (pncOtherDetailsRepository == null) {
-            pncOtherDetailsRepository = new PncOtherDetailsRepository();
+    public PncPartialFormRepository getPncPartialFormRepository() {
+        if (pncPartialFormRepository == null) {
+            pncPartialFormRepository = new PncPartialFormRepository();
         }
-        return pncOtherDetailsRepository;
+        return pncPartialFormRepository;
+    }
+
+    public EventClientRepository eventClientRepository() {
+        if (eventClientRepository == null) {
+            eventClientRepository = new EventClientRepository();
+        }
+        return eventClientRepository;
+    }
+
+    public PncRepository getPncRepository() {
+        if (pncRepository == null) {
+            pncRepository = new PncRepository();
+        }
+        return pncRepository;
     }
 
     @NonNull
@@ -253,24 +279,6 @@ public class PncLibrary {
             PncFormProcessingTask pncFormProcessingTask = ConfigurationInstancesHelper.newInstance(pncFormProcessingTasks.get(eventType));
             eventList = pncFormProcessingTask.processPncForm(eventType, jsonString, data);
         }
-        return eventList;
-    }
-
-    @NonNull
-    public List<Event> processPncCloseForm(@NonNull String eventType, String jsonString, @Nullable Intent data) throws JSONException {
-        ArrayList<Event> eventList = new ArrayList<>();
-        JSONObject jsonFormObject = new JSONObject(jsonString);
-
-        JSONArray fieldsArray = PncUtils.generateFieldsFromJsonForm(jsonFormObject);
-        FormTag formTag = PncJsonFormUtils.formTag(PncUtils.getAllSharedPreferences());
-
-        String baseEntityId = PncUtils.getIntentValue(data, PncConstants.IntentKey.BASE_ENTITY_ID);
-        String entityTable = PncUtils.getIntentValue(data, PncConstants.IntentKey.ENTITY_TABLE);
-        Event closePncEvent = JsonFormUtils.createEvent(fieldsArray, jsonFormObject.getJSONObject(METADATA)
-                , formTag, baseEntityId, eventType, entityTable);
-        PncJsonFormUtils.tagSyncMetadata(closePncEvent);
-        eventList.add(closePncEvent);
-
         return eventList;
     }
 

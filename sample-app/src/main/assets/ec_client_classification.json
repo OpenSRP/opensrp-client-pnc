@@ -9,10 +9,18 @@
             "field": "eventType",
             "field_value": "PNC Registration",
             "creates_case": [
-              "ec_client"
+              "ec_client",
+              "pnc_registration_details"
+            ]
+          },
+          {
+            "field": "eventType",
+            "field_value": "Update PNC Registration",
+            "creates_case": [
+              "ec_client",
+              "pnc_registration_details"
             ]
           }
-
         ]
       }
     }

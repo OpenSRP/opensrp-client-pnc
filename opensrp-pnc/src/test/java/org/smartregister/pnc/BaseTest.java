@@ -7,6 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.view.activity.DrishtiApplication;
@@ -17,6 +20,8 @@ import org.smartregister.view.activity.DrishtiApplication;
 
 @RunWith(MockitoJUnitRunner.class)
 @Config(sdk = {Build.VERSION_CODES.O_MR1})
+@PowerMockRunnerDelegate(RobolectricTestRunner.class)
+@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 public abstract class BaseTest {
 
 

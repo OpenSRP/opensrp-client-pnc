@@ -1,15 +1,16 @@
 package org.smartregister.pnc.contract;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 
 import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.pojo.PncBaseDetails;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -31,9 +32,9 @@ public interface PncProfileOverviewFragmentContract {
 
         void loadOverviewFacts(@NonNull String baseEntityId, @NonNull OnFinishedCallback onFinishedCallback);
 
-        void loadOverviewDataAndDisplay(@NonNull PncBaseDetails pncDetails, @NonNull final OnFinishedCallback onFinishedCallback);
+        void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncDetails, @NonNull final OnFinishedCallback onFinishedCallback);
 
-        void setDataFromRegistration(@NonNull PncBaseDetails pncDetails, @NonNull Facts facts);
+        void setDataFromRegistration(@NonNull HashMap<String, String> pncDetails, @NonNull Facts facts);
 
         void setClient(@NonNull CommonPersonObjectClient client);
 
@@ -45,7 +46,7 @@ public interface PncProfileOverviewFragmentContract {
 
         interface OnFinishedCallback {
 
-            void onFinished(@Nullable Facts facts, @Nullable List<YamlConfigWrapper> yamlConfigListGlobal);
+            void onFinished(@NonNull Facts facts, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items);
         }
     }
 
@@ -55,7 +56,7 @@ public interface PncProfileOverviewFragmentContract {
 
         interface OnFetchedCallback {
 
-            void onFetched(@NonNull PncBaseDetails pncDetails);
+            void onFetched(@NonNull HashMap<String, String> maternityDetails);
         }
     }
 }

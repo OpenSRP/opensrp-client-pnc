@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.util.StringUtil;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -51,9 +49,6 @@ public class PncProfileVisitsAdapterTest {
     @Mock
     private ArrayList<Pair<YamlConfigWrapper, Facts>> items;
 
-    @Mock
-    private TextUtilHelper textUtilHelper;
-
     private PncProfileVisitsAdapter adapter;
 
     @Before
@@ -62,11 +57,10 @@ public class PncProfileVisitsAdapterTest {
 
         adapter = new PncProfileVisitsAdapter(context, items);
         setField(adapter, "mInflater", mInflater);
-        setField(adapter, "textUtilHelper", textUtilHelper);
     }
 
     @Test
-    public void onCreateViewHolderShouldReturnYamlViewHolder() throws Exception {
+    public void onCreateViewHolderShouldReturnYamlViewHolder() {
 
         ViewGroup parent = mock(ViewGroup.class);
         View view = mock(View.class);
@@ -102,7 +96,6 @@ public class PncProfileVisitsAdapterTest {
         setField(pair, "first", yamlConfigWrapper);
         setField(pair, "second", facts);
 
-        when(textUtilHelper.isEmpty(anyString())).thenReturn(false);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.RED);
         when(items.get(anyInt())).thenReturn(pair);
@@ -127,8 +120,8 @@ public class PncProfileVisitsAdapterTest {
     @Test
     public void onBindViewHolderShouldVerifyScenarioTwo() {
 
-        String group = "group";
-        String subGroup = "sub group: {sub_heading}";
+        String group = "";
+        String subGroup = "";
 
         TextView sectionHeader = mock(TextView.class);
         TextView subSectionHeader = mock(TextView.class);
@@ -147,7 +140,6 @@ public class PncProfileVisitsAdapterTest {
         setField(pair, "first", yamlConfigWrapper);
         setField(pair, "second", facts);
 
-        when(textUtilHelper.isEmpty(anyString())).thenReturn(true);
         when(items.get(anyInt())).thenReturn(pair);
 
         when(yamlConfigWrapper.getGroup()).thenReturn(group);

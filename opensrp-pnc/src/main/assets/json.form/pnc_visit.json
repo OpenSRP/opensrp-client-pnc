@@ -75,6 +75,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Did the woman receive PNC within 48 hours of delivery?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -106,6 +107,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Has the client had other visits outside this facility?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -128,19 +130,7 @@
         "openmrs_entity_parent": "",
         "openmrs_entity": "",
         "openmrs_entity_id": "",
-        "type": "edit_text",
-        "hint": "How many visits?",
-        "v_numeric_integer": {
-          "value": "true",
-          "err": "Enter a number"
-        },
-        "relevance": {
-          "rules-engine": {
-            "ex-rules": {
-              "rules-file": "pnc/pnc_visit_relevance_rules.yml"
-            }
-          }
-        }
+        "type": "hidden"
       },
       {
         "key": "other_pnc_visit_date_group",
@@ -148,9 +138,10 @@
         "openmrs_entity_parent": "",
         "openmrs_entity": "",
         "openmrs_entity_id": "",
-        "reference_edit_text_hint": "#Total other visit",
+        "reference_edit_text_hint": "#Total previous visit",
         "repeating_group_label": "Other visit",
         "reference_edit_text": "Number of other visit",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -168,6 +159,20 @@
             "hint": "Date of other visit"
           }
         ]
+      },
+      {
+        "key": "visit_date",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "",
+        "openmrs_entity_id": "",
+        "type": "hidden"
+      },
+      {
+        "key": "visit_id",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "",
+        "openmrs_entity_id": "",
+        "type": "hidden"
       }
     ]
   },
@@ -182,6 +187,7 @@
         "openmrs_entity_id": "",
         "type": "check_box",
         "label": "Postnatal complications",
+        "label_text_style": "bold",
         "exclusive": [
           "none"
         ],
@@ -227,6 +233,7 @@
         "openmrs_entity_id": "1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         "type": "edit_text",
         "hint": "Specify",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -246,6 +253,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Status of C-section incision",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "intact",
@@ -291,6 +299,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Condition of episiotomy/tear, if present",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "intact",
@@ -329,6 +338,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Status of the lochia",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "normal",
@@ -381,7 +391,8 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "type": "native_radio",
-        "label": "Status of the lochia",
+        "label": "Status of the uterus",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "involuted",
@@ -428,6 +439,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was an intervention given?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -451,7 +463,14 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "type": "edit_text",
-        "hint": "Describe the intervention given"
+        "hint": "Describe the intervention given",
+        "relevance": {
+          "rules-engine": {
+            "ex-rules": {
+              "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+            }
+          }
+        }
       },
       {
         "key": "referred_out",
@@ -460,6 +479,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was the woman referred?",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -490,53 +510,14 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "type": "edit_text",
-        "hint": "Specify"
-      },
-      {
-        "key": "breastfeeding",
-        "openmrs_entity_parent": "",
-        "openmrs_entity": "",
-        "openmrs_entity_id": "",
-        "type": "native_radio",
-        "label": "Breastfeeding status",
+        "hint": "Specify",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
               "rules-file": "pnc/pnc_visit_relevance_rules.yml"
             }
           }
-        },
-        "options": [
-          {
-            "key": "exclusive",
-            "text": "Exclusive",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": ""
-          },
-          {
-            "key": "non_exclusive",
-            "text": "Non-Exclusive",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": ""
-          },
-          {
-            "key": "not_breastfeeding",
-            "text": "Not Breastfeeding",
-            "openmrs_entity_parent": "",
-            "openmrs_entity": "",
-            "openmrs_entity_id": ""
-          }
-        ]
-      },
-      {
-        "key": "not_breastfeeding_reason",
-        "openmrs_entity_parent": "",
-        "openmrs_entity": "",
-        "openmrs_entity_id": "",
-        "type": "edit_text",
-        "hint": "Provide a reason why the woman is not breastfeeding"
+        }
       },
       {
         "key": "vit_a",
@@ -545,6 +526,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was Vitamin A given?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -569,6 +551,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Provide a reason for not giving Vitamin A",
+        "label_text_style": "bold",
         "relevance": {
           "rules-engine": {
             "ex-rules": {
@@ -607,6 +590,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Was counseling on family planning done?",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "yes",
@@ -631,6 +615,7 @@
         "openmrs_entity_id": "",
         "type": "native_radio",
         "label": "Family planning methods chosen",
+        "label_text_style": "bold",
         "options": [
           {
             "key": "implants",
@@ -683,6 +668,78 @@
             }
           }
         }
+      },
+      {
+        "key": "itn_given",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "",
+        "openmrs_entity_id": "159855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "type": "native_radio",
+        "label": "Insecticide Treated Net (ITN) given",
+        "label_text_style": "bold",
+        "options": [
+          {
+            "key": "done",
+            "text": "Done",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          {
+            "key": "not_done",
+            "text": "Not Done",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        ]
+      },
+      {
+        "key": "itn_given_notdone",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "",
+        "openmrs_entity_id": "165342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "type": "native_radio",
+        "label": "Reason",
+        "label_text_style": "bold",
+        "options": [
+          {
+            "key": "stock_out",
+            "text": "Stock out",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          {
+            "key": "already_given",
+            "text": "Already given",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          {
+            "key": "other",
+            "text": "Other (specify)",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        ]
+      },
+      {
+        "key": "itn_given_notdone_other",
+        "openmrs_entity_parent": "",
+        "openmrs_entity": "concept",
+        "openmrs_entity_id": "165426AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "type": "edit_text",
+        "hint": "Specify",
+        "relevance": {
+          "rules-engine": {
+            "ex-rules": {
+              "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+            }
+          }
+        }
       }
     ]
   },
@@ -696,22 +753,26 @@
         "openmrs_entity": "",
         "openmrs_entity_id": "",
         "reference_edit_text_hint": "#Total child status",
-        "repeating_group_label": "Child status",
         "reference_edit_text": "Number of child status",
+        "showGroupLabel": false,
         "value": [
           {
-            "key": "baby_age",
+            "key": "baby_first_name",
             "openmrs_entity_parent": "",
             "openmrs_entity": "",
-            "openmrs_entity_id": "160427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "type": "hidden",
-            "calculation": {
-              "rules-engine": {
-                "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_calculation_rules.yml"
-                }
-              }
-            }
+            "openmrs_entity_id": "",
+            "type": "edit_text",
+            "hint": "First Name",
+            "read_only": "true"
+          },
+          {
+            "key": "baby_last_name",
+            "openmrs_entity_parent": "",
+            "openmrs_entity": "",
+            "openmrs_entity_id": "",
+            "type": "edit_text",
+            "hint": "Last Name",
+            "read_only": "true"
           },
           {
             "key": "baby_status",
@@ -746,9 +807,10 @@
             "type": "time_picker",
             "hint": "When did the death occur?",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -761,9 +823,10 @@
             "label": "Place of death?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -798,9 +861,10 @@
             "type": "edit_text",
             "hint": "Cause of death",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -813,9 +877,10 @@
             "label": "Was the follow up of death conducted by health workers?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_status": {
-                "type": "string",
-                "ex": "equalTo(., \"dead\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -875,9 +940,10 @@
             "type": "edit_text",
             "hint": "Provide reason for not breastfeeding",
             "relevance": {
-              "step3:breastfeeding": {
-                "type": "string",
-                "ex": "equalTo(., \"not_breastfeeding\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -888,6 +954,7 @@
             "openmrs_entity_id": "",
             "type": "check_box",
             "label": "Danger signs and complications at visit",
+            "label_text_style": "bold",
             "exclusive": [
               "none"
             ],
@@ -954,12 +1021,10 @@
             "type": "edit_text",
             "hint": "Specify",
             "relevance": {
-              "step3:baby_danger_signs": {
-                "ex-checkbox": [
-                  {
-                    "or": ["other"]
-                  }
-                ]
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -972,12 +1037,10 @@
             "label": "Was the baby referred out?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_danger_signs": {
-                "ex-checkbox": [
-                  {
-                    "not": ["none"]
-                  }
-                ]
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1008,7 +1071,7 @@
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },
@@ -1038,9 +1101,10 @@
             "label": "Was the mother referred to the ART clinic for mother/infant pairing?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_hiv_exposed": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1067,10 +1131,11 @@
             "openmrs_entity_id": "",
             "type": "check_box",
             "label": "Which HIV treatment is being given?",
+            "label_text_style": "bold",
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },
@@ -1132,9 +1197,10 @@
             "type": "edit_text",
             "hint": "Specify",
             "relevance": {
-              "step3:not_art_pairing_reason": {
-                "type": "string",
-                "ex": "equalTo(., \"other\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             }
           },
@@ -1147,9 +1213,10 @@
             "label": "Was the baby tested at 6 weeks using DBS (Dry Blood Sample)?",
             "label_text_style": "bold",
             "relevance": {
-              "step3:baby_hiv_exposed": {
-                "type": "string",
-                "ex": "equalTo(., \"yes\")"
+              "rules-engine": {
+                "ex-rules": {
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
+                }
               }
             },
             "options": [
@@ -1180,7 +1247,7 @@
             "relevance": {
               "rules-engine": {
                 "ex-rules": {
-                  "rules-file": "pnc/pnc_visit_relevance_rules.yml"
+                  "rules-dynamic": "pnc/pnc_visit_relevance_rules.yml"
                 }
               }
             },
@@ -1193,8 +1260,29 @@
                 "openmrs_entity_id": ""
               },
               {
+                "key": "vitamin_k",
+                "text": "Vitamin K",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": ""
+              },
+              {
                 "key": "chlorhexidine",
                 "text": "Chlorhexidine (7.1%)",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": ""
+              },
+              {
+                "key": "tetracycline_eye_ointment",
+                "text": "Tetracycline Eye Ointment (TEO)",
+                "openmrs_entity_parent": "",
+                "openmrs_entity": "",
+                "openmrs_entity_id": ""
+              },
+              {
+                "key": "antibiotics",
+                "text": "Antibiotics",
                 "openmrs_entity_parent": "",
                 "openmrs_entity": "",
                 "openmrs_entity_id": ""

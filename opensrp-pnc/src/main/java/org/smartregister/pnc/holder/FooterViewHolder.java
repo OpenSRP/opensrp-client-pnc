@@ -1,11 +1,11 @@
 package org.smartregister.pnc.holder;
 
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29

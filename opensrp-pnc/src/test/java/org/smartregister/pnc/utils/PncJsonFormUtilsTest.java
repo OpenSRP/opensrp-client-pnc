@@ -1,5 +1,7 @@
 package org.smartregister.pnc.utils;
 
+import android.graphics.Bitmap;
+
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -11,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -18,11 +21,14 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.internal.WhiteboxImpl;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.SyncConfiguration;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.domain.ProfileImage;
+import org.smartregister.domain.UniqueId;
 import org.smartregister.domain.form.FormLocation;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.location.helper.LocationHelper;
@@ -32,14 +38,20 @@ import org.smartregister.pnc.config.PncConfiguration;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.pnc.provider.PncRegisterQueryProviderTest;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.repository.ImageRepository;
 import org.smartregister.repository.Repository;
+import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.JsonFormUtils;
+import org.smartregister.view.activity.DrishtiApplication;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import id.zelory.compressor.Compressor;
 
 @PrepareForTest(PncUtils.class)
 @RunWith(PowerMockRunner.class)
@@ -55,6 +67,9 @@ public class PncJsonFormUtilsTest {
 
     @Mock
     private PncConfiguration pncConfiguration;
+    
+    @Mock
+    private DrishtiApplication drishtiApplication;
 
     @Before
     public void setUp() {
@@ -75,17 +90,40 @@ public class PncJsonFormUtilsTest {
     }
 
     @Test
+    @PrepareForTest(PncLibrary.class)
     public void testGetFormAsJsonWithNonEmptyJsonObjectAndEntityIdBlank() throws Exception {
-        PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProviderTest.class)
-                .setPncMetadata(pncMetadata)
-                .build();
 
-        PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
-                BuildConfig.VERSION_CODE, 1);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("metadata", new JSONObject());
-        JSONObject result = PncJsonFormUtils.getFormAsJson(jsonObject, PncConstants.Form.PNC_REGISTRATION, "", "");
-        Assert.assertNull(result);
+        String jsonString = "{\"encounter_type\":\"PNC Registration\",\"entity_id\":\"\",\"metadata\":{},\"step1\":{\"fields\":[{\"key\":\"OPENSRP_ID\"}]}}";
+
+        /*PncConfiguration pncConfiguration = new PncConfiguration.Builder(PncRegisterQueryProviderTest.class)
+                .setPncMetadata(pncMetadata)
+                .build();*/
+
+        PncMetadata pncMetadata = PowerMockito.mock(PncMetadata.class);
+        PncConfiguration pncConfiguration = PowerMockito.mock(PncConfiguration.class);
+
+        PowerMockito.when(pncMetadata.getPncRegistrationFormName()).thenReturn(PncConstants.Form.PNC_REGISTRATION);
+
+        //PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
+        //BuildConfig.VERSION_CODE, 1);
+
+        PowerMockito.mockStatic(PncLibrary.class);
+
+        UniqueIdRepository uniqueIdRepository = PowerMockito.spy(new UniqueIdRepository());
+        UniqueId uniqueId = PowerMockito.spy(new UniqueId());
+        PowerMockito.when(PncLibrary.getInstance()).thenReturn(pncLibrary);
+        PowerMockito.when(uniqueIdRepository.getNextUniqueId()).thenReturn(uniqueId);
+        PowerMockito.when(uniqueId.getOpenmrsId()).thenReturn("123-dfcxv-3-sdf");
+        PowerMockito.when(PncLibrary.getInstance().getUniqueIdRepository()).thenReturn(uniqueIdRepository);
+        PowerMockito.when(PncLibrary.getInstance().getPncConfiguration()).thenReturn(pncConfiguration);
+        PowerMockito.when(PncLibrary.getInstance().getPncConfiguration().getPncMetadata()).thenReturn(pncMetadata);
+
+        HashMap<String, String> injectedFields = new HashMap<>();
+        injectedFields.put("OPENSRP_ID", "1");
+
+        JSONObject jsonObject = new JSONObject(jsonString);
+        JSONObject result = PncJsonFormUtils.getFormAsJson(jsonObject, PncConstants.Form.PNC_REGISTRATION, "", "", injectedFields);
+        Assert.assertNotNull(result);
     }
 
     @Test
@@ -125,7 +163,7 @@ public class PncJsonFormUtilsTest {
         jsonObject.put(JsonFormConstants.KEY, "village");
         jsonObject.put(JsonFormConstants.TYPE, JsonFormConstants.TREE);
         jsonArray.put(jsonObject);
-        //String hierarchyString = "[\"Kenya\",\"Central\"]";
+        String hierarchyString = "[\"Kenya\",\"Central\"]";
         String entireTreeString = "[{\"nodes\":[{\"level\":\"Province\",\"name\":\"Central\",\"key\":\"1\"}],\"level\":\"Country\",\"name\":\"Kenya\",\"key\":\"0\"}]";
         ArrayList<String> healthFacilities = new ArrayList<>();
         healthFacilities.add("Country");
@@ -149,11 +187,11 @@ public class PncJsonFormUtilsTest {
         ReflectionHelpers.setStaticField(LocationHelper.class, "instance", locationHelper);
 
         Mockito.doReturn(entireTree).when(locationHelper).generateLocationHierarchyTree(ArgumentMatchers.anyBoolean(), ArgumentMatchers.eq(healthFacilities));
-        PncJsonFormUtils.updateLocationTree(jsonArray, entireTreeString, entireTreeString);
-        //WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
+
+        WhiteboxImpl.invokeMethod(PncJsonFormUtils.class, "updateLocationTree", jsonArray, hierarchyString, entireTreeString, entireTreeString);
         Assert.assertTrue(jsonObject.has(JsonFormConstants.TREE));
         Assert.assertTrue(jsonObject.has(JsonFormConstants.DEFAULT));
-        //Assert.assertEquals(hierarchyString, jsonObject.optString(JsonFormConstants.DEFAULT));
+        Assert.assertEquals(hierarchyString, jsonObject.optString(JsonFormConstants.DEFAULT));
         JSONArray resultTreeObject = new JSONArray(jsonObject.optString(JsonFormConstants.TREE));
         Assert.assertTrue(resultTreeObject.optJSONObject(0).has("nodes"));
         Assert.assertEquals("Kenya", resultTreeObject.optJSONObject(0).optString("name"));
@@ -197,6 +235,7 @@ public class PncJsonFormUtilsTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("metadata", new JSONObject());
+        jsonObject.put("count", 1);
         jsonObject.put(PncJsonFormUtils.STEP1, jsonObjectForFields);
 
         HashMap<String, String> injectableFields = new HashMap<>();
@@ -230,35 +269,6 @@ public class PncJsonFormUtilsTest {
         Assert.assertNotNull(event);
     }
 
-    /*@Test
-    public void testGetLocationIdWithCurrentLocalityIsNotNull() throws Exception {
-        PncMetadata pncMetadata = new PncMetadata(PncConstants.Form.PNC_REGISTRATION
-                , PncDbConstants.KEY.TABLE
-                , PncConstants.EventTypeConstants.PNC_REGISTRATION
-                , PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION
-                , PncConstants.CONFIG
-                , Class.class
-                , Class.class
-                , true);
-        pncMetadata.setHealthFacilityLevels(new ArrayList<String>());
-        PncConfiguration pncConfiguration = new PncConfiguration
-                .Builder(PncRegisterQueryProviderTest.class)
-                .setPncMetadata(pncMetadata)
-                .build();
-        PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
-                BuildConfig.VERSION_CODE, 1);
-        CoreLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(SyncConfiguration.class));
-
-        ArrayList<String> defaultLocations = new ArrayList<>();
-        defaultLocations.add("Country");
-        LocationHelper.init(defaultLocations,
-                "Country");
-        AllSharedPreferences allSharedPreferences = PowerMockito.mock(AllSharedPreferences.class);
-        PowerMockito.when(allSharedPreferences.fetchCurrentLocality()).thenReturn("Place");
-        Assert.assertNotNull(LocationHelper.getInstance());
-        String result = PncJsonFormUtils.getLocationId("Country", allSharedPreferences);
-        Assert.assertEquals("Place", result);
-    }*/
 
     @Test
     public void testValidateParameters() throws JSONException {
@@ -319,23 +329,6 @@ public class PncJsonFormUtilsTest {
         Assert.assertEquals(jsonArray.getJSONObject(0).length(), 1);
     }
 
-    /*@Test
-    public void testProcessLocationFields() throws JSONException {
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JsonFormConstants.TYPE, JsonFormConstants.TREE);
-        JSONArray jsonArray1 = new JSONArray();
-        jsonArray1.put("test");
-        jsonObject.put(JsonFormConstants.VALUE, jsonArray1.toString());
-        jsonArray.put(jsonObject);
-        ArrayList<String> defaultLocations = new ArrayList<>();
-        defaultLocations.add("Country");
-        CoreLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(SyncConfiguration.class));
-        LocationHelper.init(defaultLocations,
-                "Country");
-        PncJsonFormUtils.processLocationFields(jsonArray);
-        Assert.assertEquals(jsonArray.getJSONObject(0).getString(JsonFormConstants.VALUE), "test");
-    }*/
 
     @Test
     public void testLastInteractedWithEmpty() {
@@ -482,5 +475,44 @@ public class PncJsonFormUtilsTest {
     @Test
     public void testProcessPncDetailsFormShouldReturnNullJsonFormNull() {
         Assert.assertNull(PncJsonFormUtils.processPncRegistrationForm("", Mockito.mock(FormTag.class)));
+    }
+
+    @Test
+    public void testSaveImageShouldPassCorrectArgs() throws Exception {
+        String providerId = "demo";
+        String baseEntityId = "2323-wxdfd9-34";
+        String imageLocation = "/";
+        Compressor compressor = Mockito.mock(Compressor.class);
+        PowerMockito.mockStatic(PncUtils.class);
+        PowerMockito.doNothing().when(PncUtils.class, "saveImageAndCloseOutputStream", Mockito.any(Bitmap.class), Mockito.any(File.class));
+        Bitmap bitmap = Mockito.mock(Bitmap.class);
+        Mockito.when(compressor.compressToBitmap(Mockito.any(File.class))).thenReturn(bitmap);
+        Mockito.when(pncLibrary.getCompressor()).thenReturn(compressor);
+        android.content.Context context = Mockito.mock(android.content.Context.class);
+        File file = Mockito.mock(File.class);
+        Mockito.when(file.getAbsolutePath()).thenReturn("/home/opensrp");
+        Mockito.when(context.getDir("opensrp", android.content.Context.MODE_PRIVATE)).thenReturn(file);
+        Mockito.when(drishtiApplication.getApplicationContext()).thenReturn(context);
+        Context opensrpContext = Mockito.mock(Context.class);
+        ImageRepository imageRepository = Mockito.mock(ImageRepository.class);
+        Mockito.when(opensrpContext.imageRepository()).thenReturn(imageRepository);
+        PowerMockito.when(PncUtils.class, "context").thenReturn(opensrpContext);
+        Mockito.when(pncLibrary.context()).thenReturn(opensrpContext);
+
+        ReflectionHelpers.setStaticField(DrishtiApplication.class, "mInstance", drishtiApplication);
+        ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
+
+        PncJsonFormUtils.saveImage(providerId, baseEntityId, imageLocation);
+
+        ArgumentCaptor<ProfileImage> profileImageArgumentCaptor = ArgumentCaptor.forClass(ProfileImage.class);
+
+        Mockito.verify(imageRepository, Mockito.times(1)).add(profileImageArgumentCaptor.capture());
+
+        ProfileImage profileImage = profileImageArgumentCaptor.getValue();
+        Assert.assertNotNull(profileImage);
+        Assert.assertEquals("demo", profileImage.getAnmId());
+        Assert.assertEquals(baseEntityId, profileImage.getEntityID());
+        Assert.assertEquals("/home/opensrp/2323-wxdfd9-34.JPEG", profileImage.getFilepath());
+        Assert.assertEquals(ImageRepository.TYPE_Unsynced, profileImage.getSyncStatus());
     }
 }

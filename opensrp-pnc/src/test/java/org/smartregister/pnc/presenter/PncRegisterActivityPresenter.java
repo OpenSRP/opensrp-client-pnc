@@ -1,6 +1,6 @@
 package org.smartregister.pnc.presenter;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import org.smartregister.pnc.contract.PncRegisterActivityContract;
 import org.smartregister.pnc.pojo.RegisterParams;

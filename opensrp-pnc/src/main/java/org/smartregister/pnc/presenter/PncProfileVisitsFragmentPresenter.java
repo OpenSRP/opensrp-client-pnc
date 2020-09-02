@@ -1,21 +1,30 @@
 package org.smartregister.pnc.presenter;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-
 import org.jeasy.rules.api.Facts;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;
+import org.smartregister.pnc.domain.YamlConfig;
+import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 import org.smartregister.pnc.interactor.PncProfileVisitsFragmentInteractor;
+import org.smartregister.pnc.pojo.PncVisitSummary;
+import org.smartregister.pnc.utils.FilePath;
+import org.smartregister.pnc.utils.PncFactsUtil;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -42,7 +51,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         }
 
         // Activity destroyed set interactor to null
-        if (! isChangingConfiguration) {
+        if (!isChangingConfiguration) {
             mProfileInteractor = null;
         }
     }
@@ -50,16 +59,12 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     @Override
     public void loadVisits(@NonNull String baseEntityId, @NonNull final OnFinishedCallback onFinishedCallback) {
         if (mProfileInteractor != null) {
-            mProfileInteractor.fetchVisits(baseEntityId, currentPageNo, new OnVisitsLoadedCallback() {
+            mProfileInteractor.fetchVisits(baseEntityId, currentPageNo, pncVisitSummaries -> {
+                updatePageCounter();
 
-                @Override
-                public void onVisitsLoaded(@NonNull List<Object> ancVisitSummaries) {
-                    updatePageCounter();
-
-                    ArrayList<Pair<YamlConfigWrapper, Facts>> items = new ArrayList<>();
-                    populateWrapperDataAndFacts(ancVisitSummaries, items);
-                    onFinishedCallback.onFinished(ancVisitSummaries, items);
-                }
+                List<Pair<YamlConfigWrapper, Facts>> items = new ArrayList<>();
+                populateWrapperDataAndFacts(pncVisitSummaries, items);
+                onFinishedCallback.onFinished(pncVisitSummaries, items);
             });
 
         }
@@ -68,12 +73,9 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     @Override
     public void loadPageCounter(@NonNull String baseEntityId) {
         if (mProfileInteractor != null) {
-            mProfileInteractor.fetchVisitsPageCount(baseEntityId, new PncProfileVisitsFragmentContract.Interactor.OnFetchVisitsPageCountCallback() {
-                @Override
-                public void onFetchVisitsPageCount(int visitsPageCount) {
-                    totalPages = visitsPageCount;
-                    updatePageCounter();
-                }
+            mProfileInteractor.fetchVisitsPageCount(baseEntityId, visitsPageCount -> {
+                totalPages = visitsPageCount;
+                updatePageCounter();
             });
         }
     }
@@ -86,31 +88,30 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
             profileView.showPageCountText(String.format(pageCounterTemplate, (currentPageNo + 1), totalPages));
 
             profileView.showPreviousPageBtn(currentPageNo > 0);
-            profileView.showNextPageBtn(currentPageNo < (totalPages -1));
+            profileView.showNextPageBtn(currentPageNo < (totalPages - 1));
         }
     }
 
     @Override
-    public void populateWrapperDataAndFacts(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
-        /*for (OpdVisitSummary opdVisitSummary: opdVisitSummaries) {
-            Facts facts = generateOpdVisitSummaryFact(opdVisitSummary);
-            Iterable<Object> ruleObjects = null;
+    public void populateWrapperDataAndFacts(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
 
-            try {
-                ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_VISIT_ROW);
-            } catch (IOException e) {
-                Timber.e(e);
-            }
+        try {
+            for (Map.Entry<String, Map<String, String>> entry : pncVisitSummary.getVisitInfoMap().entrySet()) {
 
-            if (ruleObjects != null) {
+                Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT);
+
+                Facts facts = generateVisitInfoAndWomanFacts(entry.getValue());
+
                 for (Object ruleObject : ruleObjects) {
+
                     YamlConfig yamlConfig = (YamlConfig) ruleObject;
+
                     if (yamlConfig.getGroup() != null) {
-                        items.add(new Pair<>(new YamlConfigWrapper(yamlConfig.getGroup(), null, null), facts));
+                        items.add(new Pair<>(new YamlConfigWrapper(yamlConfig.getGroup(), null, null, null), facts));
                     }
 
                     if (yamlConfig.getSubGroup() != null) {
-                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null), facts));
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null, null), facts));
                     }
 
                     List<YamlConfigItem> configItems = yamlConfig.getFields();
@@ -118,16 +119,70 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     if (configItems != null) {
                         for (YamlConfigItem configItem : configItems) {
                             String relevance = configItem.getRelevance();
-                            if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper()
-                                    .getRelevance(facts, relevance)) {
-                                YamlConfigWrapper yamlConfigWrapper = new YamlConfigWrapper(null, null, configItem);
-                                items.add(new Pair<>(yamlConfigWrapper, facts));
+                            if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
+                                items.add(new Pair<>(new YamlConfigWrapper(null, null, configItem, null), facts));
                             }
                         }
                     }
                 }
+
+                if (pncVisitSummary.getVisitChildStatusMap().containsKey(entry.getKey())) {
+                    generateChild(pncVisitSummary.getVisitChildStatusMap().get(entry.getKey()), items);
+                }
             }
-        }*/
+        } catch (IOException e) {
+            Timber.e(e);
+        }
+    }
+
+    private Facts generateVisitInfoAndWomanFacts(Map<String, String> pncVisitMap) {
+        Facts facts = new Facts();
+
+        for (Map.Entry<String, String> entry : pncVisitMap.entrySet()) {
+            PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
+        }
+
+        return facts;
+    }
+
+    private void generateChild(List<Map<String, String>> data, List<Pair<YamlConfigWrapper, Facts>> items) {
+        try {
+
+            for (Map<String, String> childData : data) {
+
+                Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT_ROW);
+
+                Facts facts = new Facts();
+
+                for (Map.Entry<String, String> entry : childData.entrySet()) {
+                    PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
+                }
+
+                for (Object ruleObject : ruleObjects) {
+
+                    YamlConfig yamlConfig = (YamlConfig) ruleObject;
+
+                    if (yamlConfig.getSubGroup() != null) {
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null, null), facts));
+                    }
+
+                    List<YamlConfigItem> configItems = yamlConfig.getFields();
+
+                    if (configItems != null) {
+                        for (YamlConfigItem configItem : configItems) {
+                            String relevance = configItem.getRelevance();
+                            if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
+                                items.add(new Pair<>(new YamlConfigWrapper(null, null, configItem, null), facts));
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        } catch (IOException ex) {
+            Timber.e(ex);
+        }
     }
 
     @Override
@@ -135,12 +190,9 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         if (currentPageNo < totalPages && getProfileView() != null && getProfileView().getClientBaseEntityId() != null) {
             currentPageNo++;
 
-            loadVisits(getProfileView().getClientBaseEntityId(), new OnFinishedCallback() {
-                @Override
-                public void onFinished(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
-                    if (getProfileView() != null) {
-                        getProfileView().displayVisits(ancVisitSummaries, items);
-                    }
+            loadVisits(getProfileView().getClientBaseEntityId(), (pncVisitSummaries, items) -> {
+                if (getProfileView() != null) {
+                    getProfileView().displayVisits(pncVisitSummaries, items);
                 }
             });
         }
@@ -151,12 +203,9 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         if (currentPageNo > 0 && getProfileView() != null && getProfileView().getClientBaseEntityId() != null) {
             currentPageNo--;
 
-            loadVisits(getProfileView().getClientBaseEntityId(), new OnFinishedCallback() {
-                @Override
-                public void onFinished(@NonNull List<Object> ancVisitSummaries, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
-                    if (getProfileView() != null) {
-                        getProfileView().displayVisits(ancVisitSummaries, items);
-                    }
+            loadVisits(getProfileView().getClientBaseEntityId(), (pncVisitSummaries, items) -> {
+                if (getProfileView() != null) {
+                    getProfileView().displayVisits(pncVisitSummaries, items);
                 }
             });
         }
@@ -181,4 +230,5 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
 
         return null;
     }
+
 }

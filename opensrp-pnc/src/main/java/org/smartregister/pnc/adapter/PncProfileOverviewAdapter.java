@@ -1,44 +1,43 @@
 package org.smartregister.pnc.adapter;
 
 import android.content.Context;
+import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
+import org.apache.commons.lang3.StringUtils;
 import org.jeasy.rules.api.Facts;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
-import org.smartregister.pnc.helper.LibraryHelper;
-import org.smartregister.pnc.helper.TextUtilHelper;
 import org.smartregister.pnc.utils.PncUtils;
+import org.smartregister.util.StringUtil;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOverviewAdapter.ViewHolder> {
 
-    private List<YamlConfigWrapper> mData;
+    private ArrayList<Pair<YamlConfigWrapper, Facts>> mData;
     private LayoutInflater mInflater;
-    private Facts facts;
     private Context context;
-    private TextUtilHelper textUtilHelper;
-    private LibraryHelper libraryHelper;
 
     // data is passed into the constructor
-    public PncProfileOverviewAdapter(@NonNull Context context, @NonNull List<YamlConfigWrapper> data, @NonNull Facts facts) {
+    public PncProfileOverviewAdapter(@NonNull Context context, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
-        this.facts = facts;
         this.context = context;
-        this.textUtilHelper = new TextUtilHelper();
-        this.libraryHelper = new LibraryHelper();
     }
 
     // inflates the row layout from xml when needed
@@ -52,50 +51,91 @@ public class PncProfileOverviewAdapter extends RecyclerView.Adapter<PncProfileOv
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String group = mData.get(position).getGroup();
-        if (!textUtilHelper.isEmpty(group)) {
-            holder.sectionHeader.setText(processUnderscores(group));
-            holder.sectionHeader.setVisibility(View.VISIBLE);
-        } else {
-            holder.sectionHeader.setVisibility(View.GONE);
-        }
+        Pair<YamlConfigWrapper, Facts> pair = mData.get(position);
 
-        String subGroup = mData.get(position).getSubGroup();
-        if (!textUtilHelper.isEmpty(subGroup)) {
-            holder.subSectionHeader.setText(processUnderscores(subGroup));
-            holder.subSectionHeader.setVisibility(View.VISIBLE);
-        } else {
-            holder.subSectionHeader.setVisibility(View.GONE);
-        }
+        YamlConfigWrapper yamlConfigWrapper = pair.first;
+        Facts facts = pair.second;
 
-        if (mData.get(position).getYamlConfigItem() != null) {
-
-            YamlConfigItem yamlConfigItem = mData.get(position).getYamlConfigItem();
-
-            if (yamlConfigItem != null && yamlConfigItem.getTemplate() != null) {
-                Template template = getTemplate(yamlConfigItem.getTemplate());
-                String output = PncUtils.fillTemplate(template.detail, this.facts);
-
-                holder.sectionDetailTitle.setText(template.title);
-                holder.sectionDetails.setText(output);//Perhaps refactor to use Json Form Parser Implementation
-            }
-
-            if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null && libraryHelper.getPncLibraryInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
-                holder.sectionDetailTitle.setTextColor(context.getResources().getColor(R.color.overview_font_red));
-                holder.sectionDetails.setTextColor(context.getResources().getColor(R.color.overview_font_red));
+        if (yamlConfigWrapper != null && facts != null) {
+            String group = yamlConfigWrapper.getGroup();
+            boolean hasRelevance = StringUtils.isNotBlank(yamlConfigWrapper.getRelevance());
+            if (!TextUtils.isEmpty(group)) {
+                holder.sectionHeader.setText(StringUtil.humanize(group));
+                holder.sectionHeader.setVisibility(View.VISIBLE);
             } else {
-                holder.sectionDetailTitle.setTextColor(context.getResources().getColor(R.color.overview_font_left));
-                holder.sectionDetails.setTextColor(context.getResources().getColor(R.color.overview_font_right));
+                holder.sectionHeader.setVisibility(View.GONE);
             }
 
-            holder.sectionDetailTitle.setVisibility(View.VISIBLE);
-            holder.sectionDetails.setVisibility(View.VISIBLE);
+            String subGroup = yamlConfigWrapper.getSubGroup();
+            if ((!TextUtils.isEmpty(subGroup) && !hasRelevance) ||
+                    (hasRelevance && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigWrapper.getRelevance()))) {
+                if (PncUtils.isTemplate(subGroup)) {
+                    subGroup = PncUtils.fillTemplate(subGroup, facts);
+                }
 
-        } else {
-            holder.sectionDetailTitle.setVisibility(View.GONE);
-            holder.sectionDetails.setVisibility(View.GONE);
+                holder.subSectionHeader.setText(StringUtil.humanize(subGroup));
+                holder.subSectionHeader.setVisibility(View.VISIBLE);
+            } else {
+                holder.subSectionHeader.setVisibility(View.GONE);
+            }
+
+            if (yamlConfigWrapper.getYamlConfigItem() != null) {
+                YamlConfigItem yamlConfigItem = yamlConfigWrapper.getYamlConfigItem();
+
+                fillSectionDetailAndTemplate(holder, facts, yamlConfigItem);
+                setRowRedFontText(holder, facts, yamlConfigItem);
+
+                holder.sectionDetailTitle.setVisibility(View.VISIBLE);
+                holder.sectionDetails.setVisibility(View.VISIBLE);
+
+            } else {
+                holder.sectionDetailTitle.setVisibility(View.GONE);
+                holder.sectionDetails.setVisibility(View.GONE);
+            }
         }
     }
+
+    private void fillSectionDetailAndTemplate(@NonNull ViewHolder holder, @NonNull Facts facts, @Nullable YamlConfigItem yamlConfigItem) {
+        if (yamlConfigItem != null && yamlConfigItem.getTemplate() != null) {
+            Template template = getTemplate(yamlConfigItem.getTemplate());
+
+            boolean isHtml = yamlConfigItem.getHtml() != null && yamlConfigItem.getHtml();
+
+            if (PncUtils.isTemplate(template.detail)) {
+                String output = PncUtils.fillTemplate(isHtml, template.detail, facts);
+
+                if (isHtml) {
+                    PncUtils.setTextAsHtml(holder.sectionDetails, output);
+                } else {
+                    holder.sectionDetails.setText(output);
+                }
+            } else {
+                holder.sectionDetails.setText(template.detail);
+            }
+
+            if (PncUtils.isTemplate(template.title)) {
+                String output = PncUtils.fillTemplate(template.title, facts);
+                holder.sectionDetailTitle.setText(output);
+            } else {
+                holder.sectionDetailTitle.setText(template.title);
+            }
+        }
+    }
+
+    private void setRowRedFontText(@NonNull ViewHolder holder, @NonNull Facts facts, @Nullable YamlConfigItem yamlConfigItem) {
+        if (yamlConfigItem != null && yamlConfigItem.getIsRedFont() != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, yamlConfigItem.getIsRedFont())) {
+            holder.sectionDetailTitle.setTextColor(getColor(R.color.overview_font_red));
+            holder.sectionDetails.setTextColor(getColor(R.color.overview_font_red));
+        } else {
+            holder.sectionDetailTitle.setTextColor(getColor(R.color.overview_font_left));
+            holder.sectionDetails.setTextColor(getColor(R.color.overview_font_right));
+        }
+    }
+
+    private int getColor(@ColorRes int colorId) {
+        return context.getResources().getColor(colorId);
+    }
+
 
     // total number of rows
     @Override

@@ -3,15 +3,14 @@ package org.smartregister.pnc.provider;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -21,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
@@ -35,6 +35,8 @@ import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.config.PncRegisterRowOptions;
 import org.smartregister.pnc.holder.FooterViewHolder;
 import org.smartregister.pnc.holder.PncRegisterViewHolder;
+import org.smartregister.pnc.repository.PncPartialFormRepository;
+import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.contract.SmartRegisterClient;
 import org.smartregister.view.contract.SmartRegisterClients;
@@ -78,9 +80,12 @@ public class PncRegisterProviderTest {
     @Mock
     private Resources resources;
 
+    @Mock
+    private PncLibrary pncLibrary;
+
     @Before
     public void setUp() throws Exception {
-
+        MockitoAnnotations.initMocks(this);
         BasePncRegisterProviderMetadata pncRegisterProviderMetadata = Mockito.spy(new BasePncRegisterProviderMetadata());
         Mockito.doReturn(mockedView).when(inflator).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.anyBoolean());
         Mockito.doReturn(inflator).when(context).getSystemService(Mockito.eq(Context.LAYOUT_INFLATER_SERVICE));
@@ -93,10 +98,15 @@ public class PncRegisterProviderTest {
                 .setPncRegisterRowOptions(pncRegisterRowOption.getClass())
                 .build();
 
-        PncLibrary.init(Mockito.mock(org.smartregister.Context.class), Mockito.mock(Repository.class), pncConfiguration, BuildConfig.VERSION_CODE, 1);
+        Mockito.doReturn(pncConfiguration).when(pncLibrary).getPncConfiguration();
+
+        ReflectionHelpers.setStaticField(PncLibrary.class,"instance", pncLibrary);
 
         pncRegisterProvider = new PncRegisterProvider(context, onClickListener, paginationClickListener);
         ReflectionHelpers.setField(pncRegisterProvider, "pncRegisterProviderMetadata", pncRegisterProviderMetadata);
+
+        PncRegistrationDetailsRepository pncRegistrationDetailsRepository = mock(PncRegistrationDetailsRepository.class);
+        ReflectionHelpers.setField(PncLibrary.getInstance(), "pncRegistrationDetailsRepository", pncRegistrationDetailsRepository);
     }
 
     @After
@@ -210,8 +220,9 @@ public class PncRegisterProviderTest {
         ReflectionHelpers.setField(pncRegisterViewHolder, "patientColumn", view);
         ReflectionHelpers.setField(pncRegisterViewHolder, "dueButton", button);
         ReflectionHelpers.setField(pncRegisterProvider, "onClickListener", onClickListener);
-        //PowerMockito.doNothing().when(view).setOnClickListener(onClickListener);
 
+        PncPartialFormRepository pncPartialFormRepository = mock(PncPartialFormRepository.class);
+        ReflectionHelpers.setField(PncLibrary.getInstance(), "pncPartialFormRepository", pncPartialFormRepository);
 
         pncRegisterProvider.getView(cursor
                 , commonPersonObjectClient
@@ -293,7 +304,7 @@ public class PncRegisterProviderTest {
     }
 
     @Test
-    public void createFooterHolderShouldReturnFooterViewHolder() throws Exception{
+    public void createFooterHolderShouldReturnFooterViewHolder() throws Exception {
 
         ViewGroup parent = mock(ViewGroup.class);
         View view = mock(View.class);

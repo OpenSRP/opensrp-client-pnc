@@ -1,12 +1,10 @@
 package org.smartregister.pnc.repository;
 
-import androidx.annotation.NonNull;
-
-import net.sqlcipher.database.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
 import org.smartregister.pnc.utils.PncDbConstants;
+import org.smartregister.repository.BaseRepository;
 
 import java.util.HashMap;
 
@@ -17,57 +15,15 @@ import timber.log.Timber;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 
-public class PncRegistrationDetailsRepository extends PncDetailsRepository {
+public class PncRegistrationDetailsRepository extends BaseRepository {
 
     private static final String TABLE = PncDbConstants.Table.PNC_REGISTRATION_DETAILS;
-
-    private String[] propertyNames;
-
-    public static void createTable(@NonNull SQLiteDatabase database) {
-        String CREATE_TABLE_SQL = "CREATE TABLE " + TABLE + "("
-                + PncDbConstants.Column.PncDetails.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-                + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " VARCHAR NOT NULL, "
-                + PncDbConstants.Column.PncDetails.CREATED_AT + " DATETIME NOT NULL DEFAULT (DATETIME('now')), "
-                + PncDbConstants.Column.PncDetails.EVENT_DATE + " DATETIME NOT NULL, ";
-
-        for (PncRegistrationDetails.Property column: PncRegistrationDetails.Property.values()) {
-            CREATE_TABLE_SQL += column.name() + " VARCHAR, ";
-        }
-
-        CREATE_TABLE_SQL += "UNIQUE(" + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + ") ON CONFLICT REPLACE)";
-
-        database.execSQL(CREATE_TABLE_SQL);
-        database.execSQL("CREATE INDEX " + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + "_" + TABLE
-                + " ON " + TABLE + " (" + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + ")");
-
-        database.execSQL("CREATE INDEX " + PncDbConstants.Column.PncDetails.EVENT_DATE + "_" + TABLE
-                + " ON " + TABLE + " (" + PncDbConstants.Column.PncDetails.EVENT_DATE + ")");
-    }
-
-    @Override
-    public String getTableName() {
-        return TABLE;
-    }
-
-    @Override
-    public String[] getPropertyNames() {
-        if (propertyNames == null) {
-            PncRegistrationDetails.Property[] properties = PncRegistrationDetails.Property.values();
-            propertyNames = new String[properties.length];
-
-            for (int i = 0; i < properties.length; i++) {
-                propertyNames[i] = properties[i].name();
-            }
-        }
-
-        return propertyNames;
-    }
 
     public HashMap<String, String> findByBaseEntityId(@NonNull String baseEntityId) {
         try {
             if (StringUtils.isNotBlank(baseEntityId)) {
                 return rawQuery(getReadableDatabase(),
-                        "select * from " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS +
+                        "select * from " + getTableName() +
                                 " where " + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "' limit 1").get(0);
             }
         } catch (NullPointerException | IndexOutOfBoundsException e) {
@@ -75,4 +31,23 @@ public class PncRegistrationDetailsRepository extends PncDetailsRepository {
         }
         return null;
     }
+
+    public HashMap<String, String> findWithMedicInfoByBaseEntityId(@NonNull String baseEntityId) {
+        try {
+            if (StringUtils.isNotBlank(baseEntityId)) {
+                return rawQuery(getReadableDatabase(),
+                        "select * from " + getTableName() + " prd " +
+                                " left join " + PncMedicInfoRepository.TABLE + " pmi on " + "prd." + PncDbConstants.Column.PncMedicInfo.BASE_ENTITY_ID + " = " + "pmi." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID +
+                                " where prd." + PncDbConstants.Column.PncDetails.BASE_ENTITY_ID + " = '" + baseEntityId + "' limit 1").get(0);
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+    public String getTableName() {
+        return TABLE;
+    }
+
 }

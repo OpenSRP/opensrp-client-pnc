@@ -26,9 +26,10 @@
     <string name="contact_number_due">Contact %1$d &#183; due %2$s</string>
 
     <string name="overview">OVERVIEW</string>
-    <string name="visits">VISITS</string>
+    <string name="pnc_visits">VISITS</string>
     <string name="anc_history">ANC HISTORY</string>
     <string name="pnc">PNC</string>
+    <string name="pnc_overview">PNC Overview</string>
 
     <string name="all_results">All results</string>
     <string name="age_details">Age: %s</string>
@@ -52,8 +53,10 @@
 
     <string name="diagnose_and_treat"><![CDATA[DIAGNOSE & TREAT]]></string>
     <string name="pnc_due">PNC DUE</string>
-    <string name="start_pnc">START PNC</string>
-    <string name="record_pnc">RECORD PNC</string>
+    <string name="pnc_overdue">PNC OVERDUE</string>
+    <string name="complete_pnc_registration">COMPLETE REGISTRATION</string>
+    <string name="record_pnc">Record PNC</string>
+    <string name="pnc_done_today">PNC Done Today</string>
     <string name="diagnosis">Diagnosis</string>
     <string name="diagnosis_type">Diagnosis Type</string>
     <string name="disease_code">Disease Code</string>
@@ -81,5 +84,7 @@
     <string name="female">Female</string>
     <string name="pnc_close">PNC Close</string>
     <string name="pnc_client_close_message">PNC client has been removed from the register</string>
+    <string name="day_p">Day P</string>
+    <string name="delivery_days">P%s</string>
 
 </resources>

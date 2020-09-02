@@ -2,11 +2,10 @@ package org.smartregister.pnc.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.smartregister.CoreLibrary;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncReverseJsonFormUtils;
@@ -20,16 +19,19 @@ public class FetchRegistrationDataTask extends AsyncTask<String, Void, String> {
     private WeakReference<Context> contextWeakReference;
     private OnTaskComplete onTaskComplete;
 
-    public FetchRegistrationDataTask(@NonNull WeakReference<Context> contextWeakReference, @NonNull OnTaskComplete onTaskComplete){
+    public FetchRegistrationDataTask(@NonNull WeakReference<Context> contextWeakReference, @NonNull OnTaskComplete onTaskComplete) {
         this.contextWeakReference = contextWeakReference;
         this.onTaskComplete = onTaskComplete;
     }
 
     @Nullable
     protected String doInBackground(String... params) {
-        Map<String, String> detailsMap = CoreLibrary.getInstance().context().detailsRepository().getAllDetailsForClient(params[0]);
-        detailsMap.put(PncJsonFormUtils.OPENSRP_ID, detailsMap.get(PncConstants.KeyConstants.OPENSRP_ID));
-        return PncReverseJsonFormUtils.prepareJsonEditPncRegistrationForm(detailsMap, Arrays.asList(PncJsonFormUtils.OPENSRP_ID, PncConstants.JsonFormKeyConstants.BHT_ID), contextWeakReference.get());
+        Map<String, String> clientMap = PncLibrary.getInstance().getPncRepository().getClientWithRegistrationDetails(params[0]);
+        if (clientMap != null) {
+            clientMap.put(PncJsonFormUtils.OPENSRP_ID, clientMap.get(PncConstants.KeyConstants.OPENSRP_ID));
+            return PncReverseJsonFormUtils.prepareJsonEditPncRegistrationForm(clientMap, Arrays.asList(PncJsonFormUtils.OPENSRP_ID, PncConstants.JsonFormKeyConstants.BHT_ID, PncConstants.JsonFormKeyConstants.SEX), contextWeakReference.get());
+        }
+        return null;
     }
 
     protected void onPostExecute(@Nullable String jsonForm) {

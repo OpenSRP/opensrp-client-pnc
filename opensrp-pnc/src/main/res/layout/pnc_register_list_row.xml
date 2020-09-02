@@ -118,13 +118,13 @@
             android:hapticFeedbackEnabled="true"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="@string/start_pnc"
+            android:text="@string/complete_pnc_registration"
             android:textAllCaps="true"
             android:textStyle="bold"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:textAppearance="?android:textAppearanceSmall"
             android:textSize="15sp"
-            android:background="@drawable/pnc_outcome_bg"
+            android:background="@drawable/pnc_status_btn_bg"
             android:typeface="normal" />
 
     </LinearLayout>

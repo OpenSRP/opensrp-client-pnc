@@ -27,13 +27,6 @@ condition: "!step1_lmp_unknown.isEmpty() && step1_lmp_unknown.contains('lmp_unkn
 actions:
   - "isRelevant = true"
 ---
-name: step1_protected_at_birth
-description: Whether the child's mother received 2 or more doses of Td, which transfers protection against Td to the child when they're born.
-priority: 1
-condition: "global_age < 2"
-actions:
-  - "isRelevant = true"
----
 name: step2_delivery_person_other
 description: Provide details of other delivery person
 priority: 1
@@ -101,6 +94,13 @@ name: step3_not_art_reasons_other
 description: Provide details of other reason woman is not on ART Treatment
 priority: 1
 condition: "step3_not_art_reason == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step4_child_hiv_status
+description: child_hiv_status
+priority: 1
+condition: "step3_hiv_status_previous == 'positive' || step3_hiv_status_previous == 'unknown' || step3_hiv_status_current == 'positive' || step3_hiv_status_current == 'unknown'"
 actions:
   - "isRelevant = true"
 

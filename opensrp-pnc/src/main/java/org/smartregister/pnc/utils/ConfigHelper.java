@@ -1,8 +1,7 @@
 package org.smartregister.pnc.utils;
 
 import android.content.Context;
-
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import org.smartregister.configurableviews.model.Field;
 import org.smartregister.configurableviews.model.RegisterConfiguration;

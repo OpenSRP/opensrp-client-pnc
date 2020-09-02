@@ -1,6 +1,6 @@
 package org.smartregister.pnc.model;
 
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;

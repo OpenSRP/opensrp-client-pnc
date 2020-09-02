@@ -1,6 +1,7 @@
 package org.smartregister.pnc.presenter;
 
-import androidx.annotation.NonNull;
+
+import android.support.annotation.NonNull;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.smartregister.pnc.contract.PncRegisterActivityContract;

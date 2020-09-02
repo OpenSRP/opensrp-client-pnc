@@ -1,16 +1,17 @@
 package org.smartregister.pnc.utils;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
 
 import com.google.common.reflect.TypeToken;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
+import com.vijay.jsonwizard.utils.FormUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +24,6 @@ import org.smartregister.domain.form.FormLocation;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.pnc.PncLibrary;
-import org.smartregister.pnc.enums.LocationHierarchy;
 import org.smartregister.pnc.pojo.PncEventClient;
 import org.smartregister.pnc.pojo.PncMetadata;
 import org.smartregister.repository.AllSharedPreferences;
@@ -35,7 +35,6 @@ import org.smartregister.view.activity.DrishtiApplication;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -69,19 +68,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
 
         // Inject the field values
         if (injectedFieldValues != null && injectedFieldValues.size() > 0) {
-            JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
-            JSONArray jsonArray = stepOne.getJSONArray(PncJsonFormUtils.FIELDS);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String fieldKey = jsonObject.getString(PncJsonFormUtils.KEY);
-
-                String fieldValue = injectedFieldValues.get(fieldKey);
-
-                if (!TextUtils.isEmpty(fieldValue)) {
-                    jsonObject.put(PncJsonFormUtils.VALUE, fieldValue);
-                }
-            }
+            populateInjectedFields(form, injectedFieldValues);
         }
 
         if (PncUtils.metadata() != null && PncUtils.metadata().getPncRegistrationFormName().equals(formName)) {
@@ -98,12 +85,10 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 entityId = entityId.replace("-", "");
             }
 
-            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKeyConstants.HOME_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
-            PncJsonFormUtils.addRegLocHierarchyQuestions(form, PncConstants.JsonFormKeyConstants.VILLAGE_ADDRESS_WIDGET_KEY, LocationHierarchy.ENTIRE_TREE);
+            addRegLocHierarchyQuestions(form);
 
             // Inject OPenSrp id into the form
-            JSONObject stepOne = form.getJSONObject(PncJsonFormUtils.STEP1);
-            JSONArray jsonArray = stepOne.getJSONArray(PncJsonFormUtils.FIELDS);
+            JSONArray jsonArray = FormUtils.getMultiStepFormFields(form);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.getString(PncJsonFormUtils.KEY).equalsIgnoreCase(PncJsonFormUtils.OPENSRP_ID)) {
@@ -120,25 +105,15 @@ public class PncJsonFormUtils extends JsonFormUtils {
         return form;
     }
 
-    protected static void addRegLocHierarchyQuestions(@NonNull JSONObject form, @NonNull String widgetKey, @NonNull LocationHierarchy locationHierarchy) {
-        try {
-            JSONArray questions = form.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
 
-            ArrayList<String> allLevels;
-            ArrayList<String> healthFacilities;
-            PncMetadata metadata = PncUtils.metadata();
-            if (metadata != null) {
-                allLevels = metadata.getLocationLevels();
-                healthFacilities = metadata.getHealthFacilityLevels();
-            } else {
-                allLevels = DefaultPncLocationUtils.getLocationLevels();
-                healthFacilities = DefaultPncLocationUtils.getLocationLevels();
-            }
+    protected static void addRegLocHierarchyQuestions(@NonNull JSONObject form) {
+        try {
+            JSONArray questions = FormUtils.getMultiStepFormFields(form);
+            ArrayList<String> allLevels = PncUtils.metadata().getLocationLevels();
+            ArrayList<String> healthFacilities = PncUtils.metadata().getHealthFacilityLevels();
 
             List<String> defaultLocation = LocationHelper.getInstance().generateDefaultLocationHierarchy(allLevels);
             List<String> defaultFacility = LocationHelper.getInstance().generateDefaultLocationHierarchy(healthFacilities);
-            List<FormLocation> upToFacilities = LocationHelper.getInstance().generateLocationHierarchyTree(false, healthFacilities);
-            List<FormLocation> upToFacilitiesWithOther = LocationHelper.getInstance().generateLocationHierarchyTree(true, healthFacilities);
             List<FormLocation> entireTree = LocationHelper.getInstance().generateLocationHierarchyTree(true, allLevels);
 
             String defaultLocationString = AssetHandler.javaToJsonString(defaultLocation, new TypeToken<List<String>>() {
@@ -147,119 +122,49 @@ public class PncJsonFormUtils extends JsonFormUtils {
             String defaultFacilityString = AssetHandler.javaToJsonString(defaultFacility, new TypeToken<List<String>>() {
             }.getType());
 
-            String upToFacilitiesString = AssetHandler.javaToJsonString(upToFacilities, new TypeToken<List<FormLocation>>() {
-            }.getType());
-
-            String upToFacilitiesWithOtherString = AssetHandler.javaToJsonString(upToFacilitiesWithOther, new TypeToken<List<FormLocation>>() {
-            }.getType());
-
             String entireTreeString = AssetHandler.javaToJsonString(entireTree, new TypeToken<List<FormLocation>>() {
             }.getType());
 
-            updateLocationTree(widgetKey, locationHierarchy, questions, defaultLocationString, defaultFacilityString, upToFacilitiesString, upToFacilitiesWithOtherString, entireTreeString);
-
-            //To Do Refactor to remove dependency on hardocded keys
-            for (int i = 0; i < questions.length(); i++) {
-                if (questions.getJSONObject(i).getString("key").equals("Home_Facility")) {
-                    if (StringUtils.isNotBlank(upToFacilitiesString)) {
-                        questions.getJSONObject(i).put("tree", new JSONArray(upToFacilitiesString));
-                    }
-                    if (StringUtils.isNotBlank(defaultFacilityString)) {
-                        questions.getJSONObject(i).put("default", defaultFacilityString);
-                    }
-                } else if (questions.getJSONObject(i).getString("key").equals("Birth_Facility_Name")) {
-                    if (StringUtils.isNotBlank(upToFacilitiesWithOtherString)) {
-                        questions.getJSONObject(i).put("tree", new JSONArray(upToFacilitiesWithOtherString));
-                    }
-                    if (StringUtils.isNotBlank(defaultFacilityString)) {
-                        questions.getJSONObject(i).put("default", defaultFacilityString);
-                    }
-                } else if (questions.getJSONObject(i).getString("key").equals("Residential_Area")) {
-                    if (StringUtils.isNotBlank(entireTreeString)) {
-                        questions.getJSONObject(i).put("tree", new JSONArray(entireTreeString));
-                    }
-                    if (StringUtils.isNotBlank(defaultLocationString)) {
-                        questions.getJSONObject(i).put("default", defaultLocationString);
-                    }
-                }
-            }
-
+            updateLocationTree(questions, defaultLocationString, defaultFacilityString, entireTreeString);
         } catch (Exception e) {
-            Timber.e(e);
+            Timber.e(e, "JsonFormUtils --> addChildRegLocHierarchyQuestions");
         }
     }
 
-    private static void updateLocationTree(@NonNull String widgetKey, @NonNull LocationHierarchy locationHierarchy, @NonNull JSONArray questions,
-                                           @NonNull String defaultLocationString, @NonNull String defaultFacilityString,
-                                           @NonNull String upToFacilitiesString, @NonNull String upToFacilitiesWithOtherString,
-                                           @NonNull String entireTreeString) throws JSONException {
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject widgets = questions.getJSONObject(i);
-            switch (locationHierarchy) {
-                case FACILITY_ONLY:
-                    if (StringUtils.isNotBlank(upToFacilitiesString)) {
-                        addLocationTree(widgetKey, widgets, upToFacilitiesString);
-                    }
-                    if (StringUtils.isNotBlank(defaultFacilityString)) {
-                        addLocationDefault(widgetKey, widgets, defaultFacilityString);
-                    }
-                    break;
-                case FACILITY_WITH_OTHER_STRING:
-                    if (StringUtils.isNotBlank(upToFacilitiesWithOtherString)) {
-                        addLocationTree(widgetKey, widgets, upToFacilitiesWithOtherString);
-                    }
-                    if (StringUtils.isNotBlank(defaultFacilityString)) {
-                        addLocationDefault(widgetKey, widgets, defaultFacilityString);
-                    }
-                    break;
-                case ENTIRE_TREE:
-                    if (StringUtils.isNotBlank(entireTreeString)) {
-                        addLocationTree(widgetKey, widgets, entireTreeString);
-                    }
-                    if (StringUtils.isNotBlank(defaultFacilityString)) {
-                        addLocationDefault(widgetKey, widgets, defaultLocationString);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public static void updateLocationTree(@NonNull JSONArray questions, @Nullable String defaultFacilityString, @Nullable String entireTreeString) throws JSONException {
+    private static void updateLocationTree(@NonNull JSONArray questions,
+                                           @Nullable String defaultLocationString, @Nullable String defaultFacilityString,
+                                           @Nullable String entireTreeString) throws JSONException {
         PncMetadata pncMetadata = PncUtils.metadata();
         if (pncMetadata != null && pncMetadata.getFieldsWithLocationHierarchy() != null && !pncMetadata.getFieldsWithLocationHierarchy().isEmpty()) {
             for (int i = 0; i < questions.length(); i++) {
                 JSONObject widget = questions.getJSONObject(i);
                 String key = widget.optString(JsonFormConstants.KEY);
                 if (StringUtils.isNotBlank(key) && pncMetadata.getFieldsWithLocationHierarchy().contains(widget.optString(JsonFormConstants.KEY))) {
-                    addLocationTree(key, widget, entireTreeString);
-                }
-                if (StringUtils.isNotBlank(defaultFacilityString)) {
-                    addLocationDefault(key, widget, defaultFacilityString);
+                    if (StringUtils.isNotBlank(entireTreeString)) {
+                        addLocationTree(key, widget, entireTreeString, JsonFormConstants.TREE);
+                    }
+                    if (StringUtils.isNotBlank(defaultFacilityString)) {
+                        addLocationTreeDefault(key, widget, defaultLocationString);
+                    }
                 }
             }
         }
     }
 
-    private static void addLocationTree(@NonNull String widgetKey, @NonNull JSONObject widget, @NonNull String updateString) {
+    private static void addLocationTree(@NonNull String widgetKey, @NonNull JSONObject
+            widget, @NonNull String updateString, @NonNull String treeType) {
         try {
-            if (widget.getString(PncJsonFormUtils.KEY).equals(widgetKey)) {
-                widget.put("tree", new JSONArray(updateString));
+            if (widgetKey.equals(widget.optString(JsonFormConstants.KEY))) {
+                widget.put(treeType, new JSONArray(updateString));
             }
         } catch (JSONException e) {
-            Timber.e(e);
+            Timber.e(e, "JsonFormUtils --> addLocationTree");
         }
     }
 
-    private static void addLocationDefault(@NonNull String widgetKey, @NonNull JSONObject widget, @NonNull String updateString) {
-        try {
-            if (widget.getString(PncJsonFormUtils.KEY).equals(widgetKey)) {
-                widget.put("default", new JSONArray(updateString));
-            }
-        } catch (JSONException e) {
-            Timber.e(e, "PncJsonFormUtils --> addLocationDefault");
-        }
+    private static void addLocationTreeDefault(@NonNull String widgetKey, @NonNull JSONObject
+            widget, @NonNull String updateString) {
+        addLocationTree(widgetKey, widget, updateString, JsonFormConstants.DEFAULT);
     }
 
     public static Event tagSyncMetadata(@NonNull Event event) {
@@ -359,7 +264,7 @@ public class PncJsonFormUtils extends JsonFormUtils {
                     }
                 } catch (NullPointerException e) {
                     Timber.e(e);
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | JSONException e) {
                     Timber.e(e);
                 }
         }
@@ -443,18 +348,11 @@ public class PncJsonFormUtils extends JsonFormUtils {
         try {
 
             if (!entityId.isEmpty()) {
-                final String absoluteFileName = DrishtiApplication.getAppDir() + File.separator + entityId + ".JPEG";
+                String absoluteFileName = DrishtiApplication.getAppDir() + File.separator + entityId + ".JPEG";
 
                 File outputFile = new File(absoluteFileName);
-                os = new FileOutputStream(outputFile);
-                Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
-                if (compressFormat != null) {
-                    image.compress(compressFormat, 100, os);
-                } else {
-                    throw new IllegalArgumentException(
-                            "Failed to save static image, could not retrieve image compression format from name " +
-                                    absoluteFileName);
-                }
+                PncUtils.saveImageAndCloseOutputStream(image, outputFile);
+
                 // insert into the db
                 ProfileImage profileImage = new ProfileImage();
                 profileImage.setImageid(UUID.randomUUID().toString());
@@ -574,9 +472,31 @@ public class PncJsonFormUtils extends JsonFormUtils {
                 int result = value.equals(Boolean.toString(false)) ? 0 : 1;
                 reminderObject.put(PncConstants.KeyConstants.VALUE, result);
             }
-        }
-        catch (JSONException ex) {
+        } catch (JSONException ex) {
             Timber.e(ex);
+        }
+    }
+
+    public static void populateInjectedFields(@NonNull JSONObject form, @NotNull HashMap<String, String> injectedFieldValues) throws JSONException {
+        if (form.has(JsonFormConstants.COUNT)) {
+            int stepCount = Integer.parseInt(form.optString(JsonFormConstants.COUNT));
+            for (int index = 0; index < stepCount; index++) {
+                String stepName = JsonFormConstants.STEP + (index + 1);
+                JSONObject step = form.optJSONObject(stepName);
+                if (step != null) {
+                    JSONArray stepFields = step.optJSONArray(JsonFormConstants.FIELDS);
+                    if (stepFields != null) {
+                        for (int k = 0; k < stepFields.length(); k++) {
+                            JSONObject jsonObject = stepFields.optJSONObject(k);
+                            String fieldKey = jsonObject.optString(PncJsonFormUtils.KEY);
+                            String fieldValue = injectedFieldValues.get(fieldKey);
+                            if (!TextUtils.isEmpty(fieldValue)) {
+                                jsonObject.put(PncJsonFormUtils.VALUE, fieldValue);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

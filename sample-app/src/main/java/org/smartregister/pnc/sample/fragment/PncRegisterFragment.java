@@ -3,19 +3,18 @@ package org.smartregister.pnc.sample.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.pnc.pojo.PncMetadata;
-import org.smartregister.pnc.pojo.PncRegistrationDetails;
+import org.smartregister.pnc.repository.PncMedicInfoRepository;
 import org.smartregister.pnc.sample.R;
 import org.smartregister.pnc.sample.activity.PncRegisterActivity;
 import org.smartregister.pnc.utils.PncConstants;
@@ -78,7 +77,7 @@ public class PncRegisterFragment extends BasePncRegisterFragment {
 
         if (pncRegisterActivity != null) {
             String entityTable = clientColumnMaps.get(PncConstants.IntentKey.ENTITY_TABLE);
-            String currentHivStatus = clientColumnMaps.get(PncRegistrationDetails.Property.hiv_status_current.name());
+            String currentHivStatus = clientColumnMaps.get(PncMedicInfoRepository.Property.hiv_status_current.name());
 
             HashMap<String, String> injectableFormValues = new HashMap<>();
             injectableFormValues.put(PncConstants.JsonFormField.MOTHER_HIV_STATUS, currentHivStatus);

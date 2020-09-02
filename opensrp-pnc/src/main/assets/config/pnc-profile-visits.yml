@@ -1,0 +1,73 @@
+---
+group: "{visit_date}"
+subGroup: pnc_visit_information
+fields:
+
+  - template: "PNC Visit day: {pnc_visit_period}"
+    relevance: "pnc_visit_period != '' && pnc_visit_period > 0"
+
+  - template: "PNC received within 48 hours of delivery?: {pnc_first_visit_check}"
+    relevance: "pnc_first_visit_check != ''"
+
+  - template: "Other visits outside this facility?: {visits_outside_facility}"
+    relevance: "visits_outside_facility != ''"
+
+  - template: "How many visits?: {visits_outside_facility_number}"
+    relevance: "visits_outside_facility_number != ''"
+
+---
+subGroup: woman_status
+fields:
+
+  - template: "Postnatal complications: {pnc_complications}"
+    relevance: "pnc_complications != ''"
+    isRedFont: "pnc_complications != 'none'"
+
+  - template: "Postnatal complications(Other): {pnc_complications_other}"
+    relevance: "pnc_complications_other != ''"
+
+  - template: "Status of C-section incision: {status_csection}"
+    relevance: "status_csection != ''"
+    isRedFont: "status_csection != ''"
+
+  - template: "Condition of episiotomy/tear, if present: {episotomy_tear_status}"
+    relevance: "episotomy_tear_status != ''"
+    isRedFont: "episotomy_tear_status != ''"
+
+  - template: "Status of the lochia: {lochia_status}"
+    relevance: "lochia_status != ''"
+    isRedFont: "lochia_status != ''"
+
+  - template: "Status of the lochia (Other): {lochia_status_other}"
+    relevance: "lochia_status_other != ''"
+    isRedFont: "lochia_status_other != ''"
+
+  - template: "Status of the uterus: {uterus_status}"
+    relevance: "uterus_status != ''"
+    isRedFont: "uterus_status != ''"
+
+  - template: "Status of the uterus (Other): {uterus_status_other}"
+    relevance: "uterus_status_other != ''"
+    isRedFont: "uterus_status_other != ''"
+
+  - template: "Intervention given: {intervention_given_text}"
+    relevance: "intervention_given_text != ''"
+    isRedFont: "intervention_given_text != ''"
+
+  - template: "Was the woman referred?: {referred_out}, {referred_out_specify}"
+    relevance: "referred_out != '' || referred_out_specify != ''"
+
+  - template: "Was Vitamin A given?: {vit_a}"
+    relevance: "vit_a != ''"
+
+  - template: "Provide a reason for not giving Vitamin A: {vit_a_not_given_reason}"
+    relevance: "vit_a_not_given_reason != ''"
+
+  - template: "Family planning done?: {fp_counsel}"
+    relevance: "fp_counsel != ''"
+
+  - template: "Family planning methods chosen: {fp_method}"
+    relevance: "fp_method != ''"
+
+  - template: "Family planning methods chosen (Other): {fp_method_other}"
+    relevance: "fp_method_other != ''"

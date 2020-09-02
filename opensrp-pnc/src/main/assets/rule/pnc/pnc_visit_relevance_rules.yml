@@ -20,6 +20,13 @@ condition: "step1_visits_outside_facility_number > 0"
 actions:
   - "isRelevant = true"
 ---
+name: step2_intervention_given_text
+description: intervention_given_text
+priority: 1
+condition: "step2_intervention_given == 'yes'"
+actions:
+  - "isRelevant = true"
+---
 name: step2_pnc_complications_other
 description: Provide details of other complications
 priority: 1
@@ -55,6 +62,13 @@ condition: "!step2_pnc_complications.contains('none')"
 actions:
   - "isRelevant = true"
 ---
+name: step2_referred_out_specify
+description: referred_out_specify
+priority: 1
+condition: "step2_referred_out == 'yes'"
+actions:
+  - "isRelevant = true"
+---
 name: step2_vit_a_not_given_reason
 description: vit_a_not_given_reason
 priority: 1
@@ -65,7 +79,63 @@ actions:
 name: step2_fp_method_other
 description: Provide details of other family planning method
 priority: 1
-condition: "step2_fp_method_other == 'other'"
+condition: "step2_fp_method == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step2_itn_given_notdone_other
+description: Specify any other reason why the treatment was not prescribed.
+priority: 1
+condition: "step2_itn_given_notdone == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_date_of_death_baby
+description: date_of_death_baby
+priority: 1
+condition: "step3_baby_status == 'dead'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_place_of_death_baby
+description: place_of_death_baby
+priority: 1
+condition: "step3_baby_status == 'dead'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_cause_of_death_baby
+description: cause_of_death_baby
+priority: 1
+condition: "step3_baby_status == 'dead'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_death_follow_up_baby
+description: death_follow_up_baby
+priority: 1
+condition: "step3_baby_status == 'dead'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_not_breastfeeding_reason
+description: not_breastfeeding_reason
+priority: 1
+condition: "step3_breastfeeding == 'not_breastfeeding'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_baby_danger_signs_other
+description: baby_danger_signs_other
+priority: 1
+condition: "step3_baby_danger_signs.contains('other')"
+actions:
+  - "isRelevant = true"
+---
+name: step3_baby_referred_out
+description: baby_referred_out
+priority: 1
+condition: "!step3_baby_danger_signs.contains('none')"
 actions:
   - "isRelevant = true"
 ---
@@ -76,10 +146,31 @@ condition: "global_hiv_status_previous == 'positive' || global_hiv_status_curren
 actions:
   - "isRelevant = true"
 ---
+name: step3_mother_baby_pairing
+description: mother_baby_pairing
+priority: 1
+condition: "step3_baby_hiv_exposed == 'yes'"
+actions:
+  - "isRelevant = true"
+---
 name: step3_baby_hiv_treatment
 description: baby_hiv_treatment
 priority: 1
 condition: "step3_baby_hiv_exposed == 'yes' && step3_mother_baby_pairing == 'yes'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_not_art_pairing_reason_other
+description: not_art_pairing_reason_other
+priority: 1
+condition: "step3_not_art_pairing_reason == 'other'"
+actions:
+  - "isRelevant = true"
+---
+name: step3_baby_dbs
+description: not_baby_dbs
+priority: 1
+condition: "step3_baby_hiv_exposed == 'other'"
 actions:
   - "isRelevant = true"
 ---

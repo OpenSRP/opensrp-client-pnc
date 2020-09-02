@@ -34,7 +34,6 @@ public class BasePncRegisterActivityPresenterTest {
     public void startFormShouldPassEntityTableAndBaseEntityIdToActivity() throws JSONException {
         PowerMockito.mockStatic(PncLibrary.class);
         PowerMockito.when(PncLibrary.getInstance()).thenReturn(pncLib);
-        //PowerMockito.when(pncLib.getPncChildRepository()).thenReturn(maternityOutcomeFormRepository);
 
         PncRegisterActivityContract.View view = Mockito.mock(PncRegisterActivityContract.View.class);
         PncRegisterActivityContract.Model model = Mockito.mock(PncRegisterActivityContract.Model.class);

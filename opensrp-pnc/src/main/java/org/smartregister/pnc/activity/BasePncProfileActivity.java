@@ -2,6 +2,9 @@ package org.smartregister.pnc.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,10 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +27,7 @@ import org.smartregister.pnc.fragment.PncProfileVisitsFragment;
 import org.smartregister.pnc.listener.OnSendActionToFragment;
 import org.smartregister.pnc.listener.OngoingTaskCompleteListener;
 import org.smartregister.pnc.pojo.OngoingTask;
+import org.smartregister.pnc.pojo.RegisterParams;
 import org.smartregister.pnc.presenter.PncProfileActivityPresenter;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
 import org.smartregister.pnc.utils.PncConstants;
@@ -87,7 +87,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
         setSendActionListenerToVisitsFragment(profileVisitsFragment);
 
         adapter.addFragment(profileOverviewFragment, this.getString(R.string.overview));
-        adapter.addFragment(profileVisitsFragment, this.getString(R.string.anc_history));
+        adapter.addFragment(profileVisitsFragment, this.getString(R.string.pnc_visits));
 
         viewPager.setAdapter(adapter);
         return viewPager;
@@ -105,7 +105,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void fetchProfileData() {
         CommonPersonObjectClient commonPersonObjectClient = (CommonPersonObjectClient) getIntent()
                 .getSerializableExtra(PncConstants.IntentKey.CLIENT_OBJECT);
-        ((PncProfileActivityPresenter) presenter).refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
+        ((PncProfileActivityPresenter) presenter).refreshProfileTopSection(commonPersonObjectClient.getColumnmaps(), baseEntityId);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
             commonPersonObjectClient = (CommonPersonObjectClient) getIntent()
                     .getSerializableExtra(PncConstants.IntentKey.CLIENT_OBJECT);
             baseEntityId = commonPersonObjectClient.getCaseId();
-            pncProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps());
+            pncProfilePresenter.refreshProfileTopSection(commonPersonObjectClient.getColumnmaps(), baseEntityId);
 
             // Enable switcher
             configureRegisterSwitcher();
@@ -183,13 +183,13 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
 
     @Override
     public void setProfileAge(@NonNull String age) {
-        genderView.setText(String.format(getString(R.string.age_details), age));
+        ageView.setText(String.format(getString(R.string.age_details), age));
 
     }
 
     @Override
-    public void setProfileGender(@NonNull String gender) {
-        ageView.setText(gender);
+    public void setProfileGender(@NonNull String deliveryDays) {
+        genderView.setText(deliveryDays);
     }
 
     @Override
@@ -206,9 +206,16 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     @Override
-    public void openPncOutcomeForm() {
+    public void openPncVisitForm() {
         if (commonPersonObjectClient != null) {
             ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_VISIT, commonPersonObjectClient);
+        }
+    }
+
+    @Override
+    public void openPncMedicInfoForm() {
+        if (commonPersonObjectClient != null) {
+            ((PncProfileActivityPresenter) presenter).startForm(PncConstants.Form.PNC_MEDIC_INFO, commonPersonObjectClient);
         }
     }
 
@@ -221,7 +228,8 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     }
 
     @Override
-    public void startFormActivity(@NonNull JSONObject form, @NonNull HashMap<String, String> intentData) {
+    public void startFormActivity(String entityId, @NonNull JSONObject form, @NonNull HashMap<String, String> intentData) {
+        PncUtils.processPreChecks(entityId, form, intentData);
         Intent intent = PncUtils.buildFormActivityIntent(form, intentData, this);
         startActivityForResult(intent, PncJsonFormUtils.REQUEST_CODE_GET_JSON);
     }
@@ -237,22 +245,42 @@ public class BasePncProfileActivity extends BaseProfileActivity implements PncPr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PncJsonFormUtils.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
-            try {
-                String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
-                Timber.d("JSON-Result : %s", jsonString);
+            onActivityResultExtended(data);
+        }
+    }
 
-                JSONObject form = new JSONObject(jsonString);
-                String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
+    protected void onActivityResultExtended(Intent data) {
 
-                OngoingTask ongoingTask = new OngoingTask();
-                ongoingTask.setTaskType(OngoingTask.TaskType.PROCESS_FORM);
-                ongoingTask.setTaskDetail(encounterType);
+        try {
+            String jsonString = data.getStringExtra(PncConstants.JsonFormExtraConstants.JSON);
+            data.putExtra(PncConstants.IntentKey.BASE_ENTITY_ID, baseEntityId);
 
-                addOngoingTask(ongoingTask);
+            Timber.d("JSONResult : %s", jsonString);
 
-            } catch (JSONException e) {
-                Timber.e(e);
+            JSONObject form = new JSONObject(jsonString);
+            String encounterType = form.getString(PncJsonFormUtils.ENCOUNTER_TYPE);
+           if (encounterType.equals(PncConstants.EventTypeConstants.PNC_VISIT)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                    ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                    ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
+                } else if (encounterType.equals(PncConstants.EventTypeConstants.UPDATE_PNC_REGISTRATION)) {
+                    showProgressDialog(R.string.saving_dialog_title);
+                RegisterParams registerParam = new RegisterParams();
+                registerParam.setEditMode(true);
+                registerParam.setFormTag(PncJsonFormUtils.formTag(PncUtils.context().allSharedPreferences()));
+
+                showProgressDialog(R.string.saving_dialog_title);
+                ((PncProfileActivityPresenter) this.presenter).saveUpdateRegistrationForm(jsonString, registerParam);
             }
+            else if (encounterType.equals(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+                showProgressDialog(R.string.saving_dialog_title);
+                ((PncProfileActivityPresenter) this.presenter).savePncForm(encounterType, data);
+            }
+
+        } catch (JSONException e) {
+            Timber.e(e);
         }
     }
 

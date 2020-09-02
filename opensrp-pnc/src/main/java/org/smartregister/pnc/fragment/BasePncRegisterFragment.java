@@ -2,16 +2,15 @@ package org.smartregister.pnc.fragment;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
@@ -182,11 +181,12 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
                         goToClientDetailActivity((CommonPersonObjectClient) viewClient);
                     } else if (view.getTag(R.id.VIEW_TYPE).equals(PncViewConstants.Provider.ACTION_BUTTON_COLUMN)) {
                         Object buttonType = view.getTag(R.id.BUTTON_TYPE);
-                        if (buttonType != null && buttonType.equals(R.string.record_pnc)) {
-                            performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_VISIT);
-                        }
-                        else {
-                            performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_MEDIC_INFORMATION);
+                        if (buttonType != null) {
+                            if (buttonType.equals(R.string.pnc_due) || buttonType.equals(R.string.pnc_overdue) || buttonType.equals(R.string.record_pnc)) {
+                                performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_VISIT);
+                            } else if (buttonType.equals(R.string.complete_pnc_registration)) {
+                                performPatientAction((CommonPersonObjectClient) viewClient, PncConstants.Form.PNC_MEDIC_INFO);
+                            }
                         }
                     }
                 } else {
@@ -250,7 +250,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
             String tagString = "PRESSED";
             if (filterSection.getTag() == null) {
                 switchViews(filterSection, true);
-                filter(searchText(), "", presenter().getDueFilterCondition(), false);
+                filter(searchText(), "", getDueFilterQuery(), false);
                 filterSection.setTag(tagString);
             } else if (filterSection.getTag().toString().equals(tagString)) {
                 switchViews(filterSection, false);
@@ -262,7 +262,7 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
 
     private void enableDueOnlyFilter(@NonNull View dueOnlyLayout, boolean enable) {
         String tag = enable ? DUE_FILTER_TAG : null;
-        String mainConditionString = enable ? presenter().getDueFilterCondition() : "";
+        String mainConditionString = enable ? getDueFilterQuery() : "";
 
         filter(searchText(), "", mainConditionString);
         dueOnlyLayout.setTag(tag);
@@ -380,6 +380,10 @@ public abstract class BasePncRegisterFragment extends BaseRegisterFragment imple
         } catch (Exception e) {
             Timber.e(e);
         }
+    }
+
+    protected String getDueFilterQuery() {
+        return presenter().getDueFilterCondition();
     }
 
 }

@@ -1,10 +1,11 @@
 package org.smartregister.pnc.config;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.smartregister.pnc.pojo.PncMetadata;
+import org.smartregister.pnc.scheduler.PncVisitScheduler;
 import org.smartregister.pnc.utils.PncConstants;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.HashMap;
  * This is the object used to configure any configurations added to Pnc. We mostly use objects that are
  * instantiated using {@link org.smartregister.pnc.utils.ConfigurationInstancesHelper} which means
  * that the constructors of any of the classes should not have any parameters
- *
+ * <p>
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
  */
 
@@ -28,17 +29,31 @@ public class PncConfiguration {
     }
 
     private void setDefaults() {
+
+        if (builder.pncVisitScheduler == null) {
+            builder.pncVisitScheduler = PncVisitScheduler.class;
+        }
+
         if (builder.pncRegisterProviderMetadata == null) {
             builder.pncRegisterProviderMetadata = BasePncRegisterProviderMetadata.class;
         }
 
-        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_OUTCOME)) {
-            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_OUTCOME, PncOutcomeFormProcessing.class);
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_MEDIC_INFO)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_MEDIC_INFO, PncMedicInfoFormProcessing.class);
         }
 
         if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_VISIT)) {
             builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_VISIT, PncVisitFormProcessing.class);
         }
+
+        if (!builder.pncFormProcessingClasses.containsKey(PncConstants.EventTypeConstants.PNC_CLOSE)) {
+            builder.pncFormProcessingClasses.put(PncConstants.EventTypeConstants.PNC_CLOSE, PncCloseFormProcessing.class);
+        }
+    }
+
+    @NonNull
+    public Class<? extends PncVisitScheduler> getPncVisitScheduler() {
+        return builder.pncVisitScheduler;
     }
 
     @Nullable
@@ -81,6 +96,9 @@ public class PncConfiguration {
     public static class Builder {
 
         @Nullable
+        private Class<? extends PncVisitScheduler> pncVisitScheduler;
+
+        @Nullable
         private Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata;
 
         @Nullable
@@ -102,6 +120,11 @@ public class PncConfiguration {
 
         public Builder(@NonNull Class<? extends PncRegisterQueryProviderContract> pncRegisterQueryProvider) {
             this.pncRegisterQueryProvider = pncRegisterQueryProvider;
+        }
+
+        public Builder setPncVisitScheduler(@Nullable Class<? extends PncVisitScheduler> pncVisitScheduler) {
+            this.pncVisitScheduler = pncVisitScheduler;
+            return this;
         }
 
         public Builder setPncRegisterProviderMetadata(@Nullable Class<? extends PncRegisterProviderMetadata> pncRegisterProviderMetadata) {
