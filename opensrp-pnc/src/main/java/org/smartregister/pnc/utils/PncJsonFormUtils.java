@@ -35,7 +35,6 @@ import org.smartregister.view.activity.DrishtiApplication;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -349,18 +348,11 @@ public class PncJsonFormUtils extends JsonFormUtils {
         try {
 
             if (!entityId.isEmpty()) {
-                final String absoluteFileName = DrishtiApplication.getAppDir() + File.separator + entityId + ".JPEG";
+                String absoluteFileName = DrishtiApplication.getAppDir() + File.separator + entityId + ".JPEG";
 
                 File outputFile = new File(absoluteFileName);
-                os = new FileOutputStream(outputFile);
-                Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
-                if (compressFormat != null) {
-                    image.compress(compressFormat, 100, os);
-                } else {
-                    throw new IllegalArgumentException(
-                            "Failed to save static image, could not retrieve image compression format from name " +
-                                    absoluteFileName);
-                }
+                PncUtils.saveImageAndCloseOutputStream(image, outputFile);
+
                 // insert into the db
                 ProfileImage profileImage = new ProfileImage();
                 profileImage.setImageid(UUID.randomUUID().toString());

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.jeasy.rules.api.Facts;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,5 +176,11 @@ public class PncProfileOverviewAdapterTest {
         String rawTemplate = "nothing";
         PncProfileOverviewAdapter.Template template = adapter.getTemplate(rawTemplate);
         assertEquals(rawTemplate, template.title);
+    }
+
+
+    @After
+    public void tearDown(){
+        ReflectionHelpers.setStaticField(PncLibrary.class, "instance", null);
     }
 }

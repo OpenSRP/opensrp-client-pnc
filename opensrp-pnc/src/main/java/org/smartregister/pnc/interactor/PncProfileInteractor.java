@@ -178,7 +178,7 @@ public class PncProfileInteractor implements PncProfileActivityContract.Interact
     private String addEvent(RegisterParams params, Event baseEvent) throws JSONException {
         if (baseEvent != null) {
             JSONObject eventJson = new JSONObject(PncJsonFormUtils.gson.toJson(baseEvent));
-            PncLibrary.getInstance().getEcSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson, params.getStatus());
+            getSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson, params.getStatus());
             return eventJson.getString(EventClientRepository.event_column.formSubmissionId.toString());
         }
 

@@ -3,6 +3,7 @@ package org.smartregister.pnc.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +48,9 @@ import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.util.FormUtils;
 import org.smartregister.util.JsonFormUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -604,5 +608,11 @@ public class PncUtils extends org.smartregister.util.Utils {
         } catch (Exception e) {
             Timber.e(e);
         }
+    }
+
+    public static void saveImageAndCloseOutputStream(Bitmap image, File outputFile) throws FileNotFoundException {
+        FileOutputStream os = new FileOutputStream(outputFile);
+        Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
+        image.compress(compressFormat, 100, os);
     }
 }
