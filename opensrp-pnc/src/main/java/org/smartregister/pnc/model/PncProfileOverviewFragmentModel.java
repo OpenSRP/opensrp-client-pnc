@@ -8,7 +8,6 @@ import org.smartregister.pnc.config.PncRegisterQueryProviderContract;
 import org.smartregister.pnc.contract.PncProfileOverviewFragmentContract;
 import org.smartregister.pnc.utils.AppExecutors;
 import org.smartregister.pnc.utils.ConfigurationInstancesHelper;
-import org.smartregister.pnc.utils.PncUtils;
 
 import java.util.HashMap;
 
@@ -35,7 +34,7 @@ public class PncProfileOverviewFragmentModel implements PncProfileOverviewFragme
             String query = pncRegisterQueryProvider.mainSelectWhereIDsIn()
                     .replace("%s", "'" + baseEntityId + "'");
 
-            HashMap<String, String> pncDetails = PncUtils.getPncDetailsFromQueryProvider(query);
+            HashMap<String, String> pncDetails = PncLibrary.getInstance().getPncRepository().getPncDetailsFromQueryProvider(query);
 
             if (pncRegisterDetails != null && pncDetails != null) {
                 pncRegisterDetails.putAll(pncDetails);

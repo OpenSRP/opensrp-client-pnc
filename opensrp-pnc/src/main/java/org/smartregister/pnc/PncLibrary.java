@@ -18,6 +18,7 @@ import org.smartregister.pnc.repository.PncMedicInfoRepository;
 import org.smartregister.pnc.repository.PncOtherVisitRepository;
 import org.smartregister.pnc.repository.PncPartialFormRepository;
 import org.smartregister.pnc.repository.PncRegistrationDetailsRepository;
+import org.smartregister.pnc.repository.PncRepository;
 import org.smartregister.pnc.repository.PncStillBornRepository;
 import org.smartregister.pnc.repository.PncVisitChildStatusRepository;
 import org.smartregister.pnc.repository.PncVisitInfoRepository;
@@ -69,6 +70,7 @@ public class PncLibrary {
     private PncRegistrationDetailsRepository pncRegistrationDetailsRepository;
     private PncMedicInfoRepository pncMedicInfoRepository;
     private EventClientRepository eventClientRepository;
+    private PncRepository pncRepository;
     private PncVisitScheduler pncVisitScheduler;
     private AppExecutors appExecutors;
 
@@ -194,6 +196,13 @@ public class PncLibrary {
             eventClientRepository = new EventClientRepository();
         }
         return eventClientRepository;
+    }
+
+    public PncRepository getPncRepository() {
+        if (pncRepository == null) {
+            pncRepository = new PncRepository();
+        }
+        return pncRepository;
     }
 
     @NonNull

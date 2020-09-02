@@ -127,7 +127,7 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
     }
 
     public void updateLastInteractedTime() {
-        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncUtils.updateLastInteractedWith(PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID)));
+        PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> PncLibrary.getInstance().getPncRepository().updateLastInteractedWith(PncUtils.getIntentValue(getIntent(), PncConstants.IntentKey.BASE_ENTITY_ID)));
     }
 
     private void saveFormFillSession(String eventType) {

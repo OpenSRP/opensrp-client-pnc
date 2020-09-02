@@ -1,6 +1,5 @@
 package org.smartregister.pnc.utils;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,12 +30,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.CoreLibrary;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
-import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
-import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.R;
 import org.smartregister.pnc.pojo.PncEventClient;
@@ -347,29 +343,6 @@ public class PncUtils extends org.smartregister.util.Utils {
         return repeatingGroupMap;
     }
 
-    public static HashMap<String, String> getPncClient(String baseEntityId) {
-        ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance().context().getEventClientRepository().rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
-                "select * from " + metadata().getTableName() + " " +
-                        "LEFT JOIN " + PncDbConstants.Table.PNC_REGISTRATION_DETAILS + " AS prd ON prd.base_entity_id = " + metadata().getTableName() + ".base_entity_id " +
-                        " where " + metadata().getTableName() + ".id = '" + baseEntityId + "' limit 1");
-        if (!hashMap.isEmpty()) {
-            return hashMap.get(0);
-        }
-        return null;
-    }
-
-    public static HashMap<String, String> getPncDetailsFromQueryProvider(@NonNull String providerQuery) {
-        ArrayList<HashMap<String, String>> hashMap = CoreLibrary.getInstance()
-                .context()
-                .getEventClientRepository()
-                .rawQuery(PncLibrary.getInstance().getRepository().getReadableDatabase(),
-                        providerQuery + " limit 1");
-        if (hashMap != null && !hashMap.isEmpty()) {
-            return hashMap.get(0);
-        }
-        return null;
-    }
-
     public static String getNextUniqueId() {
         UniqueIdRepository uniqueIdRepo = PncLibrary.getInstance().getUniqueIdRepository();
         return uniqueIdRepo.getNextUniqueId() != null ? uniqueIdRepo.getNextUniqueId().getOpenmrsId() : "";
@@ -584,30 +557,6 @@ public class PncUtils extends org.smartregister.util.Utils {
             return resultString;
         }
         return "";
-    }
-
-    public static void updateLastInteractedWith(@NonNull String baseEntityId) {
-        try {
-            String tableName = metadata().getTableName();
-
-            String lastInteractedWithDate = String.valueOf(new Date().getTime());
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(PncConstants.JsonFormKeyConstants.LAST_INTERACTED_WITH, lastInteractedWithDate);
-
-            PncLibrary.getInstance().getRepository().getWritableDatabase()
-                    .update(tableName, contentValues, "base_entity_id = ?", new String[]{baseEntityId});
-
-            // Update FTS
-            CommonRepository commonrepository = PncLibrary.getInstance().context().commonrepository(tableName);
-
-            if (commonrepository.isFts()) {
-                PncLibrary.getInstance().getRepository().getWritableDatabase()
-                        .update(CommonFtsObject.searchTableName(tableName), contentValues, CommonFtsObject.idColumn + " = ?", new String[]{baseEntityId});
-            }
-        } catch (Exception e) {
-            Timber.e(e);
-        }
     }
 
     public static void saveImageAndCloseOutputStream(Bitmap image, File outputFile) throws FileNotFoundException {

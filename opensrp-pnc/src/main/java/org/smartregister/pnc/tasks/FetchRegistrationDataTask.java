@@ -9,7 +9,6 @@ import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncReverseJsonFormUtils;
-import org.smartregister.pnc.utils.PncUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -27,12 +26,8 @@ public class FetchRegistrationDataTask extends AsyncTask<String, Void, String> {
 
     @Nullable
     protected String doInBackground(String... params) {
-        Map<String, String> clientMap = PncUtils.getPncClient(params[0]);
-        Map<String, String> registrationDetailsMap = PncLibrary.getInstance().getPncRegistrationDetailsRepository().findByBaseEntityId(params[0]);
+        Map<String, String> clientMap = PncLibrary.getInstance().getPncRepository().getClientWithRegistrationDetails(params[0]);
         if (clientMap != null) {
-            if (registrationDetailsMap != null) {
-                clientMap.putAll(registrationDetailsMap);
-            }
             clientMap.put(PncJsonFormUtils.OPENSRP_ID, clientMap.get(PncConstants.KeyConstants.OPENSRP_ID));
             return PncReverseJsonFormUtils.prepareJsonEditPncRegistrationForm(clientMap, Arrays.asList(PncJsonFormUtils.OPENSRP_ID, PncConstants.JsonFormKeyConstants.BHT_ID, PncConstants.JsonFormKeyConstants.SEX), contextWeakReference.get());
         }

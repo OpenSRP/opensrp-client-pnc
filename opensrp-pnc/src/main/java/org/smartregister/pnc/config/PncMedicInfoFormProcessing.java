@@ -133,7 +133,7 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
 
                 Iterator<String> repeatingGroupKeys = jsonObject.keys();
 
-                HashMap<String, String> motherDetails = PncUtils.getPncClient(baseEntityId);
+                HashMap<String, String> motherDetails = PncLibrary.getInstance().getPncRepository().getClientWithRegistrationDetails(baseEntityId);
 
                 while (repeatingGroupKeys.hasNext()) {
                     JSONObject jsonChildObject = jsonObject.optJSONObject(repeatingGroupKeys.next());
