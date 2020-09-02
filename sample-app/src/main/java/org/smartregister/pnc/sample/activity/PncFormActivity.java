@@ -8,8 +8,8 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.pnc.activity.BasePncFormActivity;
-import org.smartregister.pnc.config.PncChildStatusRepeatingGroupGenerator;
 import org.smartregister.pnc.sample.R;
+import org.smartregister.pnc.sample.config.PncChildStatusRepeatingGroupGenerator;
 import org.smartregister.pnc.sample.fragment.PncFormFragment;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncDbConstants;
@@ -42,8 +42,7 @@ public class PncFormActivity extends BasePncFormActivity {
 
             generateRepeatingGrpFields(jsonObject);
             super.init(jsonObject.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Timber.e(ex);
             super.init(json);
         }

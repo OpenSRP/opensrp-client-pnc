@@ -51,7 +51,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
         }
 
         // Activity destroyed set interactor to null
-        if (! isChangingConfiguration) {
+        if (!isChangingConfiguration) {
             mProfileInteractor = null;
         }
     }
@@ -88,7 +88,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
             profileView.showPageCountText(String.format(pageCounterTemplate, (currentPageNo + 1), totalPages));
 
             profileView.showPreviousPageBtn(currentPageNo > 0);
-            profileView.showNextPageBtn(currentPageNo < (totalPages -1));
+            profileView.showNextPageBtn(currentPageNo < (totalPages - 1));
         }
     }
 
@@ -96,7 +96,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     public void populateWrapperDataAndFacts(@NonNull PncVisitSummary pncVisitSummary, @NonNull List<Pair<YamlConfigWrapper, Facts>> items) {
 
         try {
-            for (Map.Entry<String, Map<String, String>> entry: pncVisitSummary.getVisitInfoMap().entrySet()) {
+            for (Map.Entry<String, Map<String, String>> entry : pncVisitSummary.getVisitInfoMap().entrySet()) {
 
                 Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT);
 
@@ -107,11 +107,11 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     YamlConfig yamlConfig = (YamlConfig) ruleObject;
 
                     if (yamlConfig.getGroup() != null) {
-                        items.add(new Pair<>(new YamlConfigWrapper(yamlConfig.getGroup(), null, null), facts));
+                        items.add(new Pair<>(new YamlConfigWrapper(yamlConfig.getGroup(), null, null, null), facts));
                     }
 
                     if (yamlConfig.getSubGroup() != null) {
-                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null), facts));
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null, null), facts));
                     }
 
                     List<YamlConfigItem> configItems = yamlConfig.getFields();
@@ -120,7 +120,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                         for (YamlConfigItem configItem : configItems) {
                             String relevance = configItem.getRelevance();
                             if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
-                                items.add(new Pair<>( new YamlConfigWrapper(null, null, configItem), facts));
+                                items.add(new Pair<>(new YamlConfigWrapper(null, null, configItem, null), facts));
                             }
                         }
                     }
@@ -130,8 +130,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     generateChild(pncVisitSummary.getVisitChildStatusMap().get(entry.getKey()), items);
                 }
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Timber.e(e);
         }
     }
@@ -139,7 +138,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     private Facts generateVisitInfoAndWomanFacts(Map<String, String> pncVisitMap) {
         Facts facts = new Facts();
 
-        for (Map.Entry<String, String> entry: pncVisitMap.entrySet()) {
+        for (Map.Entry<String, String> entry : pncVisitMap.entrySet()) {
             PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
         }
 
@@ -149,7 +148,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
     private void generateChild(List<Map<String, String>> data, List<Pair<YamlConfigWrapper, Facts>> items) {
         try {
 
-            for (Map<String, String> childData: data) {
+            for (Map<String, String> childData : data) {
 
                 Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_VISIT_ROW);
 
@@ -164,7 +163,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                     YamlConfig yamlConfig = (YamlConfig) ruleObject;
 
                     if (yamlConfig.getSubGroup() != null) {
-                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null), facts));
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null, null), facts));
                     }
 
                     List<YamlConfigItem> configItems = yamlConfig.getFields();
@@ -173,7 +172,7 @@ public class PncProfileVisitsFragmentPresenter implements PncProfileVisitsFragme
                         for (YamlConfigItem configItem : configItems) {
                             String relevance = configItem.getRelevance();
                             if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
-                                items.add(new Pair<>( new YamlConfigWrapper(null, null, configItem), facts));
+                                items.add(new Pair<>(new YamlConfigWrapper(null, null, configItem, null), facts));
                             }
                         }
                     }

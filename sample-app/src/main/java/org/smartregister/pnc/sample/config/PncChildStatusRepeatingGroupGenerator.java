@@ -1,4 +1,4 @@
-package org.smartregister.pnc.config;
+package org.smartregister.pnc.sample.config;
 
 import android.support.annotation.NonNull;
 
@@ -6,6 +6,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.pnc.config.RepeatingGroupGenerator;
 
 import java.util.HashMap;
 import java.util.List;

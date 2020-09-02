@@ -1,6 +1,7 @@
 ---
 group:
 subGroup: pregnancy_data_&_medical_history
+relevance: "pmi_base_entity_id != null"
 fields:
 
   - template: "Gravida: {gravidity}"
@@ -40,6 +41,7 @@ fields:
 
 ---
 subGroup: delivery_&_outcome_details
+relevance: "pmi_base_entity_id != null"
 fields:
 
   - template: "Date of delivery: {delivery_date}"
@@ -84,6 +86,7 @@ fields:
 
 ---
 subGroup: hiv_status_&_treatment
+relevance: "pmi_base_entity_id != null"
 fields:
 
   - template: "HIV status at registration: {hiv_status}"

@@ -1,5 +1,6 @@
 package org.smartregister.pnc.domain;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
@@ -11,17 +12,20 @@ public class YamlConfig {
 
     private String group;
     private String subGroup;
+    private String relevance;
     private List<YamlConfigItem> fields;
     private String testResults;
 
     public YamlConfig() {
     }
 
-    public YamlConfig(@Nullable String group, @Nullable String subGroup, @Nullable List<YamlConfigItem> fields, @Nullable String testResults) {
+    public YamlConfig(@Nullable String group, @Nullable String subGroup, @Nullable List<YamlConfigItem> fields,
+                      @Nullable String testResults, @NonNull String relevance) {
         this.group = group;
         this.subGroup = subGroup;
         this.fields = fields;
         this.testResults = testResults;
+        this.relevance = relevance;
     }
 
     @Nullable
@@ -60,4 +64,11 @@ public class YamlConfig {
         this.testResults = test_results;
     }
 
+    public String getRelevance() {
+        return relevance;
+    }
+
+    public void setRelevance(String relevance) {
+        this.relevance = relevance;
+    }
 }

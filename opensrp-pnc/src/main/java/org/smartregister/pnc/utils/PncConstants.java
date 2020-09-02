@@ -10,6 +10,8 @@ public class PncConstants extends AllConstants {
     public static final String GLOBAL = "global";
     public static final String CHILD_RECORDS = "child_records";
     public static final int HOW_BABY_OLD_IN_DAYS = 28;
+    public static final String BABY_COUNT_STILLBORN = "baby_count_stillborn";
+    public static final String LIVE_BIRTHS_SECTION = "livebirths";
 
     public interface IntentKey {
         String BASE_ENTITY_ID = "base-entity-id";
@@ -88,7 +90,6 @@ public class PncConstants extends AllConstants {
         public static final String PMI_BASE_ENTITY_ID = "pmi_base_entity_id";
         public static final String CHILD_REGISTERED_COUNT = "child_registered_count";
 
-
         public static final String CHILD_REGISTERED = "child_registered";
         public static final String BIRTH_RECORD = "birth_record_date";
         public static final String BABY_DOB = "baby_dob";
@@ -114,6 +115,7 @@ public class PncConstants extends AllConstants {
         public static final String DEATH_DATE = "deathdate";
         public static final String ATTRIBUTES = "attributes";
         public static final String GENERATED_GRP = "generated_grp";
+        public static final String PNC_CLOSE_REASON = "pnc_close_reason";
     }
 
     public static class JsonFormExtraConstants {
@@ -150,6 +152,7 @@ public class PncConstants extends AllConstants {
         public static final String DATE_REMOVED = "date_removed";
         public static final String PPF_ID = "ppf_id";
         public static final String PPF_FORM_TYPE = "ppf_form_type";
+        public static final String WOMAN_DIED = "woman_died";
     }
 
     public static class EntityConstants {

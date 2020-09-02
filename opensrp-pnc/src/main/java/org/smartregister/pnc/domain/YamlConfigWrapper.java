@@ -10,12 +10,14 @@ public class YamlConfigWrapper {
 
     private String group;
     private String subGroup;
+    private String relevance;
     private YamlConfigItem yamlConfigItem;
 
-    public YamlConfigWrapper(@Nullable String group, @Nullable String subGroup, @Nullable YamlConfigItem yamlConfigItem) {
+    public YamlConfigWrapper(@Nullable String group, @Nullable String subGroup, @Nullable YamlConfigItem yamlConfigItem,String relevance) {
         this.group = group;
         this.subGroup = subGroup;
         this.yamlConfigItem = yamlConfigItem;
+        this.relevance = relevance;
     }
 
     @Nullable
@@ -43,5 +45,13 @@ public class YamlConfigWrapper {
 
     public void setGroup(@Nullable String group) {
         this.group = group;
+    }
+
+    public String getRelevance() {
+        return relevance;
+    }
+
+    public void setRelevance(String relevance) {
+        this.relevance = relevance;
     }
 }

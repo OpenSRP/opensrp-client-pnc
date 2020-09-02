@@ -51,7 +51,7 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
     }
 
     protected void processWomanDiedEvent(JSONArray fieldsArray, Event event) throws JSONException {
-        if ("woman_died".equals(JsonFormUtils.getFieldValue(fieldsArray, "pnc_close_reason"))) {
+        if (PncConstants.KeyConstants.WOMAN_DIED.equals(JsonFormUtils.getFieldValue(fieldsArray, PncConstants.JsonFormKeyConstants.PNC_CLOSE_REASON))) {
             event.setEventType(PncConstants.EventTypeConstants.DEATH);
             createDeathEventObject(event, fieldsArray);
         }
@@ -63,14 +63,13 @@ public class PncCloseFormProcessing implements PncFormProcessingTask {
         EventClientRepository db = PncLibrary.getInstance().eventClientRepository();
 
         JSONObject client = db.getClientByBaseEntityId(eventJson.getString(ClientProcessor.baseEntityIdJSONKey));
-        String dateOfDeath = JsonFormUtils.getFieldValue(fieldsArray, "date_of_death");
+        String dateOfDeath = JsonFormUtils.getFieldValue(fieldsArray, PncConstants.JsonFormKeyConstants.DATE_OF_DEATH);
         client.put(PncConstants.JsonFormKeyConstants.DEATH_DATE, StringUtils.isNotBlank(dateOfDeath) ? PncUtils.reverseHyphenSeparatedValues(dateOfDeath, "-") : PncUtils.getTodaysDate());
         client.put(FormEntityConstants.Person.deathdate_estimated.name(), false);
         client.put(PncConstants.JsonFormKeyConstants.DEATH_DATE_APPROX, false);
 
         JSONObject attributes = client.optJSONObject(PncConstants.JsonFormKeyConstants.ATTRIBUTES);
         attributes.put(PncConstants.KeyConstants.DATE_REMOVED, PncUtils.getTodaysDate());
-        client.put(PncConstants.JsonFormKeyConstants.ATTRIBUTES, attributes);
 
         db.addorUpdateClient(event.getBaseEntityId(), client);
 

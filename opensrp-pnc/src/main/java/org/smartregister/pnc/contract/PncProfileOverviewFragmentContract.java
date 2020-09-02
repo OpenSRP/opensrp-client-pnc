@@ -3,13 +3,14 @@ package org.smartregister.pnc.contract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 
 import org.jeasy.rules.api.Facts;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29
@@ -45,7 +46,7 @@ public interface PncProfileOverviewFragmentContract {
 
         interface OnFinishedCallback {
 
-            void onFinished(@Nullable Facts facts, @Nullable List<YamlConfigWrapper> yamlConfigListGlobal);
+            void onFinished(@NonNull Facts facts, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items);
         }
     }
 

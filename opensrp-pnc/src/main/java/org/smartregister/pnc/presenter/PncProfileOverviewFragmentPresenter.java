@@ -2,6 +2,9 @@ package org.smartregister.pnc.presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
+
+import com.google.common.collect.Lists;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jeasy.rules.api.Facts;
@@ -56,12 +59,12 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
     @Override
     public void loadOverviewDataAndDisplay(@NonNull HashMap<String, String> pncMedicInfo, @NonNull final OnFinishedCallback onFinishedCallback) {
-        List<YamlConfigWrapper> yamlConfigListGlobal = new ArrayList<>();
+        ArrayList<Pair<YamlConfigWrapper, Facts>> yamlConfigListGlobal = new ArrayList<>();
         Facts facts = new Facts();
         setDataFromRegistration(pncMedicInfo, facts);
 
         try {
-            generateYamlConfigList(pncMedicInfo.get("base_entity_id"), facts, yamlConfigListGlobal);
+            generateYamlConfigList(pncMedicInfo.get(PncConstants.KeyConstants.BASE_ENTITY_ID), facts, yamlConfigListGlobal);
         } catch (IOException ioException) {
             Timber.e(ioException);
         }
@@ -69,29 +72,30 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         onFinishedCallback.onFinished(facts, yamlConfigListGlobal);
     }
 
-    private void generateYamlConfigList(String motherBaseEntityId, @NonNull Facts facts, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal) throws IOException {
+    private void generateYamlConfigList(String motherBaseEntityId, @NonNull Facts facts, ArrayList<Pair<YamlConfigWrapper, Facts>> items) throws IOException {
 
         int count = PncLibrary.getInstance().getPncStillBornRepository().countBabyStillBorn(motherBaseEntityId);
-        facts.put("baby_count_stillborn", String.valueOf(count));
-
+        facts.put(PncConstants.BABY_COUNT_STILLBORN, String.valueOf(count));
         Iterable<Object> ruleObjects = loadFile(FilePath.FILE.PNC_PROFILE_OVERVIEW);
 
-        for (Object ruleObject : ruleObjects) {
-            List<YamlConfigWrapper> yamlConfigList = new ArrayList<>();
-            int valueCount = 0;
+        Iterable<Object> ruleObjectsObjectIterable = Lists.newArrayList(ruleObjects); // creates a deep copy
+        for (Object ruleObject : ruleObjectsObjectIterable) {
 
             YamlConfig yamlConfig = (YamlConfig) ruleObject;
 
-            if ("stillbirths".equals(yamlConfig.getSubGroup())) {
-                generateLiveBirths(motherBaseEntityId, yamlConfigListGlobal, facts);
-            }
 
             if (yamlConfig.getGroup() != null) {
-                yamlConfigList.add(new YamlConfigWrapper(yamlConfig.getGroup(), null, null));
+                items.add(new Pair<>(new YamlConfigWrapper(yamlConfig.getGroup(),
+                        null, null, null), facts));
             }
 
             if (yamlConfig.getSubGroup() != null) {
-                yamlConfigList.add(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null));
+                if (PncConstants.LIVE_BIRTHS_SECTION.equals(yamlConfig.getSubGroup())) {
+                    generateLiveBirths(motherBaseEntityId, items);
+                } else {
+                    items.add(new Pair<>(new YamlConfigWrapper(null,
+                            yamlConfig.getSubGroup(), null, yamlConfig.getRelevance()), facts));
+                }
             }
 
             List<YamlConfigItem> configItems = yamlConfig.getFields();
@@ -102,21 +106,18 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
                     String relevance = configItem.getRelevance();
                     if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper()
                             .getRelevance(facts, relevance)) {
-                        yamlConfigList.add(new YamlConfigWrapper(null, null, configItem));
-                        valueCount += 1;
+                        YamlConfigWrapper yamlConfigWrapper = new YamlConfigWrapper(null,
+                                null, configItem, null);
+                        items.add(new Pair<>(yamlConfigWrapper, facts));
                     }
                 }
-            }
-
-            if (valueCount > 0) {
-                yamlConfigListGlobal.addAll(yamlConfigList);
             }
         }
     }
 
     @Override
     public void setDataFromRegistration(@NonNull HashMap<String, String> pncMedicInfo, @NonNull Facts facts) {
-        for (String property: pncMedicInfo.keySet()) {
+        for (String property : pncMedicInfo.keySet()) {
             PncFactsUtil.putNonNullFact(facts, property, pncMedicInfo.get(property));
         }
 
@@ -126,7 +127,7 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
         PncFactsUtil.putNonNullFact(facts, PncConstants.FactKey.ProfileOverview.HIV_STATUS, hivStatus);
     }
 
-    private void generateLiveBirths(@NonNull String motherBaseEntityId, @NonNull List<YamlConfigWrapper> yamlConfigListGlobal, @NonNull Facts facts) {
+    private void generateLiveBirths(@NonNull String motherBaseEntityId, @NonNull ArrayList<Pair<YamlConfigWrapper, Facts>> items) {
 
         try {
 
@@ -134,20 +135,20 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
 
             for (HashMap<String, String> record : childRecords) {
 
-                Iterable<Object> ruleObjects = loadFile(FilePath.FILE.PNC_PROFILE_OVERVIEW_LIVE_BIRTH);
+                Facts facts = new Facts();
+
+                Iterable<Object> ruleObjects = PncLibrary.getInstance().readYaml(FilePath.FILE.PNC_PROFILE_OVERVIEW_LIVE_BIRTH);
 
                 for (Map.Entry<String, String> entry : record.entrySet()) {
                     PncFactsUtil.putNonNullFact(facts, entry.getKey(), entry.getValue());
                 }
 
                 for (Object ruleObject : ruleObjects) {
-                    List<YamlConfigWrapper> yamlConfigList = new ArrayList<>();
-                    int valueCount = 0;
 
                     YamlConfig yamlConfig = (YamlConfig) ruleObject;
 
                     if (yamlConfig.getSubGroup() != null) {
-                        yamlConfigList.add(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null));
+                        items.add(new Pair<>(new YamlConfigWrapper(null, yamlConfig.getSubGroup(), null, null), facts));
                     }
 
                     List<YamlConfigItem> configItems = yamlConfig.getFields();
@@ -157,20 +158,15 @@ public class PncProfileOverviewFragmentPresenter implements PncProfileOverviewFr
                         for (YamlConfigItem configItem : configItems) {
                             String relevance = configItem.getRelevance();
                             if (relevance != null && PncLibrary.getInstance().getPncRulesEngineHelper().getRelevance(facts, relevance)) {
-                                yamlConfigList.add(new YamlConfigWrapper(null, null, configItem));
-                                valueCount += 1;
+                                YamlConfigWrapper yamlConfigWrapper = new YamlConfigWrapper(null, null, configItem, null);
+                                items.add(new Pair<>(yamlConfigWrapper, facts));
                             }
                         }
-                    }
-
-                    if (valueCount > 0) {
-                        yamlConfigListGlobal.addAll(yamlConfigList);
                     }
                 }
             }
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Timber.e(ex);
         }
     }

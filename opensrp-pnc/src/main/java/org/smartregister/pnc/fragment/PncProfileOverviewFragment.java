@@ -67,14 +67,14 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
     @Override
     protected void onResumption() {
         if (baseEntityId != null) {
-            presenter.loadOverviewFacts(baseEntityId, (facts, yamlConfigListGlobal) -> {
-                if (getActivity() != null && facts != null && yamlConfigListGlobal != null) {
+            presenter.loadOverviewFacts(baseEntityId, ((facts, items) -> {
+                if (getActivity() != null) {
 
                     populateActionButtonRefreshFields(facts.asMap());
 
                     showRecordFormBtn();
 
-                    PncProfileOverviewAdapter adapter = new PncProfileOverviewAdapter(getActivity(), yamlConfigListGlobal, facts);
+                    PncProfileOverviewAdapter adapter = new PncProfileOverviewAdapter(getActivity(), items);
                     adapter.notifyDataSetChanged();
 
                     // set up the RecyclerView
@@ -82,7 +82,7 @@ public class PncProfileOverviewFragment extends BaseProfileFragment implements P
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     recyclerView.setAdapter(adapter);
                 }
-            });
+            }));
         }
     }
 

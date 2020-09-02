@@ -3,6 +3,7 @@ package org.smartregister.pnc.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.robolectric.util.ReflectionHelpers;
+import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.domain.YamlConfigItem;
 import org.smartregister.pnc.domain.YamlConfigWrapper;
+import org.smartregister.pnc.helper.PncRulesEngineHelper;
+import org.smartregister.util.StringUtil;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -38,13 +44,10 @@ import static org.robolectric.util.ReflectionHelpers.setField;
 public class PncProfileOverviewAdapterTest {
 
     @Mock
-    private List<YamlConfigWrapper> mData;
+    private ArrayList<Pair<YamlConfigWrapper, Facts>> mData;
 
     @Mock
     private LayoutInflater mInflater;
-
-    @Mock
-    private Facts facts;
 
     @Mock
     private Context context;
@@ -52,14 +55,23 @@ public class PncProfileOverviewAdapterTest {
     @Mock
     private Resources resources;
 
+    @Mock
+    private Facts facts;
+
+    @Mock
+    private PncLibrary pncLibrary;
+
     private PncProfileOverviewAdapter adapter;
+
+    @Mock
+    private PncRulesEngineHelper pncRulesEngineHelper;
 
     @Before
     @PrepareForTest(LayoutInflater.class)
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        adapter = new PncProfileOverviewAdapter(context, mData, facts);
+        adapter = new PncProfileOverviewAdapter(context, mData);
         setField(adapter, "mInflater", mInflater);
     }
 
@@ -87,6 +99,11 @@ public class PncProfileOverviewAdapterTest {
         TextView sectionDetails = mock(TextView.class);
         PncProfileOverviewAdapter.ViewHolder vh = mock(PncProfileOverviewAdapter.ViewHolder.class);
 
+        Mockito.doReturn(true).when(pncRulesEngineHelper)
+                .getRelevance(Mockito.any(Facts.class), Mockito.anyString());
+        Mockito.doReturn(pncRulesEngineHelper).when(pncLibrary).getPncRulesEngineHelper();
+        ReflectionHelpers.setStaticField(PncLibrary.class, "instance", pncLibrary);
+
         setField(vh, "sectionHeader", sectionHeader);
         setField(vh, "subSectionHeader", subSectionHeader);
         setField(vh, "sectionDetailTitle", sectionDetailTitle);
@@ -95,9 +112,10 @@ public class PncProfileOverviewAdapterTest {
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
         YamlConfigItem yamlConfigItem = mock(YamlConfigItem.class);
 
+        Pair<YamlConfigWrapper, Facts> yamlConfigWrapperFactsPair = Pair.create(yamlConfigWrapper, facts);
         when(context.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(Color.RED);
-        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
+        when(mData.get(anyInt())).thenReturn(yamlConfigWrapperFactsPair);
         when(yamlConfigWrapper.getGroup()).thenReturn(group);
         when(yamlConfigWrapper.getSubGroup()).thenReturn(subGroup);
         when(yamlConfigWrapper.getYamlConfigItem()).thenReturn(yamlConfigItem);
@@ -107,9 +125,9 @@ public class PncProfileOverviewAdapterTest {
 
         adapter.onBindViewHolder(vh, 0);
 
-        verify(sectionHeader, times(1)).setText(group.toUpperCase());
+        verify(sectionHeader, times(1)).setText(StringUtil.humanize(group));
         verify(sectionHeader, times(1)).setVisibility(View.VISIBLE);
-        verify(subSectionHeader, times(1)).setText(subGroup.toUpperCase());
+        verify(subSectionHeader, times(1)).setText(StringUtil.humanize(subGroup));
         verify(subSectionHeader, times(1)).setVisibility(View.VISIBLE);
         verify(sectionDetailTitle, times(1)).setText(template.replace(": {one}", ""));
         verify(sectionDetails, times(1)).setText(": Two");
@@ -134,8 +152,8 @@ public class PncProfileOverviewAdapterTest {
         setField(vh, "sectionDetails", sectionDetails);
 
         YamlConfigWrapper yamlConfigWrapper = mock(YamlConfigWrapper.class);
-
-        when(mData.get(anyInt())).thenReturn(yamlConfigWrapper);
+        Pair<YamlConfigWrapper, Facts> yamlConfigWrapperFactsPair = Pair.create(yamlConfigWrapper, facts);
+        when(mData.get(anyInt())).thenReturn(yamlConfigWrapperFactsPair);
         when(yamlConfigWrapper.getGroup()).thenReturn("");
         when(yamlConfigWrapper.getSubGroup()).thenReturn("");
 
