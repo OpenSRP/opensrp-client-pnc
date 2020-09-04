@@ -445,7 +445,8 @@ public class PncJsonFormUtils extends JsonFormUtils {
             Client baseClient = JsonFormUtils.createBaseClient(fields, formTag, entityId);
 
             Event baseEvent = JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA),
-                    formTag, entityId, PncUtils.metadata().getRegisterEventType(), PncUtils.metadata().getTableName());
+                    formTag, entityId, jsonForm.optString(PncJsonFormUtils.ENCOUNTER_TYPE),
+                    PncUtils.metadata().getTableName());
 
             tagSyncMetadata(baseEvent);
 
