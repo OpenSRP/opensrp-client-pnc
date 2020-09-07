@@ -1,6 +1,6 @@
 package org.smartregister.pnc.pojo;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class PncPartialForm {
     private int id;

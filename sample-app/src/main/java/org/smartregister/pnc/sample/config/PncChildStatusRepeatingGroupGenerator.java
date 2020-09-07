@@ -1,6 +1,6 @@
 package org.smartregister.pnc.sample.config;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 

@@ -1,6 +1,6 @@
 package org.smartregister.pnc.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.smartregister.domain.FetchStatus;
 import org.smartregister.pnc.R;

@@ -1,7 +1,7 @@
 package org.smartregister.pnc.model;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.config.PncRegisterQueryProviderContract;

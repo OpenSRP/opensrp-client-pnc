@@ -1,6 +1,6 @@
 package org.smartregister.pnc.config;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Map;
 

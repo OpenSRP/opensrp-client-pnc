@@ -1,7 +1,7 @@
 package org.smartregister.pnc.utils;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.smartregister.pnc.exception.NewInstanceException;
 

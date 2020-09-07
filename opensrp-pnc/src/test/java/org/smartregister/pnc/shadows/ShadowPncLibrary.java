@@ -1,7 +1,7 @@
 package org.smartregister.pnc.shadows;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.robolectric.annotation.Implements;
 import org.smartregister.pnc.PncLibrary;
