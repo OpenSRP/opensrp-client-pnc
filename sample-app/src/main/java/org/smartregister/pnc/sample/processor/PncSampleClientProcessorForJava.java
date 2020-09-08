@@ -3,7 +3,7 @@ package org.smartregister.pnc.sample.processor;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import org.smartregister.domain.db.Event;
+import org.smartregister.domain.Event;
 import org.smartregister.domain.db.EventClient;
 import org.smartregister.domain.jsonmapping.ClientField;
 import org.smartregister.pnc.processor.PncMiniClientProcessorForJava;

@@ -5,12 +5,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1'
         classpath 'com.palantir:jacoco-coverage:0.4.0'
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        classpath 'org.smartregister:gradle-jarjar-plugin:1.0.0-SNAPSHOT'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -53,7 +55,7 @@ subprojects {
 
     group = 'org.smartregister'
 
-    ext.androidToolsBuildGradle = '3.5.3'
+    ext.androidToolsBuildGradle = '4.0.1'
     ext.androidBuildToolsVersion = '29.0.3'
     ext.androidMinSdkVersion = 18
     ext.androidCompileSdkVersion = 29
@@ -63,7 +65,7 @@ subprojects {
     ext.androidAnnotationsAPIVersion = '3.0.1'
 
     ext.jacocoVersion = "0.8.5"
-    ext.coverallsVersion = "2.8.1"
+    ext.coverallsVersion = "2.8.3"
 
     // Improve build server performance by allowing disabling of pre-dexing
     // (see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.)
@@ -81,7 +83,6 @@ task clean(type: Delete) {
 }
 
 apply plugin: 'io.codearte.nexus-staging'
-apply plugin: 'com.github.kt3k.coveralls'
 
 def isReleaseBuild() {
     return version.contains("SNAPSHOT") == false

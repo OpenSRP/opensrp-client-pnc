@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidToolsBuildGradle"
+        classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:$coverallsVersion"
     }
 }
@@ -63,6 +63,7 @@ android {
     lintOptions.abortOnError false
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -71,8 +72,6 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/NOTICE.md'
     }
-
-
 }
 
 tasks.withType(Test) {
@@ -80,13 +79,15 @@ tasks.withType(Test) {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api 'androidx.appcompat:appcompat:1.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     implementation 'androidx.multidex:multidex:2.0.0'
 
-    api('org.smartregister:opensrp-client-core:1.11.7-LOCAL-SNAPSHOT@aar') {
+    api('org.smartregister:opensrp-client-core:2.0.8-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'
@@ -97,6 +98,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'cardview-v7'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
 
     api('org.smartregister:opensrp-client-configurable-views:1.1.5-SNAPSHOT@aar') {
@@ -156,22 +158,34 @@ dependencies {
 
     implementation group: 'io.fabric.sdk.android', name: 'fabric', version: '1.4.8'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.apache.maven:maven-ant-tasks:2.1.3'
-    testImplementation('com.squareup:fest-android:1.0.8') { exclude module: 'support-v4' }
+    def robolectricVersion = '4.1'
+    testImplementation("org.robolectric:robolectric:$robolectricVersion") {
+        exclude group: 'com.google.auto.service', module: 'auto-service'
+        exclude group: 'com.android.support'
+    }
+    testImplementation "org.robolectric:shadows-multidex:$robolectricVersion"
+    testImplementation "org.robolectric:shadows-support-v4:3.3.2"
+    testImplementation 'com.ibm.fhir:fhir-model:4.2.3'
 
-    testImplementation 'org.mockito:mockito-inline:2.13.0'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
-
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.+') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'junit', module: 'junit'
+    }
     // PowerMock
-    def powerMockVersion = '2.0.0'
+    def powerMockVersion = '2.0.7'
     testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
     testImplementation "org.powermock:powermock-module-junit4-rule:$powerMockVersion"
+    testImplementation "org.powermock:powermock-module-javaagent:$powerMockVersion"
     testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
     testImplementation "org.powermock:powermock-classloading-xstream:$powerMockVersion"
-
+    testImplementation 'org.apache.maven:maven-ant-tasks:2.1.3'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'junit', module: 'junit'
+    }
 }
 
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
@@ -182,17 +196,22 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     }
 
     getReports().getXml().setDestination(file("${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"))
-    getReports().getHtml().setDestination(file("${buildDir}/reports/jacoco/jacocoRootReport.html"))
+    getReports().getHtml().setDestination(file("${buildDir}/reports/jacoco/jacocoRootReport/html"))
 
     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/*$ViewBinder*.*']
-    def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes/", excludes: fileFilter)
+    def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(([debugTree]))
+    executionData.setFrom(fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
+    ]))
+}
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
+    sourceDirs = ["$project.projectDir/src/main/java"]
 }
 
 coveralls {

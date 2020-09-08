@@ -26,6 +26,8 @@ import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
+import java.util.Map;
+
 import timber.log.Timber;
 
 /**
@@ -47,6 +49,11 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
     @Override
     protected BaseRegisterFragment getRegisterFragment() {
         return new PncRegisterFragment();
+    }
+
+    @Override
+    public void startFormActivity(String s, String s1, Map<String, String> map) {
+        //Do nothing
     }
 
     @Override
