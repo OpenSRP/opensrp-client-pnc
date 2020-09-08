@@ -167,10 +167,6 @@ dependencies {
     testImplementation "org.robolectric:shadows-support-v4:3.3.2"
     testImplementation 'com.ibm.fhir:fhir-model:4.2.3'
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.+') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'junit', module: 'junit'
-    }
     // PowerMock
     def powerMockVersion = '2.0.7'
     testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
@@ -182,6 +178,7 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'junit', module: 'junit'
