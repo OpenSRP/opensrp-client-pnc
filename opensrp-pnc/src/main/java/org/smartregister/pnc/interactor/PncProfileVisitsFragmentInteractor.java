@@ -1,8 +1,8 @@
 package org.smartregister.pnc.interactor;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.contract.PncProfileVisitsFragmentContract;

@@ -1,7 +1,7 @@
 package org.smartregister.pnc.config;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.widgets.DatePickerFactory;

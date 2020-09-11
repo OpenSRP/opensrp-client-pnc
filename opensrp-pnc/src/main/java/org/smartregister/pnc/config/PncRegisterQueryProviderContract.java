@@ -1,8 +1,8 @@
 package org.smartregister.pnc.config;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-11-29

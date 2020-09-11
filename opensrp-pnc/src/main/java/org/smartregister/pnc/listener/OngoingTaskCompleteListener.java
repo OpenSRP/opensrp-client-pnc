@@ -1,7 +1,7 @@
 package org.smartregister.pnc.listener;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.smartregister.pnc.pojo.OngoingTask;
 

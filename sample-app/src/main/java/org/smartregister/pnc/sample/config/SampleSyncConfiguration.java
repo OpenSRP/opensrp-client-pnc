@@ -5,6 +5,7 @@ import org.smartregister.SyncFilter;
 import org.smartregister.pnc.sample.BuildConfig;
 import org.smartregister.pnc.sample.app.PncApplication;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.view.activity.BaseLoginActivity;
 
 import java.util.List;
 
@@ -67,6 +68,21 @@ public class SampleSyncConfiguration extends SyncConfiguration {
 
     @Override
     public String getTopAllowedLocationLevel() {
+        return null;
+    }
+
+    @Override
+    public String getOauthClientId() {
+        return null;
+    }
+
+    @Override
+    public String getOauthClientSecret() {
+        return null;
+    }
+
+    @Override
+    public Class<? extends BaseLoginActivity> getAuthenticationActivity() {
         return null;
     }
 

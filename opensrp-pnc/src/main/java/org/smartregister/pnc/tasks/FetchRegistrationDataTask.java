@@ -2,8 +2,8 @@ package org.smartregister.pnc.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.utils.PncConstants;

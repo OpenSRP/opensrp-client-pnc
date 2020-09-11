@@ -2,17 +2,17 @@ package org.smartregister.pnc.processor;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.commonregistry.AllCommonsRepository;
-import org.smartregister.domain.db.Event;
+import org.smartregister.domain.Event;
 import org.smartregister.domain.db.EventClient;
-import org.smartregister.domain.db.Obs;
+import org.smartregister.domain.Obs;
 import org.smartregister.domain.jsonmapping.ClientClassification;
 import org.smartregister.pnc.PncLibrary;
 import org.smartregister.pnc.exception.PncCloseEventProcessException;
