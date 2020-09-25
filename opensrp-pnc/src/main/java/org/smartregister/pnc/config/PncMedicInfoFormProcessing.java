@@ -1,6 +1,7 @@
 package org.smartregister.pnc.config;
 
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -108,14 +109,18 @@ public class PncMedicInfoFormProcessing implements PncFormProcessingTask {
 
     }
 
-    private void createChild(JSONObject jsonFormObject, String baseEntityId, HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn) {
+    protected void createChild(JSONObject jsonFormObject, String baseEntityId, HashMap<String, HashMap<String, String>> buildRepeatingGroupBorn) {
         PncLibrary.getInstance().getAppExecutors().diskIO().execute(() -> {
 
             List<PncEventClient> childEvents = buildChildRegistrationEvents(buildRepeatingGroupBorn, baseEntityId, jsonFormObject);
             if (!childEvents.isEmpty()) {
-                PncUtils.processEvents(childEvents);
+                saveAndProcessChildEvents(childEvents);
             }
         });
+    }
+
+    protected void saveAndProcessChildEvents(@NonNull List<PncEventClient> pncEventClients) {
+        PncUtils.processEvents(pncEventClients);
     }
 
     @NonNull
