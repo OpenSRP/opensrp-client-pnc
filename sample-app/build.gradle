@@ -95,6 +95,7 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/NOTICE.md'
+        exclude 'META-INF/DEPENDENCIES'
     }
 }
 

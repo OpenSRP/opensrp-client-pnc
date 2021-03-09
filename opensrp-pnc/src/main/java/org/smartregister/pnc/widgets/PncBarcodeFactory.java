@@ -2,8 +2,9 @@ package org.smartregister.pnc.widgets;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.vision.barcode.Barcode;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -43,11 +44,14 @@ public class PncBarcodeFactory extends BarcodeFactory {
     @Override
     public List<View> getViewsFromJson(@NonNull String stepName, @NonNull Context context, @NonNull JsonFormFragment formFragment, @NonNull JSONObject jsonObject,
                                        @NonNull CommonListener listener, boolean popup) {
-        List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener, popup);
+        List<View> viewList = null;
         try {
+            viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener, popup);
+
             this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
                     jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
-        } catch (JSONException e) {
+
+        } catch (Exception e) {
             Timber.e(e);
         }
         return viewList;

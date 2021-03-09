@@ -2,6 +2,7 @@ package org.smartregister.pnc.activity;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +21,6 @@ import org.smartregister.pnc.pojo.PncPartialForm;
 import org.smartregister.pnc.utils.PncConstants;
 import org.smartregister.pnc.utils.PncJsonFormUtils;
 import org.smartregister.pnc.utils.PncUtils;
-import org.smartregister.util.LangUtils;
 import org.smartregister.util.Utils;
 
 import java.util.HashMap;
@@ -32,12 +32,6 @@ public class BasePncFormActivity extends JsonWizardFormActivity {
 
     private boolean enableOnCloseDialog = true;
     private HashMap<String, String> parcelableData = new HashMap<>();
-
-    @Override
-    protected void attachBaseContext(android.content.Context base) {
-        String language = LangUtils.getLanguage(base);
-        super.attachBaseContext(LangUtils.setAppLocale(base, language));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
