@@ -25,7 +25,6 @@ import org.powermock.reflect.internal.WhiteboxImpl;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
-import org.smartregister.SyncConfiguration;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.ProfileImage;
 import org.smartregister.domain.UniqueId;
@@ -67,9 +66,12 @@ public class PncJsonFormUtilsTest {
 
     @Mock
     private PncConfiguration pncConfiguration;
-    
+
     @Mock
     private DrishtiApplication drishtiApplication;
+
+    @Mock
+    private CoreLibrary coreLibrary;
 
     @Before
     public void setUp() {
@@ -261,12 +263,19 @@ public class PncJsonFormUtilsTest {
                 .build();
         PncLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(Repository.class), pncConfiguration,
                 BuildConfig.VERSION_CODE, 1);
-        CoreLibrary.init(PowerMockito.mock(Context.class), PowerMockito.mock(SyncConfiguration.class));
 
-        PowerMockito.when(PncUtils.class, "getAllSharedPreferences").thenReturn(PowerMockito.mock(AllSharedPreferences.class));
+        ReflectionHelpers.setStaticField(CoreLibrary.class, "instance", coreLibrary);
+
+        Context mockContext = PowerMockito.mock(Context.class);
+
+        PowerMockito.doReturn(mockContext).when(coreLibrary).context();
+
+        PowerMockito.doReturn(PowerMockito.mock(AllSharedPreferences.class)).when(mockContext).allSharedPreferences();
 
         Event event = PncJsonFormUtils.tagSyncMetadata(new Event());
         Assert.assertNotNull(event);
+
+        ReflectionHelpers.setStaticField(CoreLibrary.class, "instance", null);
     }
 
 
@@ -362,13 +371,11 @@ public class PncJsonFormUtilsTest {
         jsonArrayFields.put(jsonObjectAgeEntered);
         jsonArrayFields.put(jsonObjectDob);
 
-        String expected = "[{\"options\":[{\"value\":\"true\"}],\"key\":\"dob_unknown\"},{\"value\":\"34\",\"key\":\"age_entered\"}," +
-                "{\"value\":\"01-01-1986\",\"key\":\"dob_entered\"},{\"openmrs_entity\":\"person\"," +
-                "\"openmrs_entity_id\":\"birthdate_estimated\",\"value\":1,\"key\":\"birthdate_estimated\"}]";
+        String expected = "01-01-1987";
 
         PncJsonFormUtils.dobUnknownUpdateFromAge(jsonArrayFields);
 
-        Assert.assertEquals(expected, jsonArrayFields.toString());
+        Assert.assertEquals(expected, JsonFormUtils.getFieldJSONObject(jsonArrayFields, PncConstants.JsonFormKeyConstants.DOB_ENTERED).getString(JsonFormUtils.VALUE));
     }
 
     @Test
