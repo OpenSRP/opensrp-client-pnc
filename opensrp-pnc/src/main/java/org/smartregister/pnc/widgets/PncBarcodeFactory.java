@@ -15,7 +15,6 @@ import com.vijay.jsonwizard.interfaces.JsonApi;
 import com.vijay.jsonwizard.interfaces.OnActivityResultListener;
 import com.vijay.jsonwizard.widgets.BarcodeFactory;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.pnc.listener.LookUpTextWatcher;
 import org.smartregister.pnc.utils.PncConstants;
@@ -27,19 +26,6 @@ import timber.log.Timber;
 public class PncBarcodeFactory extends BarcodeFactory {
 
     private boolean forLookUp;
-
-    @Override
-    public List<View> getViewsFromJson(@NonNull String stepName, @NonNull Context context, @NonNull JsonFormFragment formFragment,
-                                       @NonNull JSONObject jsonObject, @NonNull CommonListener listener) throws Exception {
-        List<View> viewList = super.getViewsFromJson(stepName, context, formFragment, jsonObject, listener);
-        try {
-            this.forLookUp = jsonObject.has(PncConstants.KeyConstants.LOOK_UP) &&
-                    jsonObject.get(PncConstants.KeyConstants.LOOK_UP).toString().equalsIgnoreCase(Boolean.TRUE.toString());
-        } catch (JSONException e) {
-            Timber.e(e);
-        }
-        return viewList;
-    }
 
     @Override
     public List<View> getViewsFromJson(@NonNull String stepName, @NonNull Context context, @NonNull JsonFormFragment formFragment, @NonNull JSONObject jsonObject,
